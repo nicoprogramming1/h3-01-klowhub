@@ -29,4 +29,3 @@ DB_DIALECT=postgres
 DB_PORT=5432  # Puerto por defecto para PostgreSQL
 
 # Opcional: Claves para otros servicios (por ejemplo, de envío de correos, API de terceros, etc.)
-# API_KEY=mi_api_key#Aqui va el back-end
