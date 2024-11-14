@@ -14,7 +14,7 @@
 Clona este repositorio a tu máquina local:
 
 ```bash
-git clone https://github.com/usuario/repositorio.git](https://github.com/No-Country-simulation/h3-01-klowhub.git)
+git clone https://github.com/No-Country-simulation/h3-01-klowhub.git
 cd backend
 
 # JWT Secret para la autenticación JWT
