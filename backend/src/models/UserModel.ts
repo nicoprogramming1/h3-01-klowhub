@@ -3,8 +3,13 @@ import sequelize from '../config/database';
 
 class UserModel extends Model {
   public id!: number;
-  public username!: string;
+  public firstName!: string;
+  public lastName!: string;
+  public email!: string;
   public password!: string;
+  public phone!: number;
+  public role!: string;
+  public countryCode!: string;
 }
 
 UserModel.init(
@@ -14,12 +19,28 @@ UserModel.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    username: {
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     password: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    countryCode: {
+      type: DataTypes.NUMBER,
+      allowNull: false
+    },
+    phone: {
+      type: DataTypes.NUMBER,
       allowNull: false,
     },
   },
