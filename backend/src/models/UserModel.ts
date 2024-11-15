@@ -35,6 +35,11 @@ UserModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      values: ["user", "admin"]
+    },
     countryCode: {
       type: DataTypes.NUMBER,
       allowNull: false
