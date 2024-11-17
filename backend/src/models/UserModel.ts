@@ -1,23 +1,31 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 
+function generateShortID(): string {
+  return (
+    Date.now().toString(36).substring(0, 6) +
+    Math.random().toString(36).substring(2, 6)
+  ).substring(0, 10);
+}
+
 class UserModel extends Model {
-  public id!: number;
+  public id!: string;
   public firstName!: string;
   public lastName!: string;
   public email!: string;
   public password!: string;
+  public country!: string;
   public phone!: number;
   public role!: string;
-  public countryCode!: string;
+  public isValid!: boolean;
 }
 
 UserModel.init(
   {
     id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
+      type: DataTypes.STRING(10),
       primaryKey: true,
+      defaultValue: generateShortID,
     },
     firstName: {
       type: DataTypes.STRING,
@@ -38,15 +46,22 @@ UserModel.init(
     role: {
       type: DataTypes.STRING,
       allowNull: false,
-      values: ["user", "admin"]
+      defaultValue: "user",
+      validate: {
+        isIn: [["user", "admin"]],
+      },
     },
-    countryCode: {
-      type: DataTypes.NUMBER,
-      allowNull: false
+    country: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     phone: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.STRING,
       allowNull: false,
+    },
+    isValid: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
   },
   {
@@ -54,6 +69,11 @@ UserModel.init(
     modelName: 'User',
     tableName: 'users',
     timestamps: true,
+    hooks: {
+      beforeCreate: (user: UserModel) => {
+        user.id = generateShortID();
+      },
+    },
   }
 );
 
