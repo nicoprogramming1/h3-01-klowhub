@@ -1,7 +1,6 @@
 "use server";
 
 import * as z from "zod";
-import { AuthError } from "next-auth";
 
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
