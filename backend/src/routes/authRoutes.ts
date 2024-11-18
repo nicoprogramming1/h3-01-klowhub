@@ -1,9 +1,11 @@
 import { Router } from 'express';
-import { register, login } from '../controllers/authController';
+import { register, login, logout } from '../controllers/authController';
 
 const routerAuth = Router();
 
-routerAuth.post('/register', register );
+// Definir las rutas
+routerAuth.post('/register', register);
 routerAuth.post('/login', login);
+routerAuth.delete("logout", logout);
 
 export default routerAuth;
