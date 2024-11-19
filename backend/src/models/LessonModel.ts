@@ -8,26 +8,27 @@ function generateShortID(): string {
   ).substring(0, 10);
 }
 
-class CourseModuleModel extends Model {
+class LessonModel extends Model {
   public id!: string;
-  public courseId!: string;
+  public courseModuleId!: string;
   public title!: string;
   public detail!: string;
+  public lessonLink!: string;
 }
 
-CourseModuleModel.init(
+LessonModel.init(
   {
     id: {
       type: DataTypes.STRING(10),
       primaryKey: true,
       defaultValue: generateShortID,
     },
-    courseId: {
+    courseModuleId: {
       type: DataTypes.STRING,
       allowNull: false,
-      field: "course_id",
+      field: "course_module_id",
       references: {
-        model: "courses",
+        model: "course_modules",
         key: "id",
       },
       onUpdate: "CASCADE",
@@ -41,18 +42,22 @@ CourseModuleModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    lessonLink: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
     sequelize,
-    modelName: "CourseModule",
-    tableName: "course_modules",
+    modelName: "Lesson",
+    tableName: "lessons",
     timestamps: true,
     hooks: {
-      beforeCreate: (module: CourseModuleModel) => {
-        module.id = generateShortID();
+      beforeCreate: (lesson: LessonModel) => {
+        lesson.id = generateShortID();
       },
     },
   }
 );
 
-export default CourseModuleModel;
+export default LessonModel;
