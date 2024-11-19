@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { register, login, logout } from '../controllers/authController';
 
-const routerAuth = Router();
+const authRouter = Router();
 
 // Definir las rutas
-routerAuth.post('/register', register);
-routerAuth.post('/login', login);
-routerAuth.delete("logout", logout);
+authRouter.post('/register', register);
+authRouter.post('/login', login);
+authRouter.delete("logout", logout);
 
-export default routerAuth;
+export default authRouter;
