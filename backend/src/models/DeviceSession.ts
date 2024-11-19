@@ -26,6 +26,17 @@ DeviceSession.init(
             primaryKey: true,
             defaultValue: generateShortID,
         },
+        userId: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            field: "user_id",
+            references: {
+              model: "users",  // referenciamos la tabla users
+              key: "id",       // pk
+            },
+            onUpdate: "CASCADE",
+            onDelete: "CASCADE",
+          },
         app: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -45,10 +56,12 @@ DeviceSession.init(
         ipAddress: {
             type: DataTypes.STRING,
             allowNull: false,
+            field: "ip_address"
         },
         isActive: {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
+            field: "is_active"
         },
     },
     {

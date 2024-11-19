@@ -16,59 +16,61 @@ enum Competence {
 
 class CourseModel extends ProductModel {
   public competence!: Competence;
-  public modules!: CourseModel[];
-  public aboutLearn!: string; // es una descripcion de qué se va a aprender en el curso
+  public aboutLearn!: string;
 }
 
 CourseModel.init(
-    {
-        id: {
-          type: DataTypes.STRING(10),
-          primaryKey: true,
-          defaultValue: generateShortID,
-        },
-        detail: {
-          type: DataTypes.STRING,
-          allowNull: false,
-        },
-        aboutLearn: {
-          type: DataTypes.STRING,
-          allowNull: true, // la dejamos true para null x el mom
-          field: "about_learn",
-        },
-        platform: {
-          type: DataTypes.STRING,
-          allowNull: false,
-        },
-        image: {
-          type: DataTypes.STRING,
-          allowNull: false,
-        },
-        sector: {
-          type: DataTypes.STRING,
-          allowNull: false,
-        },
-        tags: {
-          type: DataTypes.STRING,
-          allowNull: true, // allow null
-        },
-        price: {
-          type: DataTypes.DOUBLE,
-          allowNull: false,
-        },
-        ownerId: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          field: "owner_id",
-          references: {
-            // foreign key a la tabla users
-            model: "users",
-            key: "id",
-          },
-          onUpdate: "CASCADE",
-          onDelete: "CASCADE",
-        },
+  {
+    id: {
+      type: DataTypes.STRING(10),
+      primaryKey: true,
+      defaultValue: generateShortID,
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    detail: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    aboutLearn: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "about_learn",
+    },
+    platform: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    sector: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    tags: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    price: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+    },
+    ownerId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: "owner_id",
+      references: {
+        model: "users",
+        key: "id",
       },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
+    },
+  },
   {
     sequelize,
     modelName: "Course",
