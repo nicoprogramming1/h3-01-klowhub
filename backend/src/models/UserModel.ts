@@ -10,12 +10,12 @@ function generateShortID(): string {
 
 class UserModel extends Model {
   public id!: string;
-  public firstName!: string;
-  public lastName!: string;
+  public longName!: string;
   public email!: string;
   public password!: string;
+  /* creo que habiamos dicho no incluir pais ni telefono por el mom
   public country!: string;
-  public phone!: number;
+  public phone!: number; */
   public role!: string;
   public isValid!: boolean;
 }
@@ -27,13 +27,10 @@ UserModel.init(
       primaryKey: true,
       defaultValue: generateShortID,
     },
-    firstName: {
+    longName: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    lastName: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      field: "long_name"
     },
     email: {
       type: DataTypes.STRING,
@@ -51,17 +48,18 @@ UserModel.init(
         isIn: [["user", "admin"]],
       },
     },
-    country: {
+    /* country: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     phone: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
+    }, */
     isValid: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+      field: "is_valid"
     },
   },
   {
