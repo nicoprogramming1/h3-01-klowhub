@@ -28,7 +28,7 @@ export const getOneUser = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
 
-        const user = await UserModel.findByPk(id); 4
+        const user = await UserModel.findByPk(id);
         if (!user) {
             res.status(404).json({ message: "User not found" });
             return;
