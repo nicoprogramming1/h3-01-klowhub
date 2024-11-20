@@ -11,12 +11,19 @@ export default {
   ],
   theme: {
     extend: {
+      textShadow: {
+        white: "0px 1px 2px white, 1px 2px 4px white",
+        whitesm: "1px 1px 15px #f6d6ff",
+      },
       backgroundImage: {
         "custom-gradient-dark":
           "linear-gradient(to bottom right, #051D8A, #181941, #431650)",
 
         "custom-gradient-light":
           "linear-gradient(to bottom right, #0f6bff,#faebff , #f6d6ff)",
+
+        "custom-gradient-background":
+          "linear-gradient(263.17deg, #201C2D 0.4%, #201D43 50.02%, #262136 99.65%)",
       },
       colors: {
         background: "hsl(var(--background))",
@@ -93,5 +100,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("tailwindcss-textshadow")],
 } satisfies Config;
