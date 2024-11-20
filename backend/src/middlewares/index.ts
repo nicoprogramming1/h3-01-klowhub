@@ -1,0 +1,1 @@
+export { validateRegister } from './validateMdw';
