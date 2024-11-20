@@ -7,12 +7,17 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 import { Switch } from "./ui/switch";
+import { cn } from "@/lib/utils";
 
-export function ModeToggle() {
+interface ModeToggleProps {
+  className?: string;
+}
+
+export function ModeToggle({ className }: ModeToggleProps) {
   const { setTheme, theme } = useTheme();
 
   return (
-    <div className="flex justify-between items-center gap-x-2">
+    <div className={cn("flex justify-between items-center gap-x-2", className)}>
       <Switch
         checked={theme === "dark"}
         onCheckedChange={(isChecked) => setTheme(isChecked ? "dark" : "light")}

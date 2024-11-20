@@ -17,5 +17,6 @@ export const login = async ({ values, callbackUrl }: LoginProps) => {
   if (!validateFields.success) {
     return { error: "Password o email incorrecto" };
   }
-  const { email, password } = validateFields.data;
+  return { success: "Entrando..." };
+  // const { email, password } = validateFields.data;
 };
