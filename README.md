@@ -9,6 +9,11 @@ KlowHub es una plataforma SaaS (Software como Servicio) diseñada para centraliz
 - PM requeriments: https://docs.google.com/document/d/1M9TPI3U3fzESAFfAh1JZX7j8z7rGjmCMtIRI-FJsYb8/edit?tab=t.0
 - UML design classes & DB: https://lucid.app/lucidchart/ae84b02d-155e-483d-be41-8fa752bb5d9d/edit?page=HWEp-vi-RSFO&invitationId=inv_d489a101-c136-412a-9eb0-9093350af57a#
 
+## Instrucciones de despliegue
+La rama predeterminada de desarrollo es "dev"
+
+- Backend: dentro de la carpeta backend, luego de instalar las dependencias con "npm install", ejecutar la aplicación mediante "npm run dev"
+
 ## Endpoints
 Cada endpoint expone su url y un formato de prueba JSON válido
 
