@@ -26,3 +26,8 @@ export interface LessonData {
     };
     modules: ModuleData[];
   }
+
+  export enum Competence {
+    BASIC = 'Basic',
+    INTERMEDIATE = 'Intermediate',
+  }
