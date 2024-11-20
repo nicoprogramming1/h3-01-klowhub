@@ -6,6 +6,6 @@ const routerAuth = Router();
 // Definir las rutas
 routerAuth.post('/register', register);
 routerAuth.post('/login', login);
-routerAuth.delete("logout", logout);
+routerAuth.delete('/logout', logout);
 
 export default routerAuth;
