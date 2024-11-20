@@ -53,7 +53,7 @@ export const loginUser = async (
 
     const token = jwt.sign({ id: userData.id }, process.env.JWT_SECRET!, { expiresIn: '1d' });
 
-    // Si se proporcionan datos de dispositivo, manejar la sesión
+    // Solo crea o actualiza la sesión si se proporcionan datos de dispositivo y aplicación
     if (device && app && country) {
       const [session, created] = await DeviceSession.findOrCreate({
         where: { userId: userData.id, device, app },
@@ -70,6 +70,33 @@ export const loginUser = async (
 
     return { user: userWithoutPassword, token };
   } catch (error: any) {
-    throw new Error(error.message || 'Login error');
+    throw new Error(error.message || 'Error en el login');
+  }
+};
+
+
+export const logoutUser = async (device: string, app: string, token: string) => {
+  try {
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+
+    if (!decoded.id) {
+      throw new Error('El token proveído es inválido');
+    }
+
+    if (device && app && decoded.id) {
+      // Buscar la sesión activa del usuario
+      const session = await DeviceSession.findOne({ where: { userId: decoded.id, device, app } });
+      
+      if (session) {
+        // Desactivar la sesión
+        await session.update({ isActive: false });
+      } else {
+        throw new Error('No se encuentra la sesión');
+      }
+    }
+
+    return { message: 'Se ha cerrado su sesión con éxito' };
+  } catch (error: any) {
+    throw new Error('Error cerrando sesión');
   }
 };

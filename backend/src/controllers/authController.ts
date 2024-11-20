@@ -1,10 +1,7 @@
 import dotenv from 'dotenv';
-dotenv.config();
-
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import DeviceSession from '../models/DeviceSession';
-import { registerUser, loginUser } from '../services/auth.service';
+import { registerUser, loginUser, logoutUser } from '../services/auth.service';
+dotenv.config();
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -34,14 +31,20 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-
-
 //Controlador de inicio de sesión y añadiendo dispositivo de donde se inicio
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password, device, app, country, city, ipAddress } = req.body;
 
-    const { user, token } = await loginUser(email, password, device, app, country, city, ipAddress);
+    const { user, token } = await loginUser(
+      email,
+      password,
+      device,
+      app,
+      country,
+      city,
+      ipAddress
+    );
 
     res.json({ user, token });
   } catch (error: any) {
@@ -57,7 +60,6 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-
 //Cierra la sesion del usuario y actualiza que el despositivo esta en cuenta cerrada
 export const logout = async (req: Request, res: Response) => {
   try {
@@ -65,22 +67,20 @@ export const logout = async (req: Request, res: Response) => {
     const token = req.headers['authorization']?.split(' ')[1];
 
     if (!token) {
-      res.status(400).json({ message: "Token not provided" });
-      return;
+      res.status(400).json({ message: 'No fue proveído un token válido' });
+      return;  // rompe el flujo
     }
 
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const result = await logoutUser(device, app, token);
 
-    if (device && app && decoded.id) {
-      const session = await DeviceSession.findOne({ where: { userId: decoded.id, device, app } });
-      if (session) {
-        await session.update({ isActive: false });
-      }
+    res.json({
+      result,
+      message: "Se ha cerrado la sesión con éxito"
+    });
+  } catch (error: any) {
+    if (res.headersSent) {
+      return; // Si los encabezados ya se enviaron, no hacer nada más
     }
-
-    res.json({ message: "Successfully logged out" });
-
-  } catch (error) {
-    res.status(500).json({ message: "Error logging out" });
+    res.status(500).json({ message: error.message || 'Error cerrando sesión' });
   }
 };
