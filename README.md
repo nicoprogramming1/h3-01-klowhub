@@ -16,7 +16,7 @@ Cada endpoint expone su url y un formato de prueba JSON válido
 Los siguientes endpoints hacen referencia a las funcionalidades de registro e inicio/cierre de sesión
 
 
-#### Registro usuario
+#### - Registro usuario
 
 localhost:3000/api/auth/register
 
@@ -27,7 +27,7 @@ localhost:3000/api/auth/register
 }
 
 
-#### Login
+#### - Login
 
 localhost:3000/api/auth/login
 
@@ -42,7 +42,7 @@ localhost:3000/api/auth/login
 }
 
 
-#### Logout
+#### - Logout (Además del bearer token en el encabezado)
 
 localhost:3000/api/auth/logout
 
@@ -50,6 +50,4 @@ localhost:3000/api/auth/logout
   "device": "iPhone 14",
   "app": "KlowHubApp"
 }
-
-Además del bearer token en el encabezado
 
