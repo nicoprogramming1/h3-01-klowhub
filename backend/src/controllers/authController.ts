@@ -2,11 +2,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import UserModel from '../models/UserModel';
 import DeviceSession from '../models/DeviceSession';
-import { registerUser } from '../services/auth.service';
+import { registerUser, loginUser } from '../services/auth.service';
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -43,40 +41,16 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password, device, app, country, city, ipAddress } = req.body;
 
-    if (!email || !password) {
-      res.status(400).json({ message: "Mandatory data missing" });
-      return;
+    const { user, token } = await loginUser(email, password, device, app, country, city, ipAddress);
+
+    res.json({ user, token });
+  } catch (error: any) {
+    // Manejo de errores
+    if (error.message === 'Credenciales de acceso inválidas') {
+      res.status(401).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: 'Login error' });
     }
-
-    const userData = await UserModel.findOne({ where: { email } });
-    if (!userData) {
-      res.status(401).json({ message: "Invalid credentials" });
-      return;
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, userData.password);
-    if (!isPasswordValid) {
-      res.status(401).json({ message: "Invalid credentials" });
-      return;
-    }
-
-    const token = jwt.sign({ id: userData.id }, process.env.JWT_SECRET!, { expiresIn: "1d" });
-    if (device && app && country) {
-      const [session, created] = await DeviceSession.findOrCreate({
-        where: { userId: userData.id, device, app },
-        defaults: { country, city, ipAddress, isActive: true },
-      });
-
-      if (!created) {
-        await session.update({ isActive: true, ipAddress });
-      }
-    }
-
-    const { password: _, ...userWithoutPassword } = userData.toJSON();
-
-    res.json({ user: userWithoutPassword, token });
-  } catch (error) {
-    res.status(500).json({ message: "Login error" });
   }
 };
 
