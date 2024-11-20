@@ -6,32 +6,33 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import UserModel from '../models/UserModel';
 import DeviceSession from '../models/DeviceSession';
+import { registerUser } from '../services/auth.service';
 
-
-//Controlador de registrar usuarios 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { password, email, ...User } = req.body;
-    const existingUser = await UserModel.findOne({ where: { email } });
+    const { longName, email, password } = req.body;
 
-    if (existingUser) {
-      res.status(400).json({
-        message: "Email is already in use",
-      })
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await UserModel.create({ ...User, email, password: hashedPassword });
+    const newUser = await registerUser(longName, email, password);
 
     res.status(201).json({
-      message: "User created successfully",
+      message: 'Usuario creado exitosamente',
+      user: {
+        id: newUser.id,
+        longName: newUser.longName,
+        email: newUser.email,
+        role: newUser.role,
+        isValid: newUser.isValid,
+      },
     });
-  } catch (error) {
-    res.status(500).json({
-      message: "Internal server error",
-    });
+  } catch (error: any) {
+    if (error.message === 'Este email ya está registrado') {
+      res.status(400).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: 'Error interno del servidor' });
+    }
   }
 };
+
 
 
 //Controlador de inicio de sesión y añadiendo dispositivo de donde se inicio
