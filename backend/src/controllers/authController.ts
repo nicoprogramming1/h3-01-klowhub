@@ -45,6 +45,9 @@ export const login = async (req: Request, res: Response) => {
 
     res.json({ user, token });
   } catch (error: any) {
+    if (res.headersSent) {
+      return; // Si los encabezados ya se enviaron, no hacer nada más
+    }
     // Manejo de errores
     if (error.message === 'Credenciales de acceso inválidas') {
       res.status(401).json({ message: error.message });
