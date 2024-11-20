@@ -25,6 +25,9 @@ export const register = async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
+    if (res.headersSent) {
+      return; // Si los encabezados ya se enviaron, no hacer nada más
+    }
     if (error.message === 'Este email ya está registrado') {
       res.status(400).json({ message: error.message });
     } else {
