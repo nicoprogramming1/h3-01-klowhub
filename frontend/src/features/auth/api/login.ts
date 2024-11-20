@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+// import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 import { LoginSchema } from "../schemas";
 
@@ -11,7 +11,7 @@ interface LoginProps {
   callbackUrl?: string | null;
 }
 
-export const login = async ({ values, callbackUrl }: LoginProps) => {
+export const login = async ({ values }: LoginProps) => {
   const validateFields = LoginSchema.safeParse(values);
   console.log({ validateFields });
   if (!validateFields.success) {

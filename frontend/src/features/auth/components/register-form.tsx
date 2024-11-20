@@ -27,10 +27,6 @@ import BackButton from "./back-button";
 const RegisterForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams?.get("callbackUrl");
-  const urlError =
-    searchParams?.get("error") === "OAuthAccountNotLinked"
-      ? "Email already in use with diffferent provider"
-      : "";
 
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
@@ -177,7 +173,7 @@ const RegisterForm = () => {
                 )}
               />
             </div>
-            <FormError message={error || urlError} />
+            <FormError message={error} />
             <FormSuccess message={success} />
             <div className="flex justify-center ">
               <Button

@@ -33,7 +33,8 @@ const LoginForm = () => {
       ? "Email already in use with diffferent provider"
       : "";
 
-  const [showTwofactor, setShowTwofactor] = useState(false);
+  const showTwofactor = false;
+  // const [showTwofactor, setShowTwofactor] = useState(false);
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
