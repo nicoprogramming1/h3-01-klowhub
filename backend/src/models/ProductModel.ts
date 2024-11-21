@@ -6,7 +6,7 @@ export abstract class ProductModel extends Model {
   public title!: string;
   public detail!: string;
   public platform!: Platform;
-  public image!: string
+  public imageMain!: string // esta es la imagen de perfil de la app o curso
   public sector!: Sector
   public tags!: Tag[];
   public price!: number;

@@ -27,7 +27,7 @@ export const validateCourse: ValidationChain[] = [
     .withMessage('La plataforma es requerida.')
     .isIn(Object.values(Platform))
     .withMessage('La plataforma no es válida.'),
-  body('course.image')
+  body('course.imageMain')
     .notEmpty()
     .withMessage('La URL de la imagen es requerida.')
     .isURL()
@@ -90,6 +90,22 @@ export const validateLessons: ValidationChain[] = [
     .withMessage('El enlace de la lección es requerido.')
     .isURL()
     .withMessage('El enlace de la lección debe ser una URL válida.'),
+  body('modules.*.lessons.*.additionalPdfs')
+    .optional() // Puede ser vacío si no se suben PDFs
+    .isArray()
+    .withMessage('additionalPdfs debe ser un arreglo.')
+    .custom((value) => {
+      if (value && value.length > 2) {
+        throw new Error('No se pueden cargar más de 2 PDFs.');
+      }
+      return true;
+    })
+    .custom((value) => {
+      if (value && value.some((url: string) => !/^https?:\/\/.+\.(pdf)$/.test(url))) {
+        throw new Error('Cada PDF debe ser una URL válida.');
+      }
+      return true;
+    }),
 ];
 
 // Combinar todos los validadores

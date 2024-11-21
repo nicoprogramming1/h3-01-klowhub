@@ -49,7 +49,7 @@ CourseModel.init(
         isIn: [Object.values(Platform)],
       },
     },
-    image: {
+    imageMain: {
       type: DataTypes.STRING,
       allowNull: false,
     },
