@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { register, login, logout } from '../controllers/authController';
-import { validateRegister, validateLogin, validateLogout, handleValidationErrors } from '../middlewares';
+import { validateRegister, validateLogin, validateLogout, handleValidationErrors } from '../utils/middlewares';
 
 const routerAuth = Router();
 
