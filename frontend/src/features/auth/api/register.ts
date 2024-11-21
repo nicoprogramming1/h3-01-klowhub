@@ -1,36 +1,33 @@
+import * as z from "zod";
 import { toast } from "sonner";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { InferRequestType, InferResponseType } from "hono";
+import { RegisterSchema } from "../schemas";
+import { API_URL } from "@/constants";
 
-import { client } from "@/lib/rpc";
-import { useRouter } from "next/navigation";
+export const register = async (values: z.infer<typeof RegisterSchema>) => {
+  const validateFields = RegisterSchema.safeParse(values);
+  if (!validateFields.success) {
+    toast.error("Campos Invalidos");
+  }
 
-type ResponseType = InferResponseType<
-  (typeof client.api.auth.register)["$post"]
->;
-type RequestType = InferRequestType<(typeof client.api.auth.register)["$post"]>;
+  try {
+    // window.alert(JSON.stringify(values));
+    const response = await fetch(`${API_URL}/api/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
 
-export const useRegister = () => {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ json }) => {
-      const response = await client.api.auth.register["$post"]({ json });
-
-      if (!response.ok) {
-        throw new Error("Failed to register");
-      }
-
-      return await response.json();
-    },
-    onSuccess: () => {
-      toast.success("Registration successful");
-      router.refresh();
-      queryClient.invalidateQueries({ queryKey: ["current"] });
-    },
-    onError: () => {
-      toast.error("Failed to register");
-    },
-  });
-  return mutation;
+    if (!response.ok) {
+      const errorData = await response.json();
+      toast.error(errorData.message || "Error al registrar");
+      return { error: errorData.message || "Error al registrar" };
+    }
+    toast.success("Registro exitoso");
+    return { success: "Registro exitoso" };
+  } catch (error) {
+    toast.error("Error de coneccion con el servidor");
+    return { message: "Error de conexión con el servidor", error: error };
+  }
 };

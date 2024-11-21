@@ -2,7 +2,7 @@
 import * as z from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
@@ -17,8 +17,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FormError } from "@/components/form-error";
-import { FormSuccess } from "@/components/form-success";
+// import { FormError } from "@/components/form-error";
+// import { FormSuccess } from "@/components/form-success";
 
 import { login } from "../api/login";
 import { LoginSchema } from "../schemas";
@@ -26,17 +26,12 @@ import CardWrapper from "./card-wrapper";
 import BackButton from "./back-button";
 
 const LoginForm = () => {
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get("callbackUrl");
-  const urlError =
-    searchParams?.get("error") === "OAuthAccountNotLinked"
-      ? "Email already in use with diffferent provider"
-      : "";
+  const router = useRouter();
 
   const showTwofactor = false;
   // const [showTwofactor, setShowTwofactor] = useState(false);
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
+  // const [error, setError] = useState<string | undefined>("");
+  // const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -54,28 +49,17 @@ const LoginForm = () => {
   };
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    setError("");
-    setSuccess("");
+    // setError("");
+    // setSuccess("");
 
     startTransition(() => {
-      login({ values, callbackUrl })
-        .then((data) => {
-          if (data?.error) {
-            form.reset();
-            setError(data?.error);
-          }
+      startTransition(() => {
+        login(values).then((data) => {
           if (data?.success) {
-            form.reset();
-            setSuccess(data?.success);
+            router.push("/");
           }
-
-          // if (data?.twoFactor) {
-          //   setShowTwofactor(true);
-          // }
-        })
-        .catch(() => {
-          setError("Algo ah salido mal");
         });
+      });
     });
   };
 
@@ -188,8 +172,8 @@ const LoginForm = () => {
                 </>
               )}
             </div>
-            <FormError message={error || urlError} />
-            <FormSuccess message={success} />
+            {/* <FormError message={error} />
+            <FormSuccess message={success} /> */}
             <div className="flex justify-center ">
               <Button
                 disabled={isPending}
