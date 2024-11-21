@@ -16,7 +16,7 @@ export const validateCourse: ValidationChain[] = [
     .withMessage('El detalle debe ser un texto.'),
   body('course.competence')
     .optional()
-    .isIn([Object.values(Competence)])
+    .isIn(Object.values(Competence))
     .withMessage('La competencia debe ser Basic o Intermediate.'),
   body('course.aboutLearn')
     .optional()
@@ -25,7 +25,7 @@ export const validateCourse: ValidationChain[] = [
   body('course.platform')
     .notEmpty()
     .withMessage('La plataforma es requerida.')
-    .isIn([Object.values(Platform)])
+    .isIn(Object.values(Platform))
     .withMessage('La plataforma no es válida.'),
   body('course.image')
     .notEmpty()
@@ -35,7 +35,7 @@ export const validateCourse: ValidationChain[] = [
   body('course.sector')
     .notEmpty()
     .withMessage('El sector es requerido.')
-    .isIn([Object.values(Sector)])
+    .isIn(Object.values(Sector))
     .withMessage('El sector no es válido.'),
   body('course.tags')
     .optional()
