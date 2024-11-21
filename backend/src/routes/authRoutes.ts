@@ -5,8 +5,8 @@ import { validateRegister, validateLogin, validateLogout, handleValidationErrors
 const authRouter = Router();
 
 // Definir las rutas
-routerAuth.post('/register', validateRegister, handleValidationErrors, register);
-routerAuth.post('/login', validateLogin, handleValidationErrors, login);
-routerAuth.delete('/logout', validateLogout, handleValidationErrors, logout);
+authRouter.post('/register', validateRegister, handleValidationErrors, register);
+authRouter.post('/login', validateLogin, handleValidationErrors, login);
+authRouter.delete('/logout', validateLogout, handleValidationErrors, logout);
 
 export default authRouter;
