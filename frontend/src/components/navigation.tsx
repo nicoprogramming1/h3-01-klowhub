@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+// import { usePathname } from "next/navigation";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -10,7 +10,7 @@ interface NavigationProps {
   mode?: "horizontal" | "vertical";
 }
 const Navigation = ({ className, mode = "horizontal" }: NavigationProps) => {
-  const pathname = usePathname();
+  // const pathname = usePathname();
 
   return (
     <div

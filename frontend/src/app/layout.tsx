@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-
+import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
 
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
 
@@ -21,13 +21,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "antialiased min-h-screen")}>
+      <body
+        className={cn(
+          inter.className,
+          "antialiased min-h-screen max-w-screen-2xl w-full mx-auto"
+        )}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
+          <Toaster />
           {children}
         </ThemeProvider>
       </body>

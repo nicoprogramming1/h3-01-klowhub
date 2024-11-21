@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { register, login, logout } from '../controllers/authController';
+import { validateRegister, validateLogin, validateLogout, handleValidationErrors } from '../utils/middlewares';
 
 const authRouter = Router();
 
 // Definir las rutas
-authRouter.post('/register', register);
-authRouter.post('/login', login);
-authRouter.delete("logout", logout);
+routerAuth.post('/register', validateRegister, handleValidationErrors, register);
+routerAuth.post('/login', validateLogin, handleValidationErrors, login);
+routerAuth.delete('/logout', validateLogout, handleValidationErrors, logout);
 
 export default authRouter;
