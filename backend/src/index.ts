@@ -8,7 +8,7 @@ import sequelize from './config/database';
 const PORT = process.env.PORT || 8080;
 
 sequelize
-  .sync()
+.sync({ alter: true })  // habilito que revise la estructura de tablas al iniciar
   .then(() => {
     console.log('Database connected');
     app.listen(PORT, () => {
