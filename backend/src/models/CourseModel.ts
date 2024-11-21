@@ -13,7 +13,6 @@ function generateShortID(): string {
 
 class CourseModel extends ProductModel {
   public competence!: Competence;
-  public aboutLearn!: string;
 }
 
 CourseModel.init(
