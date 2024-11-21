@@ -7,6 +7,7 @@ export const updateUser = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { password, role, ...updateData } = req.body;
 
+        // ESTO DEBERIA IR EN UN SERVICIO => userService.ts, metodo updateUser
         const user = await UserModel.findByPk(id);
         if (!user) {
             res.status(404).json({ message: "User not found" });
