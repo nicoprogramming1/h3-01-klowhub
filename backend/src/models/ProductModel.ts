@@ -11,4 +11,5 @@ export abstract class ProductModel extends Model {
   public tags!: Tag[];
   public price!: number;
   public ownerId!: string;
+  public aboutLearn!: string; // es el campo "a quien va dirigido" del figma, una descripcion textarea
 }
