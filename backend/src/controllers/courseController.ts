@@ -20,6 +20,9 @@ export const createCourse = async (req: Request, res: Response): Promise<void> =
       data: newCourse,
     });
   } catch (error) {
+    if (res.headersSent) {
+      return; // Si los encabezados ya se enviaron, no hacer nada más
+    }
     console.error("Error en createCourse:", error);
     res.status(500).json({
       message: "Error al crear el curso",

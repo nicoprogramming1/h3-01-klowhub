@@ -1,1 +1,7 @@
-export { validateRegister, validateLogin, validateLogout, handleValidationErrors } from './validateAuthMdw';
+export {
+  validateRegister,
+  validateLogin,
+  validateLogout,
+} from './validateAuthMdw';
+export { handleValidationErrors } from './handleValidator';
+export { validateCourseRegistration } from './validateCourseMdw';
