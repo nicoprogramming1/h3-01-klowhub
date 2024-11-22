@@ -1,5 +1,5 @@
 import { body, ValidationChain } from 'express-validator';
-import { Platform, Sector } from '../../models/interfaces/product.interface';
+import { Platform, Sector, Tag } from '../../models/interfaces/product.interface';
 import { Competence } from '../../models/interfaces/course.interface';
 
 // Validadores para el curso principal
@@ -39,7 +39,7 @@ export const validateCourse: ValidationChain[] = [
     .withMessage('El sector no es válido.'),
   body('course.tags')
     .optional()
-    .isString()
+    .isIn(Object.values(Tag))
     .withMessage('Los tags deben ser un texto.'),
   body('course.price')
     .notEmpty()

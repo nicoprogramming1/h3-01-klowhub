@@ -25,10 +25,10 @@ export const register = async (req: Request, res: Response) => {
     }
     if (error.message === 'Este email ya está registrado') {
       res.status(400).json({ message: error.message });
-      return
+      return;
     } else {
       res.status(500).json({ message: 'Error interno del servidor' });
-      return
+      return;
     }
   }
 };
@@ -70,14 +70,13 @@ export const logout = async (req: Request, res: Response) => {
 
     if (!token) {
       res.status(400).json({ message: 'No fue proveído un token válido' });
-      return;  // rompe el flujo
+      return; // rompe el flujo
     }
 
     const result = await logoutUser(device, app, token);
 
     res.json({
       result,
-      message: "Se ha cerrado la sesión con éxito"
     });
   } catch (error: any) {
     if (res.headersSent) {
