@@ -5,7 +5,6 @@ export const createCourse = async (req: Request, res: Response): Promise<void> =
   try {
     const courseData = req.body;
 
-    // Validar datos básicos
     if (!courseData || !courseData.course || !courseData.modules) {
       res.status(400).json({
         message: "Faltan datos necesarios para crear el curso.",
