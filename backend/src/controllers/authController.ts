@@ -25,8 +25,10 @@ export const register = async (req: Request, res: Response) => {
     }
     if (error.message === 'Este email ya está registrado') {
       res.status(400).json({ message: error.message });
+      return
     } else {
       res.status(500).json({ message: 'Error interno del servidor' });
+      return
     }
   }
 };
