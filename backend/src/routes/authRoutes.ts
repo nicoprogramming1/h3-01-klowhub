@@ -8,6 +8,6 @@ const authRouter = Router();
 // Definir las rutas
 authRouter.post('/register', validateRegister, handleValidationErrors, register);
 authRouter.post('/login', validateLogin, handleValidationErrors, login);
-authRouter.delete('/logout', passport.authenticate('jwt', { session: false }), validateLogout, handleValidationErrors, logout);
+authRouter.post('/logout', passport.authenticate('jwt', { session: false }), validateLogout, handleValidationErrors, logout);
 
 export default authRouter;
