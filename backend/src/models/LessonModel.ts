@@ -14,7 +14,8 @@ class LessonModel extends Model {
   public title!: string;
   public detail!: string;
   public lessonLink!: string;
-  public additionalPdfs!: string[]; // Almacena URLs en formato JSON
+  public additionalPdf1!: string;
+  public additionalPdf2!: string;
 }
 
 LessonModel.init(
@@ -47,22 +48,13 @@ LessonModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    additionalPdfs: {
-      type: DataTypes.JSON, // JSON para almacenar una lista de URLs
-      allowNull: true, // Puede ser opcional
-      validate: {
-        isArrayOfStrings(value: any) {
-          if (
-            !Array.isArray(value) ||
-            value.some((v) => typeof v !== 'string')
-          ) {
-            throw new Error('additionalPdfs debe ser un array de strings.');
-          }
-          if (value.length > 2) {
-            throw new Error('No se permiten más de 2 PDFs adicionales.');
-          }
-        },
-      },
+    additionalPdf1: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    additionalPdf2: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {
