@@ -10,10 +10,8 @@ const saveCourse = async (courseData: CourseData) => {
   const transaction: Transaction = await sequelize.transaction();
 
   try {
-    // Crear el curso
     const course = await CourseModel.create(courseData.course, { transaction });
 
-    // Crear los módulos y lecciones
     for (const moduleData of courseData.modules) {
       const module = await CourseModuleModel.create(
         {
@@ -34,7 +32,6 @@ const saveCourse = async (courseData: CourseData) => {
       }
     }
 
-    // Confirmar la transacción
     await transaction.commit();
 
     return course;
