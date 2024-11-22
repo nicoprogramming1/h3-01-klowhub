@@ -7,10 +7,17 @@ import {
 import passport from 'passport';
 
 const courseRouter = Router();
-const authenticate = passport.authenticate('jwt', { session: false })
+const authenticate = passport.authenticate('jwt', { session: false });
 
 courseRouter
   .route('/')
-  .post(authenticate, validateCourseRegistration, handleValidationErrors, createCourse);
+  .post(
+    authenticate,
+    validateCourseRegistration,
+    handleValidationErrors,
+    createCourse
+  );
+
+courseRouter.route('/:id').get();
 
 export default courseRouter;
