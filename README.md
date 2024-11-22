@@ -21,7 +21,7 @@ Cada endpoint expone su url y un formato de prueba JSON válido
 Los siguientes endpoints hacen referencia a las funcionalidades de registro e inicio/cierre de sesión
 
 
-#### - Registro usuario
+#### - Registro usuario (no necesita auth)
 
 localhost:3000/api/auth/register
 
@@ -32,7 +32,7 @@ localhost:3000/api/auth/register
 }
 
 
-#### - Login
+#### - Login (no necesita auth)
 
 localhost:3000/api/auth/login
 
@@ -47,12 +47,67 @@ localhost:3000/api/auth/login
 }
 
 
-#### - Logout (Además del bearer token en el encabezado)
+#### - Logout
 
 localhost:3000/api/auth/logout
 
 {
   "device": "iPhone 14",
   "app": "KlowHubApp"
+}
+
+
+#### - Registrar curso
+
+localhost:3000/api/course/
+
+{
+  "course": {
+    "title": "Curso de Todo Web",
+    "detail": "Aprende a crear sitios web desde cero.",
+    "competence": "Basic",
+    "aboutLearn": "HTML, CSS, JavaScript",
+    "platform": "PowerApps",
+    "imageMain": "https://example.com/url-to-lesson-1",
+    "sector": "Educational",
+    "tags": "Tag1",
+    "price": 100,
+    "ownerId": "m3sujkm452"
+  },
+  "modules": [
+    {
+      "title": "Módulo 1: Introducción",
+      "detail": "Conocimientos básicos para empezar.",
+      "lessons": [
+        {
+          "title": "Lección 1: ¿Qué es la web?",
+          "detail": "Conceptos básicos de la web.",
+          "lessonLink": "https://example.com/url-to-lesson-1",
+          "additionalPdf1": "https://example.com/url-to-lesson-1",
+          "additionalPdf2": "https://example.com/url-to-lesson-2"
+        },
+        {
+         "title": "Lección 2: Primeros pasos con HTML",
+          "detail": "Estructurando contenido.",
+          "lessonLink": "https://example.com/url-to-lesson-1",
+          "additionalPdf1": "https://example.com/url-to-lesson-1",
+          "additionalPdf2": "https://example.com/url-to-lesson-2"
+        }
+      ]
+    },
+    {
+      "title": "Módulo 2: CSS Básico",
+      "detail": "Dando estilo a tus páginas.",
+      "lessons": [
+        {
+          "title": "Lección 1: Introducción a CSS",
+          "detail": "Cómo funciona el CSS.",
+          "lessonLink": "https://example.com/url-to-lesson-1",
+          "additionalPdf1": "https://example.com/url-to-lesson-1",
+          "additionalPdf2": "https://example.com/url-to-lesson-2"
+        }
+      ]
+    }
+  ]
 }
 
