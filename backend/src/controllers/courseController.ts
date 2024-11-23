@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import courseService from '../services/courseService';
+import courseService from '../services/course.service';
 import { MESSAGES } from '../utils/messages';
 
 export const createCourse = async (req: Request, res: Response) => {
@@ -40,6 +40,7 @@ export const getOneCourse = async (req: Request, res: Response) => {
       res.status(404).json({
         message: MESSAGES.COURSE_NOT_FOUND,
       });
+      return;
     }
 
     res.status(200).json({
