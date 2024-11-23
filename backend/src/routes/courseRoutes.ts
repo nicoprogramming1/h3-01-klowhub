@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { createCourse } from '../controllers/courseController';
+import { createCourse, getOneCourse } from '../controllers/courseController';
 import {
   validateCourseRegistration,
   handleValidationErrors,
+  validateFetchCourse,
 } from '../utils/middlewares';
 import passport from 'passport';
 
@@ -18,6 +19,8 @@ courseRouter
     createCourse
   );
 
-courseRouter.route('/:id').get();
+courseRouter
+  .route('/:id')
+  .get(authenticate, validateFetchCourse, handleValidationErrors, getOneCourse);
 
 export default courseRouter;

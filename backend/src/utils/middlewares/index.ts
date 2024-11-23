@@ -4,4 +4,4 @@ export {
   validateLogout,
 } from './validateAuthMdw';
 export { handleValidationErrors } from './handleValidator';
-export { validateCourseRegistration } from './validateCourseMdw';
+export { validateCourseRegistration, validateFetchCourse } from './validateCourseMdw';

@@ -1,9 +1,9 @@
-import { body, ValidationChain } from 'express-validator';
+import { body, param, ValidationChain } from 'express-validator';
 import { Platform, Sector, Tag } from '../../models/interfaces/product.interface';
 import { Competence } from '../../models/interfaces/course.interface';
 
 // Validadores para el curso principal
-export const validateCourse: ValidationChain[] = [
+export const validateCourseRegister: ValidationChain[] = [
   body('course.title')
     .notEmpty()
     .withMessage('El título del curso es requerido.')
@@ -54,7 +54,7 @@ export const validateCourse: ValidationChain[] = [
 ];
 
 // Validadores para los módulos
-export const validateModules: ValidationChain[] = [
+export const validateModuleRegister: ValidationChain[] = [
   body('modules')
     .isArray({ min: 1 })
     .withMessage('Debe incluir al menos un módulo.'),
@@ -71,7 +71,7 @@ export const validateModules: ValidationChain[] = [
 ];
 
 // Validadores para las lecciones dentro de los módulos
-export const validateLessons: ValidationChain[] = [
+export const validateLessonsRegister: ValidationChain[] = [
   body('modules.*.lessons')
     .isArray({ min: 1 })
     .withMessage('Cada módulo debe incluir al menos una lección.'),
@@ -102,7 +102,18 @@ export const validateLessons: ValidationChain[] = [
 
 // Combinar todos los validadores
 export const validateCourseRegistration = [
-  ...validateCourse,
-  ...validateModules,
-  ...validateLessons,
+  ...validateCourseRegister,
+  ...validateModuleRegister,
+  ...validateLessonsRegister,
+];
+
+// Validar el getOneCourse
+export const validateFetchCourse: ValidationChain[] = [
+  param('id')
+    .notEmpty()
+    .withMessage('Se requiere un id')
+    .isString()
+    .withMessage('El id debe ser un texto')
+    .isLength({ min: 10, max: 10 })
+    .withMessage('El id debe tener 10 caracteres'),
 ];
