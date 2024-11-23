@@ -1,10 +1,8 @@
-import { Transaction } from 'sequelize';
-import sequelize from '../config/database';
-import CourseModel from '../models/CourseModel';
-import CourseModuleModel from '../models/CourseModuleModel';
-import LessonModel from '../models/LessonModel';
-import { CourseData } from '../models/interfaces/course.interface';
-import { MESSAGES } from '../utils/messages';
+import { Transaction } from "sequelize";
+import sequelize from "../config/database";
+import { CourseModel, CourseModuleModel, LessonModel } from "../models/";
+import { CourseData } from "../models/interfaces/course.interface";
+import { MESSAGES } from "../utils/messages";
 
 const saveCourse = async (courseData: CourseData) => {
   const transaction: Transaction = await sequelize.transaction();
@@ -37,7 +35,7 @@ const saveCourse = async (courseData: CourseData) => {
     return course;
   } catch (error: any) {
     await transaction.rollback();
-    if (error.name === 'SequelizeConnectionError') {
+    if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
     throw new Error(`${MESSAGES.FETCH_ERROR} | ${error.message}`);
@@ -49,20 +47,20 @@ const findCourse = async (courseId: string) => {
     const course = await CourseModel.findOne({
       where: { id: courseId },
       attributes: [
-        'title',
-        'detail',
-        'aboutLearn',
-        'competence',
-        'platform',
-        'imageMain',
-        'sector',
-        'tags',
-        'price',
+        "title",
+        "detail",
+        "aboutLearn",
+        "competence",
+        "platform",
+        "imageMain",
+        "sector",
+        "tags",
+        "price",
       ], // Solo devuelve estos campos del curso
       include: [
         {
           model: CourseModuleModel,
-          attributes: ['title', 'detail'],
+          attributes: ["title", "detail"],
           include: [
             {
               model: LessonModel,
@@ -80,7 +78,7 @@ const findCourse = async (courseId: string) => {
     });
     return course;
   } catch (error: any) {
-    if (error.name === 'SequelizeConnectionError') {
+    if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
     throw new Error(`${MESSAGES.FETCH_ERROR} | ${error.message}`);
