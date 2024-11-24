@@ -3,6 +3,7 @@ import { Mail, Bell, ShoppingCart } from "lucide-react";
 
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 
 interface NotificationProps {
   className?: string;
@@ -15,17 +16,32 @@ export const NotificationDesktop = ({ className }: NotificationProps) => {
         className
       )}
     >
-      <Button variant="outline" size={"sm"} className="border-none">
-        <ShoppingCart className="size-5 " />
-      </Button>
+      <HoverCard>
+        <HoverCardTrigger>
+          <Button variant="outline" size={"sm"} className="border-none">
+            <ShoppingCart className="size-5 " />
+          </Button>
+        </HoverCardTrigger>
+        <HoverCardContent>No tiene Cursos disponibles</HoverCardContent>
+      </HoverCard>
       <Separator orientation="vertical" className="h-4 bg-primario-200" />
-      <Button variant="outline" size={"sm"} className="border-none">
-        <Bell className="size-5" />
-      </Button>
+      <HoverCard>
+        <HoverCardTrigger>
+          <Button variant="outline" size={"sm"} className="border-none">
+            <Bell className="size-5" />
+          </Button>
+        </HoverCardTrigger>
+        <HoverCardContent>No tiene Notificaciones Pendientes</HoverCardContent>
+      </HoverCard>
       <Separator orientation="vertical" className="h-4 bg-primario-200" />
-      <Button variant="outline" size={"sm"} className="border-none">
-        <Mail className="size-5" />
-      </Button>
+      <HoverCard>
+        <HoverCardTrigger>
+          <Button variant="outline" size={"sm"} className="border-none">
+            <Mail className="size-5" />
+          </Button>
+        </HoverCardTrigger>
+        <HoverCardContent>No tiene Mensajes Pendientes</HoverCardContent>
+      </HoverCard>
     </div>
   );
 };
