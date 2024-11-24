@@ -14,10 +14,10 @@ import {
 
 import { Separator } from "./ui/separator";
 import { ModeToggle } from "./mode-toogle";
-
+import { NotificationDesktop } from "./notification";
 import { Button } from "./ui/button";
 
-export const UserButton = () => {
+export const UserButtonMobile = () => {
   const { logout, user } = useAuth();
 
   if (!user) return null;
@@ -83,7 +83,11 @@ export const UserButton = () => {
         <Link href="/">
           <Item> Soporte </Item>
         </Link>
-        <Separator className="px-1 mx-auto bg-primary " />
+        <DropdownMenuItem className=" p-2">
+          {" "}
+          <NotificationDesktop />{" "}
+        </DropdownMenuItem>
+
         <DropdownMenuItem
           onClick={() => {
             logout();

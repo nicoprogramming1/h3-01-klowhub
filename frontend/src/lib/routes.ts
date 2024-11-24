@@ -51,3 +51,31 @@ export const routes = [
     activeIcon: GoCheckCircleFill,
   },
 ];
+
+export const routesMobile = [
+  {
+    label: "Mis cursos",
+    href: "/curses",
+    icon: GoCheckCircle,
+    activeIcon: GoCheckCircleFill,
+  },
+  {
+    label: "Mis Aplicaciones",
+    href: "/applications",
+    icon: RiStore2Line,
+    activeIcon: RiStore2Fill,
+  },
+  {
+    label: "Mis Mentorías",
+    href: "/projects",
+    icon: GrProjects,
+    activeIcon: GrProjects,
+  },
+
+  {
+    label: "Sobre Klowhub",
+    href: "/about",
+    icon: RiInformationLine,
+    activeIcon: RiInformationFill,
+  },
+];

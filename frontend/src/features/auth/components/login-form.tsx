@@ -2,7 +2,6 @@
 import * as z from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
@@ -23,11 +22,10 @@ import { Button } from "@/components/ui/button";
 import { LoginSchema } from "../schemas";
 import CardWrapper from "./card-wrapper";
 import BackButton from "./back-button";
-import { useAuth } from "@/context/auth-provider";
+import { useAuth } from "@/hooks/auth-provider";
 
 const LoginForm = () => {
   const { login } = useAuth();
-  const router = useRouter();
 
   const showTwofactor = false;
   // const [showTwofactor, setShowTwofactor] = useState(false);

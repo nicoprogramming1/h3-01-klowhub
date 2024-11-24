@@ -7,7 +7,8 @@ import { UserButton } from "./user-button";
 import Navigation from "./navigation";
 import { Button } from "./ui/button";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
-import { useAuth } from "@/context/auth-provider";
+import { useAuth } from "@/hooks/auth-provider";
+import { NotificationDesktop } from "./notification";
 
 const Navbar = () => {
   const { isAuthenticated } = useAuth();
@@ -24,19 +25,31 @@ const Navbar = () => {
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
 
-        <Button
-          asChild
-          variant={"primario"}
-          size={"md"}
-          className="hidden md:flex "
-        >
-          <Link href="/plan">Conviertete en PRO</Link>
-        </Button>
         {isAuthenticated === true ? (
-          <div className="flex items-center justify-center gap-4 px-4 ">
-            <UserButton />
+          <div className="hidden md:flex items-center justify-center gap-x-2 ">
+            <Button
+              asChild
+              variant={"primario"}
+              size={"md"}
+              className="hidden md:flex "
+            >
+              <Link href="/plan">Conviertete en PRO</Link>
+            </Button>
+            <NotificationDesktop />
+            <div className="flex items-center justify-center  ">
+              <UserButton />
+            </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="flex gap-x-2">
+            <Button variant={"outline"}>
+              <Link href="/auth/register">Registrate</Link>
+            </Button>
+            <Button variant="primario">
+              <Link href="/auth/login">Iniciar Sesión</Link>
+            </Button>
+          </div>
+        )}
       </div>
     </nav>
   );
