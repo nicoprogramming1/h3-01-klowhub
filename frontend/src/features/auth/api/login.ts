@@ -1,23 +1,33 @@
 import * as z from "zod";
 import { toast } from "sonner";
-import { API_URL } from "@/constants";
-import setToken from "./setToken";
-import { LoginSchema } from "../schemas";
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
+import { API_URL } from "@/constants";
+
+import { LoginSchema } from "../schemas";
+import { setToken } from "@/features/utils/token";
+
+export const useLogin = async (values: z.infer<typeof LoginSchema>) => {
   const validateFields = LoginSchema.safeParse(values);
   if (!validateFields.success) {
     toast.error("Campos Invalidos");
   }
 
   try {
-    // window.alert(JSON.stringify(values));
+    const defaultValues = {
+      app: "yourAppName",
+      country: "yourCountry",
+      ipAddress: "yourIPAddress",
+      device: "yourDeviceInfo",
+    };
     const response = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(values),
+      body: JSON.stringify({
+        ...values,
+        ...defaultValues,
+      }),
     });
 
     if (!response.ok) {

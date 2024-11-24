@@ -14,39 +14,40 @@ import { GrProjects } from "react-icons/gr";
 
 export const routes = [
   {
-    label: "Dashboard",
+    label: "Inicio",
     href: "/",
     icon: GoHome,
     activeIcon: GoHomeFill,
   },
   {
-    label: "Cursos y Lecciones",
+    label: "Mis cursos",
     href: "/curses",
     icon: GoCheckCircle,
     activeIcon: GoCheckCircleFill,
   },
   {
-    label: "AppStore",
-    href: "/appstore",
+    label: "Mis Aplicaciones",
+    href: "/applications",
     icon: RiStore2Line,
     activeIcon: RiStore2Fill,
   },
   {
-    label: "Proyectos",
+    label: "Mis Mentorías",
     href: "/projects",
     icon: GrProjects,
     activeIcon: GrProjects,
   },
+
   {
-    label: "Consultoría",
-    href: "/consultancy",
-    icon: GoCheckCircle,
-    activeIcon: GoCheckCircleFill,
-  },
-  {
-    label: "Sobre AppSheet",
+    label: "Sobre Klowhub",
     href: "/about",
     icon: RiInformationLine,
     activeIcon: RiInformationFill,
+  },
+  {
+    label: "Planes PRO",
+    href: "/plan",
+    icon: GoCheckCircle,
+    activeIcon: GoCheckCircleFill,
   },
 ];

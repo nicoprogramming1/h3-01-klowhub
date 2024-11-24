@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { RegisterSchema } from "../schemas";
 import { API_URL } from "@/constants";
 
-export const register = async (values: z.infer<typeof RegisterSchema>) => {
+export const useregister = async (values: z.infer<typeof RegisterSchema>) => {
   const validateFields = RegisterSchema.safeParse(values);
   if (!validateFields.success) {
     toast.error("Campos Invalidos");

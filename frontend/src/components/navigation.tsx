@@ -15,7 +15,7 @@ const Navigation = ({ className, mode = "horizontal" }: NavigationProps) => {
   return (
     <div
       className={cn(
-        "flex  gap-x-4 gap-y-2 text-sm text-primario-200 truncate items-center",
+        "flex  gap-x-4 gap-y-2 text-sm text-primario-200  items-center ",
         mode === "vertical" ? "flex-col" : "flex-row",
         className
       )}
@@ -24,7 +24,7 @@ const Navigation = ({ className, mode = "horizontal" }: NavigationProps) => {
         <Link
           href={item.href}
           key={item.href}
-          className="hover:text-primario-200 transition relative group "
+          className="hover:text-primario-200 transition relative group truncate"
         >
           {item.label}
           <span className="absolute inset-0 flex justify-end items-end">

@@ -1,4 +1,6 @@
+import Footer from "@/components/footer";
 import Navbar from "@/components/navbar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -10,9 +12,16 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       <div className="flex w-full h-full">
         {/* Sidebar */}
         <div className=" w-full">
-          <div className="mx-auto max-w-screen-2xl h-full">
-            <Navbar />
-            <main className="h-full py-8 px-6 flex flex-col">{children}</main>
+          <div className="mx-auto w-full h-full relative">
+            <div className="absolute top-0 left-0 w-full z-10">
+              <Navbar />
+            </div>
+            <ScrollArea className="flex h-screen w-full justify-between">
+              <main className="h-screen pt-16 w-screen  flex flex-col justify-between">
+                {children}
+                <Footer />
+              </main>
+            </ScrollArea>
           </div>
         </div>
       </div>

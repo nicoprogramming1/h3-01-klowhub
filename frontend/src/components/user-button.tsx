@@ -12,21 +12,15 @@ import {
 
 import { Separator } from "./ui/separator";
 import { ModeToggle } from "./mode-toogle";
+import { useAuth } from "@/context/auth-provider";
 
 export const UserButton = () => {
+  const { logout } = useAuth();
   const user = {
     name: "Steeven",
     email: "steven@klowhub.com",
     image: undefined,
   };
-  //   if (isLoading)
-  //     return (
-  //       <div>
-  //         <div className="size-10 rounded-full flex items-center justify-center bg-neutral-200 border border-neutral-300">
-  //           <Loader className="size-4 animate-spin text-muted-foreground" />
-  //         </div>
-  //       </div>
-  //     );
 
   if (!user) return null;
 
@@ -66,7 +60,9 @@ export const UserButton = () => {
         </div>
         <Separator className="px-1 mx-auto bg-primary " />
         <DropdownMenuItem
-          onClick={() => {}}
+          onClick={() => {
+            logout();
+          }}
           className="h-10 flex items-center justify-center text-amber-700 font-medium cursor-pointer"
         >
           <LogOut className="mr-2 size-4" />

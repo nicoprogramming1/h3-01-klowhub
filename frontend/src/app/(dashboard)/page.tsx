@@ -1,17 +1,17 @@
-import { AUTH_COOKIE } from "@/constants";
-import { cookies } from "next/headers";
+"use client";
 
-const DashboardPage = async () => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(AUTH_COOKIE) || null;
-  console.log({ token });
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/auth-provider";
+
+const DashboardPage = () => {
+  const { isAuthenticated, user, logout } = useAuth();
+  console.log({ user });
   return (
-    <div>
-      {token ? (
-        <p>Hola, bienvenido de nuevo! {token.value} </p>
-      ) : (
-        <p>No estás autenticado. Por favor inicia sesión.</p>
-      )}
+    <div className="flex flex-col items-center justify-center gap-4 p-4">
+      <h1 className="text-4xl font-bold">Dashboard</h1>
+      <p>Is Authenticated: {isAuthenticated ? "true" : "false"}</p>
+      <p>User: {user?.longName}</p>
+      <Button onClick={() => logout()}>Logout</Button>
     </div>
   );
 };

@@ -20,12 +20,13 @@ import { Button } from "@/components/ui/button";
 // import { FormError } from "@/components/form-error";
 // import { FormSuccess } from "@/components/form-success";
 
-import { login } from "../api/login";
 import { LoginSchema } from "../schemas";
 import CardWrapper from "./card-wrapper";
 import BackButton from "./back-button";
+import { useAuth } from "@/context/auth-provider";
 
 const LoginForm = () => {
+  const { login } = useAuth();
   const router = useRouter();
 
   const showTwofactor = false;
@@ -53,13 +54,7 @@ const LoginForm = () => {
     // setSuccess("");
 
     startTransition(() => {
-      startTransition(() => {
-        login(values).then((data) => {
-          if (data?.success) {
-            router.push("/");
-          }
-        });
-      });
+      login(values);
     });
   };
 
