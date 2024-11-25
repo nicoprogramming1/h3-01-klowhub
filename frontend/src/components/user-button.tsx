@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { Headset, LogOut, User } from "lucide-react";
 import Link from "next/link";
 
 import { useAuth } from "@/hooks/auth-provider";
@@ -34,7 +34,7 @@ export const UserButton = () => {
         <Button
           variant={"ghost"}
           size={"sm"}
-          className="hover:bg-transparent/5  cursor-pointer flex justify-between w-full"
+          className="hover:bg-transparent/5  cursor-pointer flex justify-between w-full gap-x-2"
         >
           {children}
         </Button>
@@ -74,14 +74,20 @@ export const UserButton = () => {
         </div>
         <Separator className="px-1 mx-auto bg-primary " />
         <Link href="/">
-          <Item> Perfil </Item>
+          <Item>
+            {" "}
+            <User /> Perfil{" "}
+          </Item>
         </Link>
         <DropdownMenuItem className=" flex items-center justify-between font-medium ">
           <ModeToggle className="w-full" addText={true} />
         </DropdownMenuItem>
 
         <Link href="/">
-          <Item> Soporte </Item>
+          <Item>
+            {" "}
+            <Headset /> Soporte{" "}
+          </Item>
         </Link>
         <Separator className="px-1 mx-auto bg-primary " />
         <DropdownMenuItem

@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { useAuth } from "@/hooks/auth-provider";
 import { NotificationDesktop } from "./notification";
+import { UserButtonMobile } from "./user-button-mobile";
 
 const Navbar = () => {
   const { isAuthenticated } = useAuth();
@@ -50,6 +51,9 @@ const Navbar = () => {
             </Button>
           </div>
         )}
+        <div className="flex md:hidden">
+          <UserButtonMobile />
+        </div>
       </div>
     </nav>
   );

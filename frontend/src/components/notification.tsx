@@ -54,15 +54,15 @@ export const NotificationMobile = ({ className }: NotificationProps) => {
         className
       )}
     >
-      <Button variant="outline" size={"sm"} className="border-2">
+      <Button variant="outline" size={"sm"} className="border-none">
         <ShoppingCart className="size-5" />
       </Button>
       <Separator orientation="vertical" className="h-4 " />
-      <Button variant="outline" size={"sm"} className="border-2">
+      <Button variant="outline" size={"sm"} className="border-none">
         <Bell className="size-5" />
       </Button>
       <Separator orientation="vertical" className="h-4 " />
-      <Button variant="outline" size={"sm"} className="border-2">
+      <Button variant="outline" size={"sm"} className="border-none">
         <Mail className="size-5" />
       </Button>
     </div>

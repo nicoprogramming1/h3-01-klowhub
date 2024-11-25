@@ -52,12 +52,12 @@ export function ModeToggle({
           className="hover:bg-transparent/5  cursor-pointer flex justify-between w-full"
           onClick={() => onhandleClick()}
         >
-          {addText && <p>{textToogle}</p>}
           {theme === "dark" ? (
             <Sun className="h-[1.2rem] w-[1.2rem]" />
           ) : (
             <Moon className="h-[1.2rem] w-[1.2rem]" />
           )}
+          {addText && <p>{textToogle}</p>}
         </Button>
       )}
     </div>
