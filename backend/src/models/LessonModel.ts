@@ -1,5 +1,5 @@
-import { DataTypes, Model } from "sequelize";
-import sequelize from "../config/database";
+import { DataTypes, Model } from 'sequelize';
+import sequelize from '../config/database';
 
 function generateShortID(): string {
   return (
@@ -14,6 +14,8 @@ class LessonModel extends Model {
   public title!: string;
   public detail!: string;
   public lessonLink!: string;
+  public additionalPdf1!: string;
+  public additionalPdf2!: string;
 }
 
 LessonModel.init(
@@ -26,13 +28,13 @@ LessonModel.init(
     courseModuleId: {
       type: DataTypes.STRING,
       allowNull: false,
-      field: "course_module_id",
+      field: 'course_module_id',
       references: {
-        model: "course_modules",
-        key: "id",
+        model: 'course_modules',
+        key: 'id',
       },
-      onUpdate: "CASCADE",
-      onDelete: "CASCADE",
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     },
     title: {
       type: DataTypes.STRING,
@@ -46,11 +48,19 @@ LessonModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    additionalPdf1: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    additionalPdf2: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize,
-    modelName: "Lesson",
-    tableName: "lessons",
+    modelName: 'Lesson',
+    tableName: 'lessons',
     timestamps: true,
     hooks: {
       beforeCreate: (lesson: LessonModel) => {

@@ -13,7 +13,6 @@ function generateShortID(): string {
 
 class CourseModel extends ProductModel {
   public competence!: Competence;
-  public aboutLearn!: string;
 }
 
 CourseModel.init(
@@ -50,7 +49,7 @@ CourseModel.init(
         isIn: [Object.values(Platform)],
       },
     },
-    image: {
+    imageMain: {
       type: DataTypes.STRING,
       allowNull: false,
     },

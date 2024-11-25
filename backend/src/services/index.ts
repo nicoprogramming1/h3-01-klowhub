@@ -1,5 +1,4 @@
-import courseService from "./courseService";
+import * as courseService from "./course.service";
+import * as auth from "./auth.service";
 
-module.exports = {
-    courseService,
-};
+export { auth, courseService };
