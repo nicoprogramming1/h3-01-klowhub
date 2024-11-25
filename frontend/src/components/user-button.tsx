@@ -1,7 +1,9 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { Headset, LogOut, User } from "lucide-react";
+import Link from "next/link";
 
+import { useAuth } from "@/hooks/auth-provider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -13,28 +15,32 @@ import {
 import { Separator } from "./ui/separator";
 import { ModeToggle } from "./mode-toogle";
 
+import { Button } from "./ui/button";
+
 export const UserButton = () => {
-  const user = {
-    name: "Steeven",
-    email: "steven@klowhub.com",
-    image: undefined,
-  };
-  //   if (isLoading)
-  //     return (
-  //       <div>
-  //         <div className="size-10 rounded-full flex items-center justify-center bg-neutral-200 border border-neutral-300">
-  //           <Loader className="size-4 animate-spin text-muted-foreground" />
-  //         </div>
-  //       </div>
-  //     );
+  const { logout, user } = useAuth();
 
   if (!user) return null;
 
-  const { name, email } = user;
+  const { longName: name, email } = user;
 
   const avatarFallback = name
     ? name.charAt(0).toUpperCase()
     : email.charAt(0).toUpperCase() ?? "U";
+
+  const Item = ({ children }: { children?: React.ReactNode }) => {
+    return (
+      <DropdownMenuItem className=" flex items-center  font-medium cursor-pointer">
+        <Button
+          variant={"ghost"}
+          size={"sm"}
+          className="hover:bg-transparent/5  cursor-pointer flex justify-between w-full gap-x-2"
+        >
+          {children}
+        </Button>
+      </DropdownMenuItem>
+    );
+  };
 
   return (
     <DropdownMenu modal={false}>
@@ -50,7 +56,7 @@ export const UserButton = () => {
       <DropdownMenuContent
         align="end"
         side="bottom"
-        className="w-60  dark:bg-custom-gradient-dark bg-custom-gradient-light"
+        className="w-60  dark:bg-custom-gradient-dark bg-custom-gradient-light text-xs"
         sideOffset={10}
       >
         <div className="flex flex-row items-center justify-center gap-2 px-2.5 py-4 ">
@@ -60,20 +66,38 @@ export const UserButton = () => {
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col items-center justify-center">
-            <p className="text-sm font-medium text-primary">{name || "User"}</p>
+            <p className="text-sm font-medium text-primary">
+              {name ? name.charAt(0).toUpperCase() + name.slice(1) : "User"}
+            </p>
             <p className="text-xs text-neutral-500">{email}</p>
           </div>
         </div>
         <Separator className="px-1 mx-auto bg-primary " />
+        <Link href="/">
+          <Item>
+            {" "}
+            <User /> Perfil{" "}
+          </Item>
+        </Link>
+        <DropdownMenuItem className=" flex items-center justify-between font-medium ">
+          <ModeToggle className="w-full" addText={true} />
+        </DropdownMenuItem>
+
+        <Link href="/">
+          <Item>
+            {" "}
+            <Headset /> Soporte{" "}
+          </Item>
+        </Link>
+        <Separator className="px-1 mx-auto bg-primary " />
         <DropdownMenuItem
-          onClick={() => {}}
-          className="h-10 flex items-center justify-center text-amber-700 font-medium cursor-pointer"
+          onClick={() => {
+            logout();
+          }}
+          className="h-10 flex items-center justify-center dark:text-primario-400 text-primario font-medium cursor-pointer  hover:text-amber-700 "
         >
           <LogOut className="mr-2 size-4" />
           Salir
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <ModeToggle />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
