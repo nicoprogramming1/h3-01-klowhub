@@ -1,63 +1,94 @@
-import { Request, Response } from 'express';
-import UserModel from '../models/UserModel';
+import { Request, Response } from "express";
+import { userService } from "../services/";
+import { MESSAGES } from "../utils/messages";
+import { UserDTO } from "../dto/userDTO.interface";
 
-//Actualizar un usuario
 export const updateUser = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const { password, role, ...updateData } = req.body;
+  try {
+    const { id } = req.params;
+    const { password, ...updateData } = req.body;
 
-        // ESTO DEBERIA IR EN UN SERVICIO => userService.ts, metodo updateUser
-        const user = await UserModel.findByPk(id);
-        if (!user) {
-            res.status(404).json({ message: "User not found" });
-            return;
-        }
+    const updatedUser = await userService.updateUserById(
+      id,
+      updateData,
+      password
+    );
 
-        await user.update(updateData);
-        const updatedUser = user.toJSON();
+    // DTO para no exponer datos sensibles como la pass
+    const userDTO: UserDTO = {
+      longName: updatedUser.longName,
+      email: updatedUser.email,
+      country: updatedUser.country,
+      imageProfile: updatedUser.imageProfile,
+    };
 
-        res.json({ user: updatedUser, message: "User updated successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error updating user" });
+    res.status(200).json({
+      user: userDTO,
+      message: MESSAGES.UPDATE_SUCCESS,
+    });
+  } catch (error: any) {
+    console.error(MESSAGES.UPDATE_ERROR, error.message);
+    if (error.message === MESSAGES.USER_NOT_FOUND) {
+      res.status(404).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: MESSAGES.UPDATE_ERROR });
     }
+  }
 };
 
 //Llamar a un usuario por id
 export const getOneUser = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
+  try {
+    const id = req.params.id;
 
-        const user = await UserModel.findByPk(id);
-        if (!user) {
-            res.status(404).json({ message: "User not found" });
-            return;
-        }
-
-        const { password, ...userWithoutPassword } = user.toJSON();
-
-        res.json({ user: userWithoutPassword });
-    } catch (error) {
-        res.status(500).json({ message: "Error retrieving user" });
+    const userFounded = await userService.findUserByPk(id);
+    if (!userFounded) {
+      res.status(404).json({ message: MESSAGES.USER_NOT_FOUND });
+      return;
     }
+
+    const userDTO: UserDTO = {
+      longName: userFounded.longName,
+      email: userFounded.email,
+      country: userFounded.country,
+      imageProfile: userFounded.imageProfile,
+    };
+
+    res.status(200).json({ user: userDTO, message: MESSAGES.FETCH_SUCCESS });
+  } catch (error: any) {
+    console.error(MESSAGES.UPDATE_ERROR, error.message);
+    if (error.message === MESSAGES.USER_NOT_FOUND) {
+      res.status(404).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: MESSAGES.UPDATE_ERROR });
+    }
+  }
 };
 
-//Desactivar la cuanta del usuario
+//Desactivar la cuenta del usuario
 export const deactivateUser = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-        const user = await UserModel.findByPk(id);
-        if (!user) {
-            res.status(404).json({ message: "User not found" });
-            return;
-        }
+    const userFounded = await userService.deactivateUserByPk(id);
 
-        await user.update({ isValid: false });
+    const userDTO: UserDTO = {
+        longName: userFounded.longName,
+        email: userFounded.email,
+        country: userFounded.country,
+        imageProfile: userFounded.imageProfile,
+      };
 
-        res.json({ message: "User has been deactivated successfully" });
-    } catch (error) {
-        res.status(500).json({ message: "Error deactivating user" });
+    res.status(200).json({
+      message: MESSAGES.ELIMINATE_SUCCESS,
+      user: userDTO
+    });
+  } catch (error: any) {
+    console.error(MESSAGES.UPDATE_ERROR, error.message);
+    if (error.message === MESSAGES.USER_NOT_FOUND) {
+      res.status(404).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: MESSAGES.UPDATE_ERROR });
     }
+  }
 };

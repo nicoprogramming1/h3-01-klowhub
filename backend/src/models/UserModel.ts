@@ -15,8 +15,8 @@ class UserModel extends Model {
   public password!: string;
   public country!: string;
   /* creo que habiamos dicho no incluir telefono por el mom
-  public imageProfile!: string;
   public phone!: number; */
+  public imageProfile!: Buffer | null; // esto es la imagen BLOB de la db
   public role!: string;
   public isValid!: boolean;
   public isSeller!: boolean
@@ -58,10 +58,10 @@ UserModel.init(
       type: DataTypes.STRING,
       allowNull: true,
     }, */
-    /*imageProfile: {
-      type: DataTypes.STRING,
+    imageProfile: {
+      type: DataTypes.BLOB,
       allowNull: true,
-    }, */
+    },
     isValid: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

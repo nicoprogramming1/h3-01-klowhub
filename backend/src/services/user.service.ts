@@ -1,0 +1,86 @@
+import { UserModel } from "../models";
+import { UserDTO } from "../dto/userDTO.interface";
+import { MESSAGES } from "../utils/messages";
+import bcrypt from 'bcryptjs';
+import sequelize from "../config/database";
+
+export const findUserByPk = async (id: string): Promise<UserDTO | null> => {
+  try {
+    const userFounded = await UserModel.findByPk(id);
+
+    if (!userFounded) {
+      throw new Error(MESSAGES.USER_NOT_FOUND);
+    }
+
+    return userFounded;
+  } catch (error: any) {
+    if (error.name === "SequelizeConnectionError") {
+      throw new Error(MESSAGES.CONNECTION_ERROR);
+    }
+    throw new Error(`${MESSAGES.FETCH_ERROR} | ${error.message}`);
+  }
+};
+
+
+export const updateUserById = async (
+  id: string,
+  updateData: Partial<UserDTO>,
+  password?: string
+) => {
+  const transaction = await sequelize.transaction();
+
+  try {
+    const user = await UserModel.findByPk(id, { transaction });
+
+    if (!user) {
+      throw new Error(MESSAGES.USER_NOT_FOUND);
+    }
+
+    if (password) {
+      validatePassword(password);
+      user.password = await encryptPassword(password);
+    }
+
+    Object.assign(user, updateData);
+    await user.save({ transaction });
+
+    await transaction.commit();
+    return user;
+  } catch (error: any) {
+    await transaction.rollback();
+    if (error.name === "SequelizeConnectionError") {
+      throw new Error(MESSAGES.CONNECTION_ERROR);
+    }
+    throw new Error(`${MESSAGES.FETCH_ERROR} | ${error.message}`);
+  }
+};
+
+export const deactivateUserByPk = async (id: string): Promise<UserModel> => {
+  try {
+    const user = await UserModel.findByPk(id);
+
+    if (!user) {
+      throw new Error(MESSAGES.USER_NOT_FOUND);
+    }
+
+    // Actualizar estado del usuario (desactivación lógica)
+    user.isValid = false;
+    await user.save();
+
+    return user;
+  } catch (error: any) {
+    if (error.name === "SequelizeConnectionError") {
+      throw new Error(MESSAGES.CONNECTION_ERROR);
+    }
+    throw new Error(`${MESSAGES.ELIMINATE_ERROR} | ${error.message}`);
+  }
+};
+
+const validatePassword = (password: string): void => {
+  if (password.length < 6) {
+    throw new Error("La contraseña debe tener al menos 6 caracteres");
+  }
+};
+const encryptPassword = async (password: string): Promise<string> => {
+  return bcrypt.hash(password, 10);
+};
