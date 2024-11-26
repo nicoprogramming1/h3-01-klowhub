@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createCourse, getOneCourse } from '../controllers/courseController';
+import { createCourse, getOneCourse } from '../controllers/course.controller';
 import {
   validateCourseRegistration,
   handleValidationErrors,

@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database';
-import { ProductModel } from './ProductModel';
+import { ProductModel } from './Product.model';
 import { Competence } from '../interfaces/course.interface';
 import { Platform, Sector, Tag } from '../interfaces/product.interface';
 

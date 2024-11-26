@@ -3,7 +3,7 @@ dotenv.config();
 
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { PassportStatic } from 'passport';
-import UserModel from '../models/UserModel';
+import UserModel from '../models/User.model';
 
 interface JwtPayload {
   id: string;

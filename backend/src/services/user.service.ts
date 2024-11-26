@@ -1,5 +1,5 @@
 import { UserModel } from "../models";
-import { UserDTO } from "../dto/userDTO.interface";
+import { UserDTO } from "../dtos/user.dto";
 import { MESSAGES } from "../utils/messages";
 import bcrypt from 'bcryptjs';
 import sequelize from "../config/database";
@@ -64,7 +64,7 @@ export const deactivateUserByPk = async (id: string): Promise<UserModel> => {
     }
 
     // Actualizar estado del usuario (desactivación lógica)
-    user.isValid = false;
+    user.isValid = true;
     await user.save();
 
     return user;
@@ -72,7 +72,7 @@ export const deactivateUserByPk = async (id: string): Promise<UserModel> => {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
-    throw new Error(`${MESSAGES.ELIMINATE_ERROR} | ${error.message}`);
+    throw new Error(`${MESSAGES.USER_NOT_FOUND} | ${error.message}`);
   }
 };
 

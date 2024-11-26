@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { register, login, logout } from '../controllers/authController';
+import { register, login, logout } from '../controllers/auth.controller';
 import { validateRegister, validateLogin, validateLogout, handleValidationErrors } from '../utils/middlewares';
 import passport from 'passport';
 

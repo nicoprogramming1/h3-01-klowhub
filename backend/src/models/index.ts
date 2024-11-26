@@ -1,8 +1,8 @@
-import CourseModel from './CourseModel';
-import CourseModuleModel from './CourseModuleModel';
-import DeviceSession from './DeviceSession';
-import LessonModel from './LessonModel';
-import UserModel from './UserModel';
+import CourseModel from './Course.model';
+import CourseModuleModel from './CourseModule.model';
+import DeviceSession from './DeviceSession.model';
+import LessonModel from './Lesson.model';
+import UserModel from './User.model';
 
 // DeviceSession con User
 DeviceSession.belongsTo(UserModel, { foreignKey: 'userId' });

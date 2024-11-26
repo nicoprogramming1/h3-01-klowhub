@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { userService } from "../services/";
+import { userService } from "../services";
 import { MESSAGES } from "../utils/messages";
-import { UserDTO } from "../dto/userDTO.interface";
+import { UserDTO } from "../dtos/user.dto";
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
@@ -41,17 +41,17 @@ export const getOneUser = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
 
-    const userFounded = await userService.findUserByPk(id);
-    if (!userFounded) {
+    const userDeactivated = await userService.findUserByPk(id);
+    if (!userDeactivated) {
       res.status(404).json({ message: MESSAGES.USER_NOT_FOUND });
       return;
     }
 
     const userDTO: UserDTO = {
-      longName: userFounded.longName,
-      email: userFounded.email,
-      country: userFounded.country,
-      imageProfile: userFounded.imageProfile,
+      longName: userDeactivated.longName,
+      email: userDeactivated.email,
+      country: userDeactivated.country,
+      imageProfile: userDeactivated.imageProfile,
     };
 
     res.status(200).json({ user: userDTO, message: MESSAGES.FETCH_SUCCESS });
@@ -70,13 +70,13 @@ export const deactivateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const userFounded = await userService.deactivateUserByPk(id);
+    const userDeactivated = await userService.deactivateUserByPk(id);
 
     const userDTO: UserDTO = {
-        longName: userFounded.longName,
-        email: userFounded.email,
-        country: userFounded.country,
-        imageProfile: userFounded.imageProfile,
+        longName: userDeactivated.longName,
+        email: userDeactivated.email,
+        country: userDeactivated.country,
+        imageProfile: userDeactivated.imageProfile,
       };
 
     res.status(200).json({
@@ -88,7 +88,7 @@ export const deactivateUser = async (req: Request, res: Response) => {
     if (error.message === MESSAGES.USER_NOT_FOUND) {
       res.status(404).json({ message: error.message });
     } else {
-      res.status(500).json({ message: MESSAGES.UPDATE_ERROR });
+      res.status(500).json({ message: MESSAGES.ELIMINATE_ERROR });
     }
   }
 };

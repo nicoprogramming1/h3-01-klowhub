@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import UserModel from '../models/UserModel';
-import DeviceSession from '../models/DeviceSession';
+import UserModel from '../models/User.model';
+import DeviceSession from '../models/DeviceSession.model';
 
 export const registerUser = async (
   longName: string,
