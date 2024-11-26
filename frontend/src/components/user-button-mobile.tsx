@@ -101,7 +101,7 @@ export const UserButtonMobile = () => {
           className="p-2 items-center gap-y-4 pl-4"
         />
         <Separator className="px-1 mx-auto bg-primary " />
-        <Link href="/">
+        <Link href="/profile">
           <Item>
             {" "}
             <User /> Perfil{" "}

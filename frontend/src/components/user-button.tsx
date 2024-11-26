@@ -73,7 +73,7 @@ export const UserButton = () => {
           </div>
         </div>
         <Separator className="px-1 mx-auto bg-primary " />
-        <Link href="/">
+        <Link href="/profile">
           <Item>
             {" "}
             <User /> Perfil{" "}
