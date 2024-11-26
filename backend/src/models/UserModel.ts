@@ -1,5 +1,5 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/database';
+import { Model, DataTypes } from "sequelize";
+import sequelize from "../config/database";
 
 function generateShortID(): string {
   return (
@@ -13,11 +13,12 @@ class UserModel extends Model {
   public longName!: string;
   public email!: string;
   public password!: string;
-  /* creo que habiamos dicho no incluir pais ni telefono por el mom
   public country!: string;
+  /* creo que habiamos dicho no incluir telefono por el mom
   public phone!: number; */
   public role!: string;
   public isValid!: boolean;
+  public isSeller!: boolean
 }
 
 UserModel.init(
@@ -30,7 +31,7 @@ UserModel.init(
     longName: {
       type: DataTypes.STRING,
       allowNull: false,
-      field: "long_name"
+      field: "long_name",
     },
     email: {
       type: DataTypes.STRING,
@@ -48,24 +49,29 @@ UserModel.init(
         isIn: [["user", "admin"]],
       },
     },
-    /* country: {
+    country: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
-    phone: {
+    /*phone: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     }, */
     isValid: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
-      field: "is_valid"
+      field: "is_valid",
+    },
+    isSeller: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      field: "is_seller",
     },
   },
   {
     sequelize,
-    modelName: 'User',
-    tableName: 'users',
+    modelName: "User",
+    tableName: "users",
     timestamps: true,
     hooks: {
       beforeCreate: (user: UserModel) => {
