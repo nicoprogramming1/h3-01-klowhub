@@ -15,6 +15,7 @@ class UserModel extends Model {
   public password!: string;
   public country!: string;
   /* creo que habiamos dicho no incluir telefono por el mom
+  public imageProfile!: string;
   public phone!: number; */
   public role!: string;
   public isValid!: boolean;
@@ -54,6 +55,10 @@ UserModel.init(
       allowNull: true,
     },
     /*phone: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    }, */
+    /*imageProfile: {
       type: DataTypes.STRING,
       allowNull: true,
     }, */
