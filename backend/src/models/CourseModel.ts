@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import { ProductModel } from './ProductModel';
-import { Competence } from './interfaces/course.interface';
-import { Platform, Sector, Tag } from './interfaces/product.interface';
+import { Competence } from '../interfaces/course.interface';
+import { Platform, Sector, Tag } from '../interfaces/product.interface';
 
 function generateShortID(): string {
   return (

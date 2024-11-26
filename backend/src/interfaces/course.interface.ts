@@ -1,5 +1,9 @@
 import { Platform, Sector, Tag } from "./product.interface";
 
+export enum Competence {
+  BASIC = 'Basic',
+  INTERMEDIATE = 'Intermediate',
+}
 export interface LessonData {
     title: string;
     detail: string;
@@ -25,9 +29,4 @@ export interface LessonData {
       ownerId: string;
     };
     modules: ModuleData[];
-  }
-
-  export enum Competence {
-    BASIC = 'Basic',
-    INTERMEDIATE = 'Intermediate',
   }

@@ -1,7 +1,7 @@
 import { Transaction } from "sequelize";
 import sequelize from "../config/database";
 import { CourseModel, CourseModuleModel, LessonModel } from "../models/";
-import { CourseData } from "../models/interfaces/course.interface";
+import { CourseData } from "../interfaces/course.interface";
 import { MESSAGES } from "../utils/messages";
 
 const saveCourse = async (courseData: CourseData) => {
