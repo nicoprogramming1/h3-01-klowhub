@@ -21,6 +21,6 @@ courseRouter
 
 courseRouter
   .route('/:id')
-  .get(authenticate, validateFetchCourse, handleValidationErrors, getOneCourse);
+  .get(validateFetchCourse, handleValidationErrors, getOneCourse);
 
 export default courseRouter;
