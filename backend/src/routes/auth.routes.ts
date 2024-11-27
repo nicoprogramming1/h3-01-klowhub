@@ -4,10 +4,11 @@ import { validateRegister, validateLogin, validateLogout, handleValidationErrors
 import passport from 'passport';
 
 const authRouter = Router();
+const authenticate = passport.authenticate('jwt', { session: false })
 
 // Definir las rutas
 authRouter.post('/register', validateRegister, handleValidationErrors, register);
 authRouter.post('/login', validateLogin, handleValidationErrors, login);
-authRouter.post('/logout', passport.authenticate('jwt', { session: false }), validateLogout, handleValidationErrors, logout);
+authRouter.post('/logout', authenticate, validateLogout, handleValidationErrors, logout);
 
 export default authRouter;
