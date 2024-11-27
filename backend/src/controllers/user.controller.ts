@@ -40,7 +40,7 @@ export const getOneUser = async (req: Request, res: Response) => {
       return; // Si los encabezados ya se enviaron, no hacer nada más
     }
     console.error(MESSAGES.FETCH_ERROR, error.message);
-    res.status(500).json({ message: MESSAGES.FETCH_ERROR });
+    res.status(404).json({ message: MESSAGES.FETCH_ERROR + error.message });
   }
 };
 
