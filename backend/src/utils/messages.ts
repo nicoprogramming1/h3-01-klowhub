@@ -1,4 +1,5 @@
 export const MESSAGES = {
+  BAD_CREDENTIALS: "Las credenciales de acceso no son váldas",
   CONNECTION_ERROR: "Error en la conexión con la base de datos",
   COURSE_NOT_FOUND: "El curso no existe",
   CREATE_SUCCESS: "La operación de registro fue un éxito",
@@ -7,8 +8,11 @@ export const MESSAGES = {
   ELIMINATE_ERROR: "Error durante la eliminación",
   FETCH_SUCCESS: "La información solicitada fue recuperada con éxito",
   FETCH_ERROR: "Error al recuperar la información",
+  LOGIN_ERROR: "Error al iniciar sesión",
+  LOGOUT_ERROR: "Error al cerrar la sesión",
   MISSED_DATA: "La información brindada no es suficiente",
   SERVER_ERROR: "Error de servidor al ejecutar la operación",
+  UNNACTIVE_USER: "El usuario está inactivo",
   UPDATE_ERROR: "Error durante la actualización",
   UPDATE_SUCCESS: "La actualización se completó con éxito",
   USER_CREATE_SUCCESS: "Usuario creado con éxito",
