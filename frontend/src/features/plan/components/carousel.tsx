@@ -103,9 +103,9 @@ const CarouselPlan = ({
             >
               <div
                 className={cn(
-                  "flex items-center justify-center p-1 transition-all duration-300 rounded-md cursor-pointer w-full hover:scale-105",
+                  "flex items-center justify-center p-1 transition-all duration-300 rounded-md cursor-pointer  hover:scale-[1.03]",
                   selectedIndex === index
-                    ? "sm:scale-[1.03] shadow-lg  dark:shadow-green-600 shadow-green-300"
+                    ? "sm:scale-[1.02] shadow-lg  dark:shadow-green-600 shadow-green-300"
                     : "scale-100"
                 )}
               >

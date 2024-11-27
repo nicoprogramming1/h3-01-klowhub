@@ -23,7 +23,7 @@ const CardPlan = ({
   return (
     <Card
       className={cn(
-        "max-w-[400px] bg-primario-100 dark:bg-gray-600/80 rounded-sm text-gray-700 dark:text-primary",
+        "max-w-[380px] bg-primario-100 dark:bg-gray-600/80 rounded-sm text-gray-700 dark:text-primary",
         className
       )}
     >

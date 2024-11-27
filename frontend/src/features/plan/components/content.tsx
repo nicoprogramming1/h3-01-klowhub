@@ -25,7 +25,7 @@ const ContentPlan = () => {
   };
 
   return (
-    <div className="flex flex-col  justify-center p-4 w-full h-full bg-primario-100/80 dark:bg-gray-900  rounded-sm gap-y-4">
+    <div className="flex flex-col  justify-center p-4 sm:px-6 w-full h-full bg-primario-100/80 dark:bg-gray-900  rounded-sm gap-y-4 sm:gap-y-6">
       <h2 className="text-lg font-semibold">
         ¡Bienvenido a la comunidad de Vendedores !
       </h2>
@@ -55,7 +55,7 @@ const ContentPlan = () => {
           <CarouselPlan onPlanSelect={handlePlanSelect} />
         </div>
       </div>
-      <div className="flex">
+      <div className="flex items-center justify-center sm:p-2">
         <TablePlan />
       </div>
       <Button

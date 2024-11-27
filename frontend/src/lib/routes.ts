@@ -21,7 +21,7 @@ export const routes = [
   },
   {
     label: "Mis cursos",
-    href: "/curses",
+    href: "/courses",
     icon: GoCheckCircle,
     activeIcon: GoCheckCircleFill,
   },
