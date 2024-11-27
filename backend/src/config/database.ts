@@ -11,12 +11,17 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT as "postgres",
 
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
-    },
+    // Agragr NODE_ENV=production en el .env para que se ejecute esta seccion
+    ...(process.env.NODE_ENV === "production"
+      ? {
+          dialectOptions: {
+            ssl: {
+              require: true,
+              rejectUnauthorized: false,
+            },
+          },
+        }
+      : {}),
   }
 );
 
