@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
-import { check, validationResult, ValidationChain } from 'express-validator';
+import { check, ValidationChain } from 'express-validator';
 
 export const validateRegister: ValidationChain[] = [
   check('longName')
