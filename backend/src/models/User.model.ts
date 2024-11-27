@@ -64,7 +64,7 @@ UserModel.init(
     },
     isValid: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      defaultValue: true,
       field: "is_valid",
     },
     isSeller: {
