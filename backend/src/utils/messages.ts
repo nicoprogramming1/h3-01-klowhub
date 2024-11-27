@@ -11,5 +11,7 @@ export const MESSAGES = {
   SERVER_ERROR: "Error de servidor al ejecutar la operación",
   UPDATE_ERROR: "Error durante la actualización",
   UPDATE_SUCCESS: "La actualización se completó con éxito",
+  USER_CREATE_SUCCESS: "Usuario creado con éxito",
+  USER_CREATE_ERROR: "No fue posible crear el usuario",
   USER_NOT_FOUND: "El usuario no existe",
 };
