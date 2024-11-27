@@ -1,18 +1,24 @@
 import { UserModel } from "../models";
 import { UserDTO } from "../dtos/user.dto";
 import { MESSAGES } from "../utils/messages";
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 import sequelize from "../config/database";
 
-export const findUserByPk = async (id: string): Promise<UserDTO | null> => {
+export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
   try {
-    const userFounded = await UserModel.findByPk(id);
+    const user = await UserModel.findByPk(id);
 
-    if (!userFounded) {
+    if (!user) {
       throw new Error(MESSAGES.USER_NOT_FOUND);
     }
 
-    return userFounded;
+    // Construir DTO
+    return {
+      longName: user.longName,
+      email: user.email,
+      country: user.country,
+      imageProfile: user.imageProfile ? user.imageProfile.toString("base64") : undefined,
+    };
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
@@ -26,7 +32,7 @@ export const updateUserById = async (
   id: string,
   updateData: Partial<UserDTO>,
   password?: string
-) => {
+): Promise<UserModel | null> => {
   const transaction = await sequelize.transaction();
 
   try {
@@ -40,6 +46,10 @@ export const updateUserById = async (
       validatePassword(password);
       user.password = await encryptPassword(password);
     }
+    if (updateData.imageProfile) {
+      user.imageProfile = Buffer.from(updateData.imageProfile.split(",")[1], "base64");
+    }
+    
 
     Object.assign(user, updateData);
     await user.save({ transaction });
@@ -55,7 +65,7 @@ export const updateUserById = async (
   }
 };
 
-export const deactivateUserByPk = async (id: string): Promise<UserModel> => {
+export const deactivateUserByPk = async (id: string): Promise<UserModel | null> => {
   try {
     const user = await UserModel.findByPk(id);
 
@@ -64,7 +74,7 @@ export const deactivateUserByPk = async (id: string): Promise<UserModel> => {
     }
 
     // Actualizar estado del usuario (desactivación lógica)
-    user.isValid = true;
+    user.isValid = false;
     await user.save();
 
     return user;
