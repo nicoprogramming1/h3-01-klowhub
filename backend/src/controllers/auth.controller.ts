@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import { registerUser, loginUser, logoutUser } from '../services/auth.service';
+import { MESSAGES } from '../utils/messages';
 dotenv.config();
 
 export const register = async (req: Request, res: Response) => {
@@ -10,7 +11,7 @@ export const register = async (req: Request, res: Response) => {
     const newUser = await registerUser(longName, email, password);
 
     res.status(201).json({
-      message: 'Usuario creado exitosamente',
+      message: MESSAGES.USER_CREATE_SUCCESS,
       user: {
         id: newUser.id,
         longName: newUser.longName,
@@ -53,14 +54,20 @@ export const login = async (req: Request, res: Response) => {
     if (res.headersSent) {
       return; // Si los encabezados ya se enviaron, no hacer nada más
     }
+    
     // Manejo de errores
-    if (error.message === 'Credenciales de acceso inválidas') {
-      res.status(401).json({ message: error.message });
+    if (error.message === 'Cuenta desactivada') {
+      res.status(403).json({ message: MESSAGES.UNNACTIVE_USER }); // Código 403 para cuenta desactivada
+    } else if (error.message === 'Credenciales de acceso inválidas') {
+      res.status(401).json({ message: MESSAGES.BAD_CREDENTIALS }); // Código 401 para credenciales incorrectas
+    } else if (error.message === 'Cuenta no encontrada') {
+      res.status(404).json({ message: MESSAGES.USER_NOT_FOUND }); // Código 404 para cuenta inexistente
     } else {
-      res.status(500).json({ message: 'Login error' });
+      res.status(500).json({ message: MESSAGES.LOGIN_ERROR });
     }
   }
 };
+
 
 //Cierra la sesion del usuario y actualiza que el despositivo esta en cuenta cerrada
 export const logout = async (req: Request, res: Response) => {
@@ -82,6 +89,6 @@ export const logout = async (req: Request, res: Response) => {
     if (res.headersSent) {
       return; // Si los encabezados ya se enviaron, no hacer nada más
     }
-    res.status(500).json({ message: error.message || 'Error cerrando sesión' });
+    res.status(500).json({ message: error.message || MESSAGES.LOGOUT_ERROR });
   }
 };

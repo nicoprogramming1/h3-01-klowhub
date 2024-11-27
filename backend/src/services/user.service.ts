@@ -6,7 +6,9 @@ import sequelize from "../config/database";
 
 export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
   try {
-    const user = await UserModel.findByPk(id);
+    const user = await UserModel.findOne({
+      where: { id, isValid: true }  // filtra los usuarios activos solamente
+    });
 
     if (!user) {
       throw new Error(MESSAGES.USER_NOT_FOUND);
@@ -23,7 +25,7 @@ export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
-    throw new Error(`${MESSAGES.FETCH_ERROR} | ${error.message}`);
+    throw new Error(`${MESSAGES.FETCH_ERROR} + ${error.message}`);
   }
 };
 
@@ -36,7 +38,10 @@ export const updateUserById = async (
   const transaction = await sequelize.transaction();
 
   try {
-    const user = await UserModel.findByPk(id, { transaction });
+    const user = await UserModel.findOne({
+      where: { id, isValid: true },  // Solo buscamos usuarios activos
+      transaction
+    });
 
     if (!user) {
       throw new Error(MESSAGES.USER_NOT_FOUND);
@@ -49,7 +54,6 @@ export const updateUserById = async (
     if (updateData.imageProfile) {
       user.imageProfile = Buffer.from(updateData.imageProfile.split(",")[1], "base64");
     }
-    
 
     Object.assign(user, updateData);
     await user.save({ transaction });
@@ -65,12 +69,18 @@ export const updateUserById = async (
   }
 };
 
+
 export const deactivateUserByPk = async (id: string): Promise<UserModel | null> => {
   try {
     const user = await UserModel.findByPk(id);
 
     if (!user) {
       throw new Error(MESSAGES.USER_NOT_FOUND);
+    }
+
+    // Verifica si ya esta desactivado
+    if (!user.isValid) {
+      throw new Error('El usuario ya está desactivado');
     }
 
     // Actualizar estado del usuario (desactivación lógica)
@@ -85,6 +95,7 @@ export const deactivateUserByPk = async (id: string): Promise<UserModel | null> 
     throw new Error(`${MESSAGES.USER_NOT_FOUND} | ${error.message}`);
   }
 };
+
 
 const validatePassword = (password: string): void => {
   if (password.length < 6) {
