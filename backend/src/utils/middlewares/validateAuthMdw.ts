@@ -49,19 +49,11 @@ export const validateLogin: ValidationChain[] = [
 ];
 
 
-export const validateLogout = [
+export const validateLogout: ValidationChain[] = [
   check('device')
     .notEmpty()
     .withMessage('El campo device es requerido'),
   check('app')
     .notEmpty()
-    .withMessage('El campo app es requerido'),
-
-  (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() });
-    }
-    next();
-  }
+    .withMessage('El campo app es requerido')
 ];
