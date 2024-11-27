@@ -1,5 +1,7 @@
+import PlanComponent from "@/features/plan/components/plan-component";
+
 const PlanPage = () => {
-  return <div>Plan</div>;
+  return <PlanComponent />;
 };
 
 export default PlanPage;
