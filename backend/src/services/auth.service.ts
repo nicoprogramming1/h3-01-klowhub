@@ -42,8 +42,13 @@ export const loginUser = async (
 ) => {
   try {
     const userData = await UserModel.findOne({ where: { email } });
+    
+    // Verificar si el usuario existe y está activo
     if (!userData) {
-      throw new Error('Credenciales de acceso inválidas');
+      throw new Error('Cuenta no encontrada');
+    }
+    if (!userData.isValid) {
+      throw new Error('Cuenta desactivada');
     }
 
     const isPasswordValid = await bcrypt.compare(password, userData.password);
@@ -73,7 +78,6 @@ export const loginUser = async (
     throw new Error(error.message || 'Error en el login');
   }
 };
-
 
 export const logoutUser = async (device: string, app: string, token: string) => {
   try {
