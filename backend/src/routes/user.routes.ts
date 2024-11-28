@@ -1,7 +1,7 @@
 import passport from "passport";
 import express from 'express';
 import { getOneUser, deactivateUser, updateUser } from '../controllers/user.controller'
-import { deactivateUserValidator, getOneUserValidator, handleValidationErrors, updateUserValidator } from '../utils/middlewares'
+import { deactivateUserValidator, getOneUserValidator, handleValidationErrors, updateUserValidator } from '../middlewares'
 
 const userRouter = express.Router();
 const authenticate = passport.authenticate('jwt', { session: false });
