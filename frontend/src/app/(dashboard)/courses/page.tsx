@@ -1,5 +1,7 @@
+import CoursesComponent from "@/features/courses/components/courses-component";
+
 const CursosPage = () => {
-  return <div>Cursos</div>;
+  return <CoursesComponent />;
 };
 
 export default CursosPage;

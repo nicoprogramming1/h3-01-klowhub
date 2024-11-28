@@ -1,45 +1,15 @@
 import CarouselCardMember from "@/components/carousel-card-member";
+import { fakeDataMember } from "@/data";
 
 const MemberData = () => {
-  const fakeData = [
-    {
-      id: 1,
-      image: "/images/user/image-3.png",
-      name: "Juan Ramirez",
-      reviews: 20,
-      language: "Español",
-      price: 99.99,
-      link: "/",
-    },
-    {
-      id: 2,
-      image: "/images/user/image-2.png",
-      name: "Juan Ramirez",
-      reviews: 13,
-      language: "Español",
-      price: 99.99,
-      link: "/",
-    },
-    {
-      id: 3,
-      image: "/images/user/image-1.png",
-      name: "Juan Ramirez",
-      reviews: 7,
-      language: "Español",
-      price: 99.99,
-      link: "/",
-    },
-    {
-      id: 4,
-      image: "/images/user/image-4.png",
-      name: "Juan Ramirez",
-      reviews: 9,
-      language: "Español",
-      price: 99.99,
-      link: "/",
-    },
-  ];
-  return <CarouselCardMember data={fakeData} link="/" />;
+  const fakeData = fakeDataMember;
+  return (
+    <div className="flex flex-col  justify-center p-4 sm:px-8 w-full h-full bg-primario-100/80 dark:bg-gray-900  rounded-sm gap-y-4 sm:gap-y-6">
+      <div className="flex px-2 items-center justify-center ">
+        <CarouselCardMember data={fakeData} link="/" />
+      </div>
+    </div>
+  );
 };
 
 export default MemberData;

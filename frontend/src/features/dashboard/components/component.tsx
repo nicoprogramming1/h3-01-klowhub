@@ -3,11 +3,11 @@ import DashboardContent from "@/components/content-dashboard";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/auth-provider";
 import CarouselHeader from "./carousel-header";
-import LearningProgress from "./learning-progress";
 import CarouselCourses from "./carousel-courses";
 import CarouselApplications from "./carousel-applications";
 import MemberTitle from "./member-title";
 import MemberData from "./member-data";
+import LearningProgressDashboard from "./learning-progress";
 
 const DashboardComponent = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -28,7 +28,7 @@ const DashboardComponent = () => {
   return (
     <DashboardContent>
       <CarouselHeader />
-      {isAuthenticated && <LearningProgress />}
+      {isAuthenticated && <LearningProgressDashboard />}
       <CarouselCourses />
       <CarouselApplications />
       <MemberTitle />

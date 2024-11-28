@@ -12,7 +12,7 @@ const FindByCard = ({ title, link }: FindByCardProps) => {
   };
   return (
     <div
-      className="flex flex-col items-center justify-center cursor-pointer  bg-[url('/images/dashboard/headerLigh1.png')] bg-cover bg-center  dark:bg-[url('/images/dashboard/header1.png')] p-4 rounded-lg hover:scale-[1.01] max-w-[300px] min-w-[250px] h-[80px] gap-y-2"
+      className="flex flex-col items-center justify-center cursor-pointer  bg-[url('/images/dashboard/headerLigh1.png')] bg-cover bg-center  dark:bg-[url('/images/dashboard/header1.png')] p-4 rounded-lg hover:scale-[1.01] max-w-[290px] min-w-[230px] h-[80px] gap-y-2"
       onClick={() => handleClick()}
     >
       <h1 className="text-md font-semibold">{title || "New Title"}</h1>
