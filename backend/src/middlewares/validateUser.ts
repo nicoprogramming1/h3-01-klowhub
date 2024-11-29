@@ -12,12 +12,6 @@ export const updateUserValidator: ValidationChain[] = [
     .optional()
     .isEmail()
     .withMessage("Debe ser un correo electrónico válido"),
-  body("country")
-    .optional()
-    .isString()
-    .withMessage("El país debe ser un string")
-    .isLength({ min: 3 })
-    .withMessage("El nombre debe tener al menos 3 caracteres"),
   body("password")
     .optional()
     .isString()
