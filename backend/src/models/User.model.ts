@@ -1,12 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/database";
-
-function generateShortID(): string {
-  return (
-    Date.now().toString(36).substring(0, 6) +
-    Math.random().toString(36).substring(2, 6)
-  ).substring(0, 10);
-}
+import { generateShortID } from "../utils/generateShortID";
 
 class UserModel extends Model {
   public id!: string;
@@ -15,6 +9,7 @@ class UserModel extends Model {
   public password!: string;
   public role!: string;
   public isValid!: boolean;
+  public isVendor!: boolean // por defecto es false hasta que se registra como vendedor
 }
 
 UserModel.init(
@@ -46,6 +41,11 @@ UserModel.init(
       type: DataTypes.BOOLEAN,
       defaultValue: true,
       field: "is_valid",
+    },
+    isVendor: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      field: "is_vendor",
     },
   },
   {
