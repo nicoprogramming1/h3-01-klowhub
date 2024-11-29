@@ -1,5 +1,5 @@
-import { body, param, ValidationChain } from 'express-validator';
-
+import { body, param, ValidationChain } from "express-validator";
+import { Membership } from "../models/enum/enum";
 
 export const updateUserValidator: ValidationChain[] = [
   body("longName")
@@ -31,8 +31,7 @@ export const updateUserValidator: ValidationChain[] = [
     }),
 ];
 
-
-export const getOneUserValidator = [
+export const idByParameterValidator: ValidationChain[] = [
   param("id")
     .isString()
     .withMessage("El ID debe ser un string")
@@ -40,11 +39,9 @@ export const getOneUserValidator = [
     .withMessage("El ID debe tener exactamente 10 caracteres"),
 ];
 
-export const deactivateUserValidator = [
-    param("id")
-      .isString()
-      .withMessage("El ID debe ser un string")
-      .isLength({ min: 10, max: 10 })
-      .withMessage("El ID debe tener exactamente 10 caracteres"),
-  ];
-  
+export const changeMembershipValidator: ValidationChain[] = [
+  body("membership")
+    .isString()
+    .isIn(Object.values(Membership))
+    .withMessage("La membresía proporcionada no es válida"),
+];
