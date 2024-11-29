@@ -1,19 +1,12 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/database";
 import { Membership, PaymentMethod, Sector, Tool } from "./enum/enum";
-
-function generateShortID(): string {
-  return (
-    Date.now().toString(36).substring(0, 6) +
-    Math.random().toString(36).substring(2, 6)
-  ).substring(0, 10);
-}
+import { generateShortID } from "../utils/generateShortID";
 
 class UserProModel extends Model {
   public id!: string;
   public firstName!: string;
   public lastName!: string;
-  public password!: string;
   public description!: string;
   public country!: string;
   public sector!: Sector[];
@@ -22,13 +15,15 @@ class UserProModel extends Model {
   public toolsExperience!: string;
   public portfolioLink!: string;
   public academicFormation!: string;
-  public certificactionLink!: string;
-  public certificationFile!: string[];
+  public certificationLink!: string;
+  public certificationFiles!: string[];
   public PaymentMethod!: PaymentMethod;
   public accountData!: string;
   public imageProfile!: Buffer | null; // esto es la imagen BLOB para la db
   public membership!: Membership;
-  public isValid!: boolean;
+  public isValid!: boolean; // perfil activo/inactivo
+  public isMentor!: boolean; // por defecto esta en null a menos que el front envie el true
+  public userId!: string; // id de su perfil de usuario básico (User.model.ts)
 }
 
 UserProModel.init(
@@ -47,10 +42,6 @@ UserProModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       field: "last_name",
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
     },
     description: {
       type: DataTypes.TEXT,
@@ -94,15 +85,15 @@ UserProModel.init(
       allowNull: true,
       field: "academic_formation",
     },
-    certificactionLink: {
+    certificationLink: {
       type: DataTypes.STRING,
       allowNull: true,
       field: "certification_link",
     },
-    certificationFile: {
+    certificationFiles: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
-      field: "certification_file",
+      field: "certification_files",
     },
     paymentMethod: {
       type: DataTypes.STRING,
@@ -113,7 +104,7 @@ UserProModel.init(
       },
     },
     accountData: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false,
       field: "account_data",
     },
@@ -133,6 +124,22 @@ UserProModel.init(
       type: DataTypes.BOOLEAN,
       defaultValue: true,
       field: "is_valid",
+    },
+    isMentor: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      field: "is_mentor",
+    },
+    userId: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+      field: "user_id",
+      references: {
+        model: "users",
+        key: "id",
+      },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     },
   },
   {
