@@ -9,7 +9,7 @@ export {
   validateFetchCourse,
 } from "./validateCourseMdw";
 export {
-  deactivateUserValidator,
-  getOneUserValidator,
+  changeMembershipValidator,
+  idByParameterValidator,
   updateUserValidator
 } from "./validateUser";
