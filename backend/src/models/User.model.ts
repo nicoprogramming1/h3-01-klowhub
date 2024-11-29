@@ -1,6 +1,7 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/database";
 import { generateShortID } from "../utils/generateShortID";
+import { Membership } from "./enum/enum";
 
 class UserModel extends Model {
   public id!: string;
@@ -8,6 +9,7 @@ class UserModel extends Model {
   public email!: string;
   public password!: string;
   public role!: string;
+  public membership!: Membership | null
   public isValid!: boolean;
   public isVendor!: boolean // por defecto es false hasta que se registra como vendedor
 }
@@ -36,6 +38,14 @@ UserModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "user",
+    },
+    membership: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null,
+      validate: {
+        isIn: [Object.values(Membership) || null],
+      },
     },
     isValid: {
       type: DataTypes.BOOLEAN,

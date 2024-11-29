@@ -20,7 +20,6 @@ class UserProModel extends Model {
   public PaymentMethod!: PaymentMethod;
   public accountData!: string;
   public imageProfile!: Buffer | null; // esto es la imagen BLOB para la db
-  public membership!: Membership;
   public isValid!: boolean; // perfil activo/inactivo
   public isMentor!: boolean; // por defecto esta en null a menos que el front envie el true
   public userId!: string; // id de su perfil de usuario básico (User.model.ts)
@@ -112,13 +111,6 @@ UserProModel.init(
       type: DataTypes.BLOB,
       allowNull: true,
       field: "image_profile",
-    },
-    membership: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        isIn: [Object.values(Membership)],
-      },
     },
     isValid: {
       type: DataTypes.BOOLEAN,
