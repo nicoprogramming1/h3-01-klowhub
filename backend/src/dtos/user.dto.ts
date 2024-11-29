@@ -21,6 +21,5 @@ export interface UserProDTO {
   PaymentMethod: PaymentMethod;
   accountData: string;
   imageProfile?: string
-  membership: Membership;
   isMentor?: boolean  // si quiere ser mentor el front enviara un true, sino no lo envia
 }
