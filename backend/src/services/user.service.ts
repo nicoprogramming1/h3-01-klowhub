@@ -1,13 +1,14 @@
 import { UserModel } from "../models";
-import { UserDTO } from "../dtos/user.dto";
+import { UserDTO, UserProDTO } from "../dtos/user.dto";
 import { MESSAGES } from "../utils/messages";
-import bcrypt from "bcryptjs";
 import sequelize from "../config/database";
+import UserProModel from "../models/UserPro.model";
+import { encryptPassword, validatePassword } from "../utils/passwords";
 
 export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
   try {
     const user = await UserModel.findOne({
-      where: { id, isValid: true }  // filtra los usuarios activos solamente
+      where: { id, isValid: true }, // filtra los usuarios activos solamente
     });
 
     if (!user) {
@@ -29,7 +30,6 @@ export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
   }
 };
 
-
 export const updateUserById = async (
   id: string,
   updateData: Partial<UserDTO>,
@@ -39,8 +39,8 @@ export const updateUserById = async (
 
   try {
     const user = await UserModel.findOne({
-      where: { id, isValid: true },  // Solo buscamos usuarios activos
-      transaction
+      where: { id, isValid: true }, // Solo buscamos usuarios activos
+      transaction,
     });
 
     if (!user) {
@@ -50,7 +50,7 @@ export const updateUserById = async (
     if (password) {
       validatePassword(password);
       user.password = await encryptPassword(password);
-    }/* 
+    } /* 
     if (updateData.imageProfile) {
       user.imageProfile = Buffer.from(updateData.imageProfile.split(",")[1], "base64");
     } */
@@ -69,8 +69,9 @@ export const updateUserById = async (
   }
 };
 
-
-export const deactivateUserByPk = async (id: string): Promise<UserModel | null> => {
+export const deactivateUserByPk = async (
+  id: string
+): Promise<UserModel | null> => {
   try {
     const user = await UserModel.findByPk(id);
 
@@ -80,7 +81,7 @@ export const deactivateUserByPk = async (id: string): Promise<UserModel | null> 
 
     // Verifica si ya esta desactivado
     if (!user.isValid) {
-      throw new Error('El usuario ya está desactivado');
+      throw new Error("El usuario ya está desactivado");
     }
 
     // Actualizar estado del usuario (desactivación lógica)
@@ -96,12 +97,21 @@ export const deactivateUserByPk = async (id: string): Promise<UserModel | null> 
   }
 };
 
-
-const validatePassword = (password: string): void => {
-  if (password.length < 6) {
-    throw new Error("La contraseña debe tener al menos 6 caracteres");
+export const saveUserPro = async (
+  userProData: Partial<UserProDTO>,
+  id: string
+): Promise<UserProModel | null> => {
+  try {
+    const existingUser = await UserModel.findOne({ where: { id } });
+    if (existingUser) {
+      throw new Error("Este usuario ya es vendedor");
+    }
+    const newUserPro = await UserProModel.create(userProData);
+    return newUserPro;
+  } catch (error: any) {
+    if (error.message === "Este usuario ya es vendedor") {
+      throw error;
+    }
+    throw new Error("Error al crear el usuario Pro");
   }
-};
-const encryptPassword = async (password: string): Promise<string> => {
-  return bcrypt.hash(password, 10);
 };
