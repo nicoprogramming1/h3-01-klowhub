@@ -26,6 +26,30 @@ export enum Tag {
       OBRASYCONSTRUCCION = "Obras y construcción",
   }
 
+  export enum Functionality {
+    CALENDARIO = "Calendario",
+    GENERACIONDEPDF = "Generación de PDF",
+    EMAILS = "Emails",
+    SMS = "SMS",
+    NOTIFICACIONESPUSH = "Notificaciones Push",
+    GEOLOCALIZACION = "Geolocalización",
+    OCR = "OCR",
+    MACHINELEARNING = "Machine Learning",
+    ESTADISTICASDEUSO = "Estadísticas de uso",
+    DASHBOARDREPORTESDEANALISIS = "Dashboard - Reportes y análisis",
+    GESTIONDEUSUARIOS = "Gestión de Usuarios",
+    REPORTINGAVANZADO = "Reporting avanzado",
+    INTEGRACIONDEDATOS = "Integración de datos",
+    GESTIONDEPERMISOS = "Gestión de permisos",
+    ANALISISDEDATOS = "Análisis de datos",
+    OPTIMIZACIONPERFORMANCE = "Optimización - Performance",
+    ESCANEODOCUMENTOS = "Escaneo de documentos",
+    MONITORDEAUTOMATIZACIONES = "Monitor de automatizaciones",
+    HISTORIALDEAUDITORIA = "Historial de auditoría",
+    APIINTEGRACIONES = "API - Integraciones",
+    FIRMASDIGITALES = "Firmas digitales"
+  }
+
   export enum Competence {
     BASIC = 'Basic',
     INTERMEDIATE = 'Intermediate',
