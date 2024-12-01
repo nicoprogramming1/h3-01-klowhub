@@ -37,7 +37,7 @@ const Navbar = () => {
               <Link href="/plan">Conviertete en PRO</Link>
             </Button>
             <NotificationDesktop />
-            <div className="flex items-center justify-center  ">
+            <div className="flex items-center justify-center  pr-4">
               <UserButton />
             </div>
           </div>

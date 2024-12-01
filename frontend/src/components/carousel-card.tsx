@@ -69,11 +69,11 @@ const CarouselCard = ({ data, link }: CarouselCardProps) => {
         className=" w-full h-auto "
         setApi={setApi}
       >
-        <CarouselContent className="  h-auto">
+        <CarouselContent className=" sm:-ml-0  h-auto">
           {data.map((item, index) => (
             <CarouselItem
               key={item.id}
-              className="flex-shrink-0 sm:basis-1/2 lg:basis-1/3  sm:p-4 justify-center items-center flex "
+              className="flex-shrink-0 sm:basis-1/2 lg:basis-1/3  p-4 justify-center items-center flex "
               onClick={() => {
                 handleclickCard(index);
               }}

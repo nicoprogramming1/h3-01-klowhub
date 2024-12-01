@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 
 import { LoginSchema } from "../schemas";
 import CardWrapper from "./card-wrapper";
-import BackButton from "./back-button";
+import BackButton from "./link-button";
 import { useAuth } from "@/hooks/auth-provider";
 
 const LoginForm = () => {

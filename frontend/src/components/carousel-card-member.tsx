@@ -71,7 +71,7 @@ const CarouselCardMember = ({ data, link }: CarouselCardMemberProps) => {
           {data.map((item, index) => (
             <CarouselItem
               key={item.id}
-              className="flex-shrink-0  sm:basis-1/2 md:basis-1/3 lg:basis-1/4  sm:p-4 justify-center items-center flex "
+              className="flex-shrink-0  sm:basis-1/2 md:basis-1/3 lg:basis-1/4  p-4 justify-center items-center flex "
               onClick={() => {
                 handleclickCard(index);
               }}

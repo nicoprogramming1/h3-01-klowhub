@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 
 import { RegisterSchema } from "../schemas";
 import CardWrapper from "./card-wrapper";
-import BackButton from "./back-button";
+import BackButton from "./link-button";
 import { register } from "../api/register";
 import { useRouter } from "next/navigation";
 

@@ -23,7 +23,7 @@ const CardLearningProgress = ({
   image,
 }: CardLearningProgressProps) => {
   return (
-    <Card className="flex flex-col sm:flex-row  w-full min-h-[500px] h-full  sm:w-full sm:min-h-[250px]  bg-primario-200/80 dark:bg-gray-700/80  rounded-md overflow-hidden ">
+    <Card className="flex flex-col sm:flex-row  w-full min-h-[500px] h-full  sm:w-full sm:min-h-[250px]  bg-background dark:bg-gray-700/80  rounded-md overflow-hidden ">
       <CardHeader className="flex basis-2/5 sm:basis-1/2 lg:basis-1/3   p-0 m-0 relative">
         <Image src={image ?? "/images/card/image1.png"} alt="header" fill />
         <div className="absolute top-2 left-4 flex items-center gap-x-2 rounded-md bg-primario/60 dark:bg-primario-100/80 text-primario-100 dark:text-primario-300 px-2 py-1 text-xs">

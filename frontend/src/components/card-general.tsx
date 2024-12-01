@@ -1,35 +1,32 @@
-import Image from "next/image";
-import { Card, CardContent, CardHeader } from "./ui/card";
-import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
 import { ShoppingCart, User } from "lucide-react";
-import { StarRating } from "./start-rating";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
 
-interface CardGeneralProps {
-  type: string;
-  title: string;
-  description: string;
-  tags?: string[];
-  link: string;
-  image?: string;
-  calification: number;
-  price: number;
+import { CourseData } from "@/features/courses/interfaces";
+
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { StarRating } from "./start-rating";
+import { Button } from "./ui/button";
+
+interface CardGeneralProps extends CourseData {
+  handleNavigation?: (id: number) => void;
 }
 
 const CardGeneral = ({
+  id,
   title,
   description,
   tags,
-  link,
   type,
   image,
   calification,
   price,
+  handleNavigation,
 }: CardGeneralProps) => {
   return (
-    <Card className="flex flex-col  w-full min-h-[500px] h-full   bg-primario-200/80 dark:bg-gray-700/80  rounded-md overflow-hidden ">
+    <Card className="flex flex-col  w-full min-h-[500px] h-full   bg-background dark:bg-gray-700/80  rounded-md overflow-hidden ">
       <CardHeader className="flex basis-2/5    p-0 m-0 relative ">
-        <Image src={image ?? "/images/card/image1.png"} alt="header" fill />
+        <Image src={image ?? "/images/default.png"} alt="header" fill />
 
         <div
           className={cn(
@@ -42,7 +39,7 @@ const CardGeneral = ({
           <p>{type}</p>
         </div>
       </CardHeader>
-      <CardContent className="flex flex-col basis-3/5  p-4  text-sm justify-between">
+      <CardContent className="flex flex-col basis-3/5  p-4  text-sm justify-between gap-2">
         <h1 className="font-semibold">{title}</h1>
 
         <p className="text-xs">{description}</p>
@@ -77,6 +74,9 @@ const CardGeneral = ({
           <Button
             variant={"link"}
             className="w-1/2 sm:w-1/2 text-xs text-primario dark:text-primario-200"
+            onClick={() => {
+              handleNavigation?.(id);
+            }}
           >
             Ver Detalles
           </Button>
