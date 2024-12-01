@@ -13,13 +13,8 @@ class UserModel extends Model {
   public longName!: string;
   public email!: string;
   public password!: string;
-  public country!: string;
-  /* creo que habiamos dicho no incluir telefono por el mom
-  public phone!: number; */
-  public imageProfile!: Buffer | null; // esto es la imagen BLOB de la db
   public role!: string;
   public isValid!: boolean;
-  public isSeller!: boolean
 }
 
 UserModel.init(
@@ -46,31 +41,11 @@ UserModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "user",
-      validate: {
-        isIn: [["user", "admin"]],
-      },
-    },
-    country: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    /*phone: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    }, */
-    imageProfile: {
-      type: DataTypes.BLOB,
-      allowNull: true,
     },
     isValid: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
       field: "is_valid",
-    },
-    isSeller: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-      field: "is_seller",
     },
   },
   {

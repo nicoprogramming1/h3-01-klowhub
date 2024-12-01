@@ -4,7 +4,7 @@ import {
   validateCourseRegistration,
   handleValidationErrors,
   validateFetchCourse,
-} from '../utils/middlewares';
+} from '../middlewares';
 import passport from 'passport';
 
 const courseRouter = Router();
