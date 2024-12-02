@@ -1,4 +1,4 @@
-import { Membership, PaymentMethod, Sector, Tool } from "../models/enum/enum";
+import { PaymentMethod, Sector, Tool } from "../models/enum/enum";
 
 export interface UserDTO {
   longName: string;
@@ -18,8 +18,7 @@ export interface UserProDTO {
   academicFormation?: string;
   certificationLink?: string;
   certificationFiles?: string[];
-  PaymentMethod: PaymentMethod;
+  paymentMethod: PaymentMethod;
   accountData: string;
-  imageProfile?: string
   isMentor?: boolean  // si quiere ser mentor el front enviara un true, sino no lo envia
 }

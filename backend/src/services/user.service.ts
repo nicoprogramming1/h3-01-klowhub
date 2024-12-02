@@ -1,8 +1,7 @@
-import { UserModel } from "../models";
-import { UserDTO, UserProDTO } from "../dtos/user.dto";
+import { UserModel, UserProModel } from "../models";
+import { UserDTO } from "../dtos/user.dto";
 import { MESSAGES } from "../utils/messages";
 import sequelize from "../config/database";
-import UserProModel from "../models/UserPro.model";
 import { encryptPassword, validatePassword } from "../utils/passwords";
 import { Membership } from "../models/enum/enum";
 
@@ -70,9 +69,11 @@ export const updateUserById = async (
   }
 };
 
+// desactiva tanto el perfil basico como el pro si tuviera
 export const deactivateUserByPk = async (
   id: string
 ): Promise<UserModel | null> => {
+  const transaction = await sequelize.transaction();
   try {
     const user = await UserModel.findOne({
       where: { id, isValid: true }, // filtra los usuarios activos solamente
@@ -82,17 +83,25 @@ export const deactivateUserByPk = async (
       throw new Error(MESSAGES.USER_NOT_FOUND);
     }
 
-    // Verifica si ya esta desactivado
-    if (!user.isValid) {
-      throw new Error("El usuario ya está desactivado");
+    // Busca al usuario pro (si existe)
+    const userPro = await UserProModel.findOne({
+      where: { userId: id, isValid: true }, // filtra los perfiles pro activos
+    });
+
+    if (userPro) {
+      userPro.isValid = false;
+      await userPro.save({ transaction });
     }
 
-    // Actualizar estado del usuario (desactivación lógica)
+    // Desactiva el perfil básico
     user.isValid = false;
-    await user.save();
+    await user.save({ transaction });
 
+    await transaction.commit();
     return user;
   } catch (error: any) {
+    // Revertir la transacción en caso de error
+    await transaction.rollback();
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
@@ -100,27 +109,6 @@ export const deactivateUserByPk = async (
   }
 };
 
-export const saveUserPro = async (
-  userProData: Partial<UserProDTO>,
-  id: string
-): Promise<UserProModel | null> => {
-  try {
-    const existingUser = await UserModel.findOne({ where: { id } });
-    if (existingUser) {
-      throw new Error("Este usuario ya es vendedor");
-    }
-    const newUserPro = await UserProModel.create(userProData);
-    return newUserPro;
-  } catch (error: any) {
-    if (error.name === "SequelizeConnectionError") {
-      throw new Error(MESSAGES.CONNECTION_ERROR);
-    }
-    if (error.message === "Este usuario ya es vendedor") {
-      throw error;
-    }
-    throw new Error("Error al crear el usuario Pro");
-  }
-};
 
 export const changeMembership = async (
   id: string,
@@ -151,15 +139,19 @@ export const changeMembership = async (
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
-    throw new Error(error.message || "Error al cambiar la membresía del usuario");
+    throw new Error(
+      error.message || "Error al cambiar la membresía del usuario"
+    );
   }
 };
 
-export const getUserMembership = async (id: string): Promise<Membership | null> => {
+export const getUserMembership = async (
+  id: string
+): Promise<Membership | null> => {
   try {
     if (!id) {
       const error: any = new Error(MESSAGES.MISSED_DATA);
-      error.status = 400;  // Código de estado para datos faltantes
+      error.status = 400; // Código de estado para datos faltantes
       throw error;
     }
 
@@ -169,24 +161,23 @@ export const getUserMembership = async (id: string): Promise<Membership | null> 
 
     if (!user) {
       const error: any = new Error(MESSAGES.USER_NOT_FOUND);
-      error.status = 404;  // Código de estado para "no encontrado"
+      error.status = 404; // Código de estado para "no encontrado"
       throw error;
     }
 
     if (!user.membership) {
-       null; // El usuario no tiene membresía asignada
+      null; // El usuario no tiene membresía asignada
     }
 
     return user.membership as Membership;
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
       const dbError: any = new Error(MESSAGES.CONNECTION_ERROR);
-      dbError.status = 500;  // Error de conexión
+      dbError.status = 500; // Error de conexión
       throw dbError;
     }
     const generalError: any = new Error(error.message || MESSAGES.FETCH_ERROR);
-    generalError.status = 500;  // Error genérico de servidor
+    generalError.status = 500; // Error genérico de servidor
     throw generalError;
   }
 };
-

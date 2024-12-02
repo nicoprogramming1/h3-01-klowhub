@@ -1,6 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/database";
-import { Membership, PaymentMethod, Sector, Tool } from "./enum/enum";
+import { PaymentMethod, Sector, Tool } from "./enum/enum";
 import { generateShortID } from "../utils/generateShortID";
 
 class UserProModel extends Model {
@@ -17,9 +17,9 @@ class UserProModel extends Model {
   public academicFormation!: string;
   public certificationLink!: string;
   public certificationFiles!: string[];
-  public PaymentMethod!: PaymentMethod;
+  public paymentMethod!: PaymentMethod;
   public accountData!: string;
-  public imageProfile!: Buffer | null; // esto es la imagen BLOB para la db
+  public imageProfile!: string;
   public isValid!: boolean; // perfil activo/inactivo
   public isMentor!: boolean; // por defecto esta en null a menos que el front envie el true
   public userId!: string; // id de su perfil de usuario básico (User.model.ts)
@@ -108,7 +108,7 @@ UserProModel.init(
       field: "account_data",
     },
     imageProfile: {
-      type: DataTypes.BLOB,
+      type: DataTypes.STRING,
       allowNull: true,
       field: "image_profile",
     },

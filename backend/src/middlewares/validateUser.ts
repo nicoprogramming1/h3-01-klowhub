@@ -18,17 +18,6 @@ export const updateUserValidator: ValidationChain[] = [
     .withMessage("La contraseña debe ser un string")
     .isLength({ min: 6 })
     .withMessage("La contraseña debe tener al menos 6 caracteres"),
-  body("imageProfile")
-    .optional()
-    .custom((value) => {
-      const base64Regex = /^data:image\/(jpeg|jpg|png);base64,/;
-      if (!base64Regex.test(value)) {
-        throw new Error(
-          "El formato de la imagen debe ser Base64 y debe contener un prefijo como 'data:image/jpeg;base64,'"
-        );
-      }
-      return true;
-    }),
 ];
 
 export const idByParameterValidator: ValidationChain[] = [

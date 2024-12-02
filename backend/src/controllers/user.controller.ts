@@ -66,48 +66,12 @@ export const deactivateUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     if (res.headersSent) {
       console.error("Error en deactivateUser: ", MESSAGES.HEADERS_SENT);
-      return; // Si los encabezados ya se enviaron, no hacer nada más
+      return;
     }
     console.error(MESSAGES.ELIMINATE_ERROR, error.message);
     res
       .status(error.message === MESSAGES.USER_NOT_FOUND ? 404 : 500)
       .json({ message: error.message });
-  }
-};
-
-export const registerUserPro = async (req: Request, res: Response) => {
-  try {
-    const { userProData } = req.body;
-    const { id } = req.params;
-
-    if (!userProData) {
-      res.status(400).json({
-        message: MESSAGES.MISSED_DATA,
-      });
-      return;
-    }
-
-    const newUserPro = await userService.saveUserPro(userProData, id);
-
-    res.status(201).json({
-      message: MESSAGES.CREATE_SUCCESS,
-      data: newUserPro,
-    });
-  } catch (error: any) {
-    if (res.headersSent) {
-      console.error("Error en registerPro: ", MESSAGES.HEADERS_SENT);
-      return; // Si los encabezados ya se enviaron, no hacer nada más
-    }
-    console.error("Error en saveUserPro:", error);
-    if (error.message === "Este usuario ya es vendedor") {
-      res.status(400).json({ message: error.message });
-      return;
-    } else {
-      res.status(500).json({
-        message: MESSAGES.CREATE_ERROR,
-        data: null,
-      });
-    }
   }
 };
 
