@@ -40,6 +40,7 @@ export const registerUserPro = async (req: Request, res: Response) => {
 
     // Asignar la URL de la imagen al perfil del usuario
     userProData.imageProfile = url;
+    userProData.userId = id
 
     // Guardar el perfil PRO del usuario
     const newUserPro = await userProService.saveUserPro(userProData, id);
