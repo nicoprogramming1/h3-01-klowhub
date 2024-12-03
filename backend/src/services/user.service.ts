@@ -4,6 +4,7 @@ import { MESSAGES } from "../utils/messages";
 import sequelize from "../config/database";
 import { encryptPassword, validatePassword } from "../utils/passwords";
 import { Membership } from "../models/enum/enum";
+import { Transaction } from "sequelize";
 
 export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
   try {
@@ -35,7 +36,7 @@ export const updateUserById = async (
   updateData: Partial<UserDTO>,
   password?: string
 ): Promise<UserModel | null> => {
-  const transaction = await sequelize.transaction();
+  const transaction: Transaction = await sequelize.transaction();
 
   try {
     const user = await UserModel.findOne({
@@ -73,7 +74,7 @@ export const updateUserById = async (
 export const deactivateUserByPk = async (
   id: string
 ): Promise<UserModel | null> => {
-  const transaction = await sequelize.transaction();
+  const transaction: Transaction = await sequelize.transaction();
   try {
     const user = await UserModel.findOne({
       where: { id, isValid: true }, // filtra los usuarios activos solamente
