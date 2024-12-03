@@ -2,6 +2,7 @@ import { Platform, Sector, Tag } from "../models/enum/enum";
 
 export interface CourseDTO {
     course: {
+      id?: string,
       title: string;
       detail: string;
       aboutLearn?: string;
@@ -16,12 +17,14 @@ export interface CourseDTO {
   }
   
   export interface ModuleDataDTO {
+    id?: string,
     title: string;
     detail: string;
     lessons: LessonDataDTO[];
   }
 
   export interface LessonDataDTO {
+    id?: string,
     title: string;
     detail: string;
     lessonLink: string;
