@@ -1,48 +1,42 @@
 import { Request, Response } from "express";
-import { imageService, userProService } from "../services";
+import { userProService } from "../services";
 import { MESSAGES } from "../utils/messages";
 
 export const registerUserPro = async (req: Request, res: Response) => {
   try {
-    // Verificar que el archivo e información necesaria están presentes
-    if (!req.file || !req.body.userProData) {
+    if (!req.body) {
       res.status(400).json({
         message: MESSAGES.MISSED_DATA,
       });
-      return
+      return;
     }
 
-    // Parsear el JSON de `userProData`
-    const userProData = JSON.parse(req.body.userProData);
     const { id } = req.params; // ID del usuario asociado
-    const { path: localFilePath, filename } = req.file;
+    const userProData = req.body;
 
-    // Validar si el usuario ya es mentor (opcional)
+    if (!id) {
+      res.status(400).json({
+        message: MESSAGES.ID_MISSING,
+      });
+      return;
+    }
+
     if (userProData.isMentor) {
       const isMentor = await userProService.isMentor(id);
       if (isMentor) {
         res.status(400).json({
           message: MESSAGES.MENTOR_ALREADY,
         });
-        return
+        return;
       }
     }
 
-    // Subir la imagen a Cloudinary
-    const { url, publicId } = await imageService.uploadToCloudinary(localFilePath, filename);
+    // Asignar imagen de perfil por default desde la carpeta 'public/images'
+    const DEFAULT_IMAGE_URL = `${req.protocol}://${req.get("host")}/static/images/default-profile.jpg`;
+    userProData.imageProfile = DEFAULT_IMAGE_URL;
 
-    if (!url || !publicId) {
-      res.status(500).json({
-        message: MESSAGES.IMAGE_UPDATED_ERROR,
-      });
-      return
-    }
-
-    // Asignar la URL de la imagen al perfil del usuario
-    userProData.imageProfile = url;
     userProData.userId = id
 
-    // Guardar el perfil PRO del usuario
     const newUserPro = await userProService.saveUserPro(userProData, id);
 
     res.status(201).json({

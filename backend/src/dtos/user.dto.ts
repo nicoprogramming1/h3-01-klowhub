@@ -6,6 +6,7 @@ export interface UserDTO {
 }
 
 export interface UserProDTO {
+  id?: string;
   firstName: string;
   lastName: string;
   description?: string;
@@ -21,5 +22,6 @@ export interface UserProDTO {
   paymentMethod: PaymentMethod;
   accountData: string;
   imageProfile?: string;
+  userId?: string
   isMentor?: boolean  // si quiere ser mentor el front enviara un true, sino no lo envia
 }
