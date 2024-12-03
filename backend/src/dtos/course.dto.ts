@@ -6,7 +6,7 @@ export interface CourseDTO {
       detail: string;
       aboutLearn?: string;
       platform: Platform;
-      image: string;
+      imageMain?: string;
       sector: Sector;
       tags?: Tag[];
       price: number;
@@ -14,15 +14,17 @@ export interface CourseDTO {
     };
     modules: ModuleDataDTO[];
   }
-
-  export interface LessonDataDTO {
-    title: string;
-    detail: string;
-    lessonLink: string;
-  }
   
   export interface ModuleDataDTO {
     title: string;
     detail: string;
     lessons: LessonDataDTO[];
   }
+
+  export interface LessonDataDTO {
+    title: string;
+    detail: string;
+    lessonLink: string;
+    imageMain?: string
+  }
+  
