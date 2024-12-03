@@ -20,5 +20,6 @@ export interface UserProDTO {
   certificationFiles?: string[];
   paymentMethod: PaymentMethod;
   accountData: string;
+  imageProfile?: string;
   isMentor?: boolean  // si quiere ser mentor el front enviara un true, sino no lo envia
 }
