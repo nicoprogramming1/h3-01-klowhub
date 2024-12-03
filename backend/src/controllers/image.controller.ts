@@ -35,12 +35,24 @@ export const imageRegisterUserPro = async (req: Request, res: Response) => {
       return;
     }
 
+    const userPro = await userProService.getUserProByUserId(id)
+
+    if(!userPro){
+      res.status(404).json({
+        message: MESSAGES.USER_NOT_FOUND,
+      });
+      return;
+    }
+
     // Crear objeto para actualizar datos
     const userProData: Partial<UserProDTO> = {
       imageProfile: url,
+      userId: id,
     };
 
-    const updatedUserPro = await userProService.updateUserPro(id, userProData);
+    const userProId = userPro.id
+    
+    const updatedUserPro = await userProService.updateUserPro(userProId!, userProData);
     res.status(200).json({
       message: MESSAGES.UPDATE_SUCCESS,
       data: updatedUserPro,
