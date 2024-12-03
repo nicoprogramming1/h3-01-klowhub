@@ -2,7 +2,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-const uploadsPath = path.join(__dirname, "..", "public", "uploads");
+const uploadsPath = path.join(__dirname, "..", "uploads");
 
 // Crear el directorio si no existe
 fs.promises.mkdir(uploadsPath, { recursive: true }).catch((err) => {
