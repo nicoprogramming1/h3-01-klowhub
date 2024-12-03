@@ -1,4 +1,3 @@
-import { ModuleData } from "../interfaces/course.interface";
 import { Platform, Sector, Tag } from "../models/enum/enum";
 
 export interface CourseDTO {
@@ -13,5 +12,17 @@ export interface CourseDTO {
       price: number;
       ownerId: string;
     };
-    modules: ModuleData[];
+    modules: ModuleDataDTO[];
+  }
+
+  export interface LessonDataDTO {
+    title: string;
+    detail: string;
+    lessonLink: string;
+  }
+  
+  export interface ModuleDataDTO {
+    title: string;
+    detail: string;
+    lessons: LessonDataDTO[];
   }
