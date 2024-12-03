@@ -12,7 +12,7 @@ export const saveUserPro = async (
   try {
     // Verificar si el usuario ya tiene un perfil de vendedor
     const existingUser = await UserModel.findOne({
-      where: { id },
+      where: { id, isValid: true },
       transaction,
     });
     if (!existingUser) {
@@ -38,7 +38,7 @@ export const saveUserPro = async (
     await transaction.commit();
     return newUserPro;
   } catch (error: any) {
-    await transaction.rollback(); // Revertir cambios ena caso de error
+    await transaction.rollback(); // Revertir cambios en caso de error
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
@@ -75,7 +75,7 @@ export const getUserProByUserId = async (
 
 export const updateUserPro = async (
   id: string,
-  userData: UserProDTO
+  userData: Partial<UserProDTO>
 ): Promise<UserProDTO | null> => {
   try {
     const existingUser = await UserProModel.findOne({
