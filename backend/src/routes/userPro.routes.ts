@@ -11,7 +11,7 @@ const multerMdw = uploadImageMdw.single('imageProfile')    // mdw de carga de im
 
 // User PRO -> el id es del user básico asociado a su perfil PRO
 userRouter.route('/:id')
-    .post(authenticate, idByParameterValidator, /* validateUserPro, */ multerMdw, handleValidationErrors, registerUserPro)
+    .post(authenticate, idByParameterValidator, validateUserPro, multerMdw, handleValidationErrors, registerUserPro)
     .get(authenticate, idByParameterValidator, handleValidationErrors, getUserProByUserId)
     .patch(authenticate, idByParameterValidator, updateUserValidator, handleValidationErrors, updateUserPro)
 
