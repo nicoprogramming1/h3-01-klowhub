@@ -8,7 +8,11 @@ export const register = async (req: Request, res: Response) => {
   try {
     const { longName, email, password } = req.body;
 
-    const newUser = await registerUser(longName, email, password);
+    // Asignar imagen de perfil por default desde la carpeta 'public/images'
+    const DEFAULT_IMAGE_URL = `${req.protocol}://${req.get("host")}/static/images/default-profile.jpg`;
+    const imageProfile = DEFAULT_IMAGE_URL;
+
+    const newUser = await registerUser(longName, email, password, imageProfile);
 
     res.status(201).json({
       message: MESSAGES.USER_CREATE_SUCCESS,
@@ -17,6 +21,7 @@ export const register = async (req: Request, res: Response) => {
         longName: newUser.longName,
         email: newUser.email,
         role: newUser.role,
+        imageProfile: newUser.imageProfile,
         isValid: newUser.isValid,
       },
     });
