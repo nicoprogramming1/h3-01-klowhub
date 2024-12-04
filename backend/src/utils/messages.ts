@@ -12,6 +12,7 @@ export const MESSAGES = {
   HEADERS_SENT: "Los encabezados ya fueron enviados",
   ID_MISSING: "No se ha recibido un id",
   IMAGE_UPDATED_ERROR: "Error en la carga de la imágen",
+  IMAGE_UPDATED_SUCCESS: "La imagen se cargó con éxito",
   LOGIN_ERROR: "Error al iniciar sesión",
   LOGOUT_ERROR: "Error al cerrar la sesión",
   MEMBERSHIP_INVALID: "La membresía proporcionada no es válida",
