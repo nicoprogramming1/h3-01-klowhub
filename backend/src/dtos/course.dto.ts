@@ -3,31 +3,31 @@ import { Platform, Sector, Tag } from "../models/enum/enum";
 export interface CourseDTO {
     course: {
       id?: string,
-      title: string;
-      detail: string;
+      title?: string;
+      detail?: string;
       aboutLearn?: string;
-      platform: Platform;
+      platform?: Platform;
       imageMain?: string;
-      sector: Sector;
+      sector?: Sector;
       tags?: Tag[];
-      price: number;
-      ownerId: string;
+      price?: number;
+      ownerId?: string;
     };
-    modules: ModuleDataDTO[];
+    modules?: ModuleDataDTO[];
   }
   
   export interface ModuleDataDTO {
     id?: string,
-    title: string;
-    detail: string;
-    lessons: LessonDataDTO[];
+    title?: string;
+    detail?: string;
+    lessons?: LessonDataDTO[];
   }
 
   export interface LessonDataDTO {
     id?: string,
-    title: string;
-    detail: string;
-    lessonLink: string;
+    title?: string;
+    detail?: string;
+    lessonLink?: string;
     imageMain?: string
   }
   
