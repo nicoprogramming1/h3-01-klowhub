@@ -2,6 +2,7 @@ import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/database";
 import { generateShortID } from "../utils/generateShortID";
 import { Membership } from "./enum/enum";
+import { ProductModel } from "./Product.model";
 
 class UserModel extends Model {
   public id!: string;
@@ -14,6 +15,7 @@ class UserModel extends Model {
   public membership!: Membership | null
   public isValid!: boolean;
   public isVendor!: boolean // por defecto es false hasta que se registra como vendedor
+  public products!: ProductModel[]
 }
 
 UserModel.init(
@@ -44,6 +46,10 @@ UserModel.init(
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "user",
+    },
+    products: {
+      type: DataTypes.ARRAY(DataTypes.STRING(10)),
+      allowNull: true,
     },
     imageProfile: {
       type: DataTypes.STRING,
