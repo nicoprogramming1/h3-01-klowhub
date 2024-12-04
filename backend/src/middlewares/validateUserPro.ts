@@ -1,26 +1,6 @@
 import { body, ValidationChain } from "express-validator";
 import { PaymentMethod, Sector, Tool } from "../models/enum/enum";
 
-/* 
-{
-  "firstName": "Roman",
-  "lastName": "Polanski",
-  "description": "Desarrollador con experiencia en automatización y análisis de datos.",
-  "country": "Polonia",
-  "sector": ["Seguridad y vigilancia", "Marketing digital"],
-  "sectorsExperience": "Más de 5 años liderando proyectos de automatización en el sector de marketing digital.",
-  "tools": ["Dropbox", "PostgreSQL", "Box"],
-  "toolsExperience": "Dominio avanzado en análisis y visualización de datos utilizando MySQL y Power BI.",
-  "portfolioLink": "https://romanpolanskiportfolio.com",
-  "academicFormation": "Ingeniería en Sistemas de Información.",
-  "certificationLink": "https://certificaciones.romanpolanski.com",
-  "certificationFiles": ["cert_analista_datos.pdf", "cert_automatizacion.pdf"],
-  "paymentMethod": "Paypal",
-  "accountData": "12333215650",
-  "isMentor": true
-}
- */
-
 export const validateUserPro: ValidationChain[] = [
   body("firstName")
     .isString()
@@ -88,13 +68,6 @@ export const validateUserPro: ValidationChain[] = [
     .isURL()
     .withMessage("El enlace de certificación debe ser una URL válida"),
 
-  body("certificationFiles")
-    .optional()
-    .isArray()
-    .withMessage("Los archivos de certificación deben ser un array")
-    .custom((value) => value.every((file: string) => typeof file === "string"))
-    .withMessage("Todos los archivos de certificación deben ser strings"),
-
   body("paymentMethod")
     .isString()
     .isIn(Object.values(PaymentMethod) as string[])
@@ -105,10 +78,6 @@ export const validateUserPro: ValidationChain[] = [
     .notEmpty()
     .withMessage("Los datos de cuenta son obligatorios"),
 
-  body("isMentor")
-    .optional()
-    .isBoolean()
-    .withMessage("El valor de mentor debe ser un booleano"),
 ];
 
 
@@ -181,13 +150,6 @@ export const validateUpdateUserPro: ValidationChain[] = [
     .isURL()
     .withMessage("El enlace de certificación debe ser una URL válida"),
 
-  body("certificationFiles")
-    .optional()
-    .isArray()
-    .withMessage("Los archivos de certificación deben ser un array")
-    .custom((value) => value.every((file: string) => typeof file === "string"))
-    .withMessage("Todos los archivos de certificación deben ser strings"),
-
   body("paymentMethod")
     .optional()
     .isString()
@@ -198,9 +160,4 @@ export const validateUpdateUserPro: ValidationChain[] = [
     .optional()
     .isString()
     .withMessage("Los datos de cuenta deben ser un string"),
-
-  body("isMentor")
-    .optional()
-    .isBoolean()
-    .withMessage("El valor de mentor debe ser un booleano"),
 ];
