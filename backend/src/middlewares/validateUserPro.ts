@@ -68,10 +68,11 @@ export const validateUserPro: ValidationChain[] = [
     .isURL()
     .withMessage("El enlace de certificación debe ser una URL válida"),
 
-  body("paymentMethod")
+    body("paymentMethod")
     .isString()
-    .isIn(Object.values(PaymentMethod) as string[])
+    .isIn(Object.values(PaymentMethod).map((method) => method.toUpperCase()) as string[]) // Asegúrate de validar correctamente
     .withMessage("El método de pago es inválido"),
+  
 
   body("accountData")
     .isString()
@@ -102,7 +103,7 @@ export const validateUserPro: ValidationChain[] = [
       errors.push("El nivel de experiencia es inválido");
     }
 
-    if (!Object.values(Platform).includes(mentor.plataformas)) {
+    if (!Object.values(Platform).includes(mentor.platform)) {
       errors.push("La plataforma es inválida");
     }
     if (typeof mentor.mentoryCost !== "number" || mentor.mentoryCost <= 0) {
