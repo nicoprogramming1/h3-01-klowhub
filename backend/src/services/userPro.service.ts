@@ -8,7 +8,7 @@ import { Transaction } from "sequelize";
 export const saveUserPro = async (
   userProData: Partial<UserProDTO>,
   id: string
-): Promise<UserProModel | null> => {
+): Promise<Partial<UserProDTO> | null> => {
   const transaction: Transaction = await sequelize.transaction();
   try {
     // Verificar si el usuario ya tiene un perfil de vendedor
@@ -36,8 +36,24 @@ export const saveUserPro = async (
 
     const newUserPro = await UserProModel.create(userProData, { transaction });
 
+    const newUserProDTO: Partial<UserProDTO> = {
+      firstName: newUserPro.firstName,
+      lastName: newUserPro.lastName,
+      about: newUserPro.about,
+      country: newUserPro.country,
+      sector: newUserPro.sector,
+      sectorsExperience: newUserPro.sectorsExperience,
+      tools: newUserPro.tools,
+      toolsExperience: newUserPro.toolsExperience,
+      portfolioLink: newUserPro.portfolioLink,
+      academicFormation: newUserPro.academicFormation,
+      certificationLink: newUserPro.certificationLink,
+      paymentMethod: newUserPro.paymentMethod,
+      imageProfile: newUserPro.imageProfile,
+    }
+
     await transaction.commit();
-    return newUserPro;
+    return newUserProDTO;
   } catch (error: any) {
     await transaction.rollback(); // Revertir cambios en caso de error
     if (error.name === "SequelizeConnectionError") {
@@ -97,20 +113,5 @@ export const updateUserPro = async (
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
     throw error; // Re-lanza otros errores para que sean manejados por el controller
-  }
-};
-
-// checa si el userPro es mentor
-export const isMentor = async (userId: string): Promise<boolean> => {
-  try {
-    const user = await UserProModel.findOne({
-      where: { userId, isValid: true },
-    });
-
-    // Si no existe el usuario o no es mentor, retorna false
-    return user?.isMentor ?? false;
-  } catch (error) {
-    console.error("Error al verificar si el usuario es mentor:", error);
-    return false;
   }
 };
