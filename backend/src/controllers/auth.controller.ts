@@ -55,7 +55,7 @@ export const login = async (req: Request, res: Response) => {
       ipAddress
     );
 
-    res.json({ user, token });
+    res.status(200).json({ token });
   } catch (error: any) {
     if (res.headersSent) {
       console.error("Error en getUserMembership: ", MESSAGES.HEADERS_SENT);
@@ -89,7 +89,7 @@ export const logout = async (req: Request, res: Response) => {
 
     const result = await logoutUser(device, app, token);
 
-    res.json({
+    res.status(200).json({
       result,
     });
   } catch (error: any) {
