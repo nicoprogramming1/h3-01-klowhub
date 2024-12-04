@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { imageService, userProService } from "../services";
+import { imageService, userProService, userService } from "../services";
 import { MESSAGES } from "../utils/messages";
-import { UserProDTO } from "../dtos/user.dto";
+import { UserDTO, UserProDTO } from "../dtos/user.dto";
 import courseService from "../services/course.service";
 import { CourseDTO, LessonDataDTO } from "../dtos/course.dto";
 
@@ -69,7 +69,75 @@ export const imageRegisterUserPro = async (req: Request, res: Response) => {
     }
 
     const statusCode = error.status || 500;
-    const message = error.message || MESSAGES.FETCH_ERROR;
+    const message = error.message || MESSAGES.UPDATE_ERROR;
+
+    res.status(statusCode).json({ message });
+  }
+};
+
+export const imageRegisterUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      res.status(400).json({
+        message: MESSAGES.ID_MISSING,
+      });
+      return;
+    }
+    if (!req.file) {
+      res.status(400).json({
+        message: MESSAGES.FILE_MISSING,
+      });
+      return;
+    }
+
+    const { path: localFilePath, filename } = req.file;
+
+    // Subir la imagen a Cloudinary
+    const { url, publicId } = await imageService.uploadToCloudinary(
+      localFilePath,
+      filename
+    );
+
+    if (!url || !publicId) {
+      res.status(500).json({
+        message: MESSAGES.IMAGE_UPDATED_ERROR,
+      });
+      return;
+    }
+
+    const user = await userService.findUserDTOByPk(id);
+
+    if (!user) {
+      res.status(404).json({
+        message: MESSAGES.USER_NOT_FOUND,
+      });
+      return;
+    }
+
+    // Crear objeto para actualizar datos
+    const userData: Partial<UserDTO> = {
+      imageProfile: url
+    };
+
+
+    const updatedUser = await userService.updateUserById(
+      id,
+      userData
+    );
+    res.status(200).json({
+      message: MESSAGES.UPDATE_SUCCESS,
+      data: updatedUser,
+    });
+  } catch (error: any) {
+    if (res.headersSent) {
+      console.error("Error en imageRegisterUser: ", MESSAGES.HEADERS_SENT);
+      return;
+    }
+
+    const statusCode = error.status || 500;
+    const message = error.message || MESSAGES.UPDATE_ERROR;
 
     res.status(statusCode).json({ message });
   }
