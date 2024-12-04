@@ -9,6 +9,8 @@ class UserModel extends Model {
   public email!: string;
   public password!: string;
   public role!: string;
+  public about!: string;
+  public imageProfile!: string
   public membership!: Membership | null
   public isValid!: boolean;
   public isVendor!: boolean // por defecto es false hasta que se registra como vendedor
@@ -34,10 +36,18 @@ UserModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    about: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     role: {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "user",
+    },
+    imageProfile: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     membership: {
       type: DataTypes.STRING,
