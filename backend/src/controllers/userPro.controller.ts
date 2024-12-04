@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { mentorService, userProService } from "../services";
+import { mentorService, userProService, userService } from "../services";
 import { MESSAGES } from "../utils/messages";
 
 export const registerUserPro = async (req: Request, res: Response) => {
@@ -14,11 +14,21 @@ export const registerUserPro = async (req: Request, res: Response) => {
     const { id } = req.params; // ID del usuario asociado
     const { mentor, ...userProData } = req.body;
 
+    console.log(mentor)
+
     if (!id) {
       res.status(400).json({
         message: MESSAGES.ID_MISSING,
       });
       return;
+    }
+
+    const gotMembership = await userService.getUserMembership(id)
+    if(!gotMembership){
+      res.status(404).json({
+        message: MESSAGES.MEMBERSHIP_NULL
+      })
+      return
     }
 
     // Asignar imagen de perfil por defecto desde la carpeta 'public/images'
