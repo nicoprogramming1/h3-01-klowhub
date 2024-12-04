@@ -110,7 +110,6 @@ export const deactivateUserByPk = async (
   }
 };
 
-
 export const changeMembership = async (
   id: string,
   membership: Membership
