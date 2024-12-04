@@ -76,7 +76,7 @@ export enum Tag {
   }
 
   export enum Membership {
-    BASICO = "Básico",
+    BASICO = "Básica",
     PROFESIONAL = "Profesional",
     PREMIUM = "Premium"
   }
