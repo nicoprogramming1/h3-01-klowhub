@@ -36,7 +36,9 @@ export const saveUserPro = async (
 
     const newUserPro = await UserProModel.create(userProData, { transaction });
 
+
     const newUserProDTO: Partial<UserProDTO> = {
+      id: newUserPro.id,
       firstName: newUserPro.firstName,
       lastName: newUserPro.lastName,
       about: newUserPro.about,
