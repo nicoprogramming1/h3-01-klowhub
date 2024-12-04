@@ -1,7 +1,7 @@
 import passport from "passport";
 import express from 'express';
-import { getOneUser, deactivateUser, updateUser, getMyUser } from '../controllers/user.controller'
-import { idByParameterValidator, handleValidationErrors, updateUserValidator, uploadImageMdw } from '../middlewares'
+import { getOneUser, deactivateUser, updateUser, getMyUser, getUserMembership, changeMembership } from '../controllers/user.controller'
+import { idByParameterValidator, handleValidationErrors, updateUserValidator, uploadImageMdw, changeMembershipValidator } from '../middlewares'
 import { imageController } from "../controllers";
 
 const userRouter = express.Router();
@@ -19,5 +19,9 @@ userRouter.route('/imageProfile/:id')
 
 userRouter.route('/myProfile/:id')
   .get(authenticate, idByParameterValidator, handleValidationErrors, getMyUser);
+
+userRouter.route('/membership/:id')
+  .get(authenticate, idByParameterValidator, handleValidationErrors, getUserMembership)
+  .patch(authenticate, idByParameterValidator, changeMembershipValidator, handleValidationErrors, changeMembership)
 
 export default userRouter;
