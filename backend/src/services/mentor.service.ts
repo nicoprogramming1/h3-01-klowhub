@@ -9,7 +9,7 @@ export const saveMentor = async (
 
     const existingMentor = await getMentor(mentor.userProId)
 
-    if(!existingMentor){
+    if(existingMentor){
         const error: any = new Error(MESSAGES.MENTOR_ALREADY)
         error.statusCode = 400
         throw error
@@ -45,9 +45,7 @@ export const getMentor = async (userProId: string): Promise<MentorDTO | null> =>
         const findedMentor = await MentorModel.findOne({where: {userProId}})
 
         if(!findedMentor){
-            const error: any = new Error(MESSAGES.MENTOR_NOT_FOUNDED)
-            error.statusCode = 404
-            throw error
+            return null
         }
 
         return findedMentor.toJSON() as MentorDTO;
