@@ -3,12 +3,13 @@ import { UserProDTO } from "../dtos/user.dto";
 import { MESSAGES } from "../utils/messages";
 import sequelize from "../config/database";
 import UserProModel from "../models/UserPro.model";
+import { Transaction } from "sequelize";
 
 export const saveUserPro = async (
   userProData: Partial<UserProDTO>,
   id: string
 ): Promise<UserProModel | null> => {
-  const transaction = await sequelize.transaction();
+  const transaction: Transaction = await sequelize.transaction();
   try {
     // Verificar si el usuario ya tiene un perfil de vendedor
     const existingUser = await UserModel.findOne({
