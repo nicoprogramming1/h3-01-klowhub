@@ -2,7 +2,7 @@ import { Transaction } from "sequelize";
 import sequelize from "../config/database";
 import { CourseModel, CourseModuleModel, LessonModel } from "../models/";
 import { MESSAGES } from "../utils/messages";
-import { CourseDTO, LessonDataDTO, ModuleDataDTO } from "../dtos/course.dto";
+import { CourseDTO } from "../dtos/course.dto";
 
 const saveCourse = async (courseData: CourseDTO): Promise<CourseDTO | null> => {
   const transaction: Transaction = await sequelize.transaction();
@@ -13,7 +13,7 @@ const saveCourse = async (courseData: CourseDTO): Promise<CourseDTO | null> => {
     const modulesWithLessons = [];
 
     // Crear los módulos y sus lecciones asociadas
-    for (const moduleData of courseData.modules) {
+    for (const moduleData of courseData.modules!) {
       const module = await CourseModuleModel.create(
         {
           ...moduleData,
@@ -23,7 +23,7 @@ const saveCourse = async (courseData: CourseDTO): Promise<CourseDTO | null> => {
       );
 
       const lessons = [];
-      for (const lessonData of moduleData.lessons) {
+      for (const lessonData of moduleData.lessons!) {
         const lesson = await LessonModel.create(
           {
             ...lessonData,
@@ -75,11 +75,11 @@ const findCourse = async (courseId: string) => {
             {
               model: LessonModel,
               attributes: [
-                'title',
-                'detail',
-                'lessonLink',
-                'additionalPdf1',
-                'additionalPdf2',
+                "title",
+                "detail",
+                "lessonLink",
+                "additionalPdf1",
+                "additionalPdf2",
               ],
             },
           ],
@@ -95,4 +95,29 @@ const findCourse = async (courseId: string) => {
   }
 };
 
-export default { saveCourse, findCourse };
+export const updateCourse = async (
+  id: string,
+  courseData: Partial<CourseDTO>
+): Promise<CourseDTO | null> => {
+  try {
+    const [rowsAffected] = await CourseModel.update(courseData, {
+      where: { id },
+    });
+
+    if (rowsAffected === 0) {
+      const error: any = new Error(MESSAGES.UPDATE_ERROR);
+      error.status = 204;
+      throw error;
+    }
+
+    const updatedCourse = await CourseModel.findByPk(id);
+    return updatedCourse ? (updatedCourse.toJSON() as CourseDTO) : null;
+  } catch (error: any) {
+    if (error.name === "SequelizeConnectionError") {
+      throw new Error(MESSAGES.CONNECTION_ERROR);
+    }
+    throw error;
+  }
+};
+
+export default { saveCourse, findCourse, updateCourse };
