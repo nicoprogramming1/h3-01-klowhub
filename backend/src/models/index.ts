@@ -4,6 +4,7 @@ import DeviceSession from "./DeviceSession.model";
 import LessonModel from "./Lesson.model";
 import UserModel from "./User.model";
 import UserProModel from "./UserPro.model";
+import MentorModel from "./Mentor.model";
 
 // DeviceSession con User
 DeviceSession.belongsTo(UserModel, { foreignKey: "userId" });
@@ -24,6 +25,10 @@ LessonModel.belongsTo(CourseModuleModel, { foreignKey: "courseModuleId" });
 UserProModel.belongsTo(UserModel, { foreignKey: "userId" });
 UserModel.hasOne(UserProModel, { foreignKey: "userId" });
 
+// Mentor con UserPro
+MentorModel.belongsTo(UserProModel, { foreignKey: "userProId" });
+UserProModel.hasOne(MentorModel, { foreignKey: "userProId" });
+
 export {
   CourseModel,
   CourseModuleModel,
@@ -31,4 +36,5 @@ export {
   DeviceSession,
   UserModel,
   UserProModel,
+  MentorModel,
 };
