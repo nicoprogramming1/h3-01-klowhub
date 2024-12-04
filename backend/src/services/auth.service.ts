@@ -6,7 +6,8 @@ import DeviceSession from '../models/DeviceSession.model';
 export const registerUser = async (
   longName: string,
   email: string,
-  password: string
+  password: string,
+  imageProfile: string
 ) => {
   try {
     const existingUser = await UserModel.findOne({ where: { email } });
@@ -16,10 +17,13 @@ export const registerUser = async (
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    
+
     const newUser = await UserModel.create({
       longName,
       email,
       password: hashedPassword,
+      imageProfile
     });
 
     return newUser;
