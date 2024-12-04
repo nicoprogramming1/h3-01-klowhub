@@ -86,3 +86,16 @@ export enum Tag {
     PAYPAL = "Paypal",
     STRIPE = "Stripe"
   }
+
+  export enum Language {
+    ESPAÑOL = "Español",
+    INGLES = "Inglés",
+    ALEMAN = "Alemán",
+    PORTUGUES = "Portugués",
+  }
+
+  export enum Expertise {
+    JUNIOR = "Junior",
+    SEMISENIOR = "Semi senior",
+    SENIOR = "Senior",
+  }
