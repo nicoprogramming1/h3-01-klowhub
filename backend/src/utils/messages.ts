@@ -6,8 +6,10 @@ export const MESSAGES = {
   CREATE_ERROR: "Error durante la operación de registro",
   ELIMINATE_SUCCESS: "La eliminación se completó con éxito",
   ELIMINATE_ERROR: "Error durante la eliminación",
+  EMAIL_ALREADY: "El email proporcionado ya existe",
   FETCH_SUCCESS: "La información solicitada fue recuperada con éxito",
   FETCH_ERROR: "Error al recuperar la información",
+  FORBIDDEN: "No autorizado",
   FILE_MISSING: "No se ha recibido un archivo",
   HEADERS_SENT: "Los encabezados ya fueron enviados",
   ID_MISSING: "No se ha recibido un id",
@@ -32,4 +34,5 @@ export const MESSAGES = {
   USER_CREATE_SUCCESS: "Usuario creado con éxito",
   USER_CREATE_ERROR: "No fue posible crear el usuario",
   USER_NOT_FOUND: "El usuario no existe",
+  UNAUTHENTICATED: "Debes estar autenticado",
 };
