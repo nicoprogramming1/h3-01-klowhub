@@ -23,12 +23,46 @@ export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
       imageProfile: user.imageProfile,
     };
 
-    return userDTO
+    return userDTO;
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
     throw new Error(`${MESSAGES.FETCH_ERROR} + ${error.message}`);
+  }
+};
+
+export const findUserByEmail = async (email: string): Promise<boolean> => {
+  try {
+    const findedProfile = await UserModel.findOne({where: {email}});
+    if (findedProfile) {
+      const error: any = new Error(MESSAGES.EMAIL_ALREADY);
+      error.status = 400;
+      throw error;
+    }
+    return false;
+  } catch (error: any) {
+    if (error.name === "SequelizeConnectionError") {
+      throw new Error(MESSAGES.CONNECTION_ERROR);
+    }
+    throw error;
+  }
+};
+
+export const findMyUser = async (id: string): Promise<UserModel | null> => {
+  try {
+    const findedProfile = await UserModel.findByPk(id);
+    if (!findedProfile) {
+      const error: any = new Error(MESSAGES.USER_NOT_FOUND);
+      error.status = 404;
+      throw error;
+    }
+    return findedProfile;
+  } catch (error: any) {
+    if (error.name === "SequelizeConnectionError") {
+      throw new Error(MESSAGES.CONNECTION_ERROR);
+    }
+    throw error;
   }
 };
 
