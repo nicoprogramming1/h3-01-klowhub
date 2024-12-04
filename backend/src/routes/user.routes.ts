@@ -1,6 +1,6 @@
 import passport from "passport";
 import express from 'express';
-import { getOneUser, deactivateUser, updateUser } from '../controllers/user.controller'
+import { getOneUser, deactivateUser, updateUser, getMyUser } from '../controllers/user.controller'
 import { idByParameterValidator, handleValidationErrors, updateUserValidator, uploadImageMdw } from '../middlewares'
 import { imageController } from "../controllers";
 
@@ -10,11 +10,14 @@ const multerMdw = uploadImageMdw.single('imageProfile')    // mdw de carga de im
 
 // User básico
 userRouter.route('/:id')
-    .get(authenticate, idByParameterValidator, handleValidationErrors, getOneUser)
-    .delete(authenticate, idByParameterValidator, handleValidationErrors, deactivateUser)
-    .patch(authenticate, updateUserValidator, handleValidationErrors, updateUser);
+.get(authenticate, idByParameterValidator, handleValidationErrors, getOneUser)
+.delete(authenticate, idByParameterValidator, handleValidationErrors, deactivateUser)
+.patch(authenticate, updateUserValidator, handleValidationErrors, updateUser);
 
 userRouter.route('/imageProfile/:id')
-    .patch(authenticate, idByParameterValidator, multerMdw, handleValidationErrors, imageController.imageRegisterUser)
+.patch(authenticate, idByParameterValidator, multerMdw, handleValidationErrors, imageController.imageRegisterUser)
+
+userRouter.route('/myProfile/:id')
+  .get(authenticate, idByParameterValidator, handleValidationErrors, getMyUser);
 
 export default userRouter;
