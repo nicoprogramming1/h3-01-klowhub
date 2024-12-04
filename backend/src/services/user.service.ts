@@ -57,7 +57,10 @@ export const findMyUser = async (id: string): Promise<UserModel | null> => {
       error.status = 404;
       throw error;
     }
-    return findedProfile;
+
+    const { password, ...profileWithoutPassword } = findedProfile.toJSON();
+
+    return profileWithoutPassword;
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
@@ -65,6 +68,7 @@ export const findMyUser = async (id: string): Promise<UserModel | null> => {
     throw error;
   }
 };
+
 
 export const updateUserById = async (
   id: string,

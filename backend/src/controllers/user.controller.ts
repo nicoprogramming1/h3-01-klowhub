@@ -50,6 +50,17 @@ export const getMyUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
+    if (!req.user) {
+      res.status(401).json({ message: MESSAGES.UNAUTHENTICATED });
+    }
+
+    const authenticatedUserId = (req.user as { id: string }).id;
+
+    // Verificar si el ID del usuario autenticado coincide con el ID en la URL
+    if (id !== authenticatedUserId) {
+      res.status(403).json({ message: MESSAGES.FORBIDDEN });
+    }
+
     const existingUser = await userService.findMyUser(id);
     if (!existingUser) {
       res.status(404).json({
@@ -106,6 +117,17 @@ export const deactivateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
+    if (!req.user) {
+      res.status(401).json({ message: MESSAGES.UNAUTHENTICATED });
+    }
+
+    const authenticatedUserId = (req.user as { id: string }).id;
+
+    // Verificar si el ID del usuario autenticado coincide con el ID en la URL
+    if (id !== authenticatedUserId) {
+      res.status(403).json({ message: MESSAGES.FORBIDDEN });
+    }
+
     const deactivatedUser = await userService.deactivateUserByPk(id);
 
     res.status(200).json({
@@ -136,10 +158,27 @@ export const changeMembership = async (req: Request, res: Response) => {
       return;
     }
 
+    if (!req.user) {
+      res.status(401).json({ message: MESSAGES.UNAUTHENTICATED });
+    }
+
+    const authenticatedUserId = (req.user as { id: string }).id;
+
+    // Verificar si el ID del usuario autenticado coincide con el ID en la URL
+    if (id !== authenticatedUserId) {
+      res.status(403).json({ message: MESSAGES.FORBIDDEN });
+    }
+
     const updatedUser = await userService.changeMembership(id, membership);
 
+    if(!updatedUser){
+      res.status(500).json({
+        message: MESSAGES.UPDATE_ERROR
+      })
+      return
+    }
+
     res.status(200).json({
-      user: updatedUser,
       message: MESSAGES.UPDATE_SUCCESS,
     });
   } catch (error: any) {
