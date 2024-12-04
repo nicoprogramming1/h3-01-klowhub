@@ -3,7 +3,7 @@ import express from 'express';
 import { getUserProByUserId, registerUserPro, updateUserPro } from '../controllers/userPro.controller'
 import { idByParameterValidator, handleValidationErrors, validateUserPro, updateUserValidator } from '../middlewares'
 import { uploadImageMdw } from '../middlewares'
-import { imageProController } from "../controllers";
+import { imageController } from "../controllers";
 
 const userRouter = express.Router();
 const authenticate = passport.authenticate('jwt', { session: false });
@@ -16,6 +16,6 @@ userRouter.route('/:id')
     .patch(authenticate, idByParameterValidator, updateUserValidator, handleValidationErrors, updateUserPro)
 
 userRouter.route('/imageProfile/:id')
-    .post(authenticate, idByParameterValidator, multerMdw, handleValidationErrors, imageProController.imageRegisterUserPro)
+    .patch(authenticate, idByParameterValidator, multerMdw, handleValidationErrors, imageController.imageRegisterUserPro)
 
 export default userRouter;
