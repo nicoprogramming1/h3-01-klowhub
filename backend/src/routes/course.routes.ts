@@ -7,7 +7,7 @@ import {
   uploadImageMdw,
   idByParameterValidator
 } from '../middlewares';
-import { imageProController } from "../controllers";
+import { imageController } from "../controllers";
 import passport from 'passport';
 
 const courseRouter = Router();
@@ -24,10 +24,10 @@ courseRouter
   );
 
 courseRouter.route('/imageCourse/:id')
-  .post(authenticate, idByParameterValidator, multerMdw, handleValidationErrors, imageProController.imageRegisterCourse)
+  .post(authenticate, idByParameterValidator, multerMdw, handleValidationErrors, imageController.imageRegisterCourse)
 
 courseRouter.route('/imageLesson/:id')
-  .post(authenticate, idByParameterValidator, multerMdw, handleValidationErrors, imageProController.imageRegisterLesson)
+  .post(authenticate, idByParameterValidator, multerMdw, handleValidationErrors, imageController.imageRegisterLesson)
 
 courseRouter
   .route('/:id')
