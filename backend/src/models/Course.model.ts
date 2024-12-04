@@ -31,16 +31,10 @@ CourseModel.init(
     competence: {
       type: DataTypes.STRING,
       allowNull: true,
-      validate: {
-        isIn: [Object.values(Competence)],
-      },
     },
     platform: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(Platform)],
-      },
     },
     imageMain: {
       type: DataTypes.STRING,
@@ -49,16 +43,10 @@ CourseModel.init(
     sector: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        isIn: [Object.values(Sector)],
-      },
     },
     tags: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
-      validate: {
-        isIn: [Object.values(Tag)],
-      },
     },
     price: {
       type: DataTypes.DOUBLE,
