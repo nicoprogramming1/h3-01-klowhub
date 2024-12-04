@@ -1,10 +1,11 @@
 import { PaymentMethod, Sector, Tool } from "../models/enum/enum";
 
 export interface UserDTO {
+  id?: string,
   longName: string;
   email: string;
   about?: string;
-  image?: string;
+  imageProfile?: string;
 }
 
 export interface UserProDTO {
