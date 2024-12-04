@@ -1,5 +1,5 @@
 import { body, ValidationChain } from "express-validator";
-import { PaymentMethod, Sector, Tool } from "../models/enum/enum";
+import { Expertise, Language, PaymentMethod, Platform, Sector, Tool } from "../models/enum/enum";
 
 export const validateUserPro: ValidationChain[] = [
   body("firstName")
@@ -12,7 +12,7 @@ export const validateUserPro: ValidationChain[] = [
     .notEmpty()
     .withMessage("El apellido es obligatorio"),
 
-  body("description")
+  body("about")
     .optional()
     .isString()
     .isLength({ max: 500 })
@@ -78,6 +78,57 @@ export const validateUserPro: ValidationChain[] = [
     .notEmpty()
     .withMessage("Los datos de cuenta son obligatorios"),
 
+  // Validación del mentor (opcional)
+  body("mentor").optional().custom((mentor) => {
+    // Validar que el objeto `mentor` tenga el esquema correcto
+    if (typeof mentor !== "object") {
+      throw new Error("El mentor debe ser un objeto válido");
+    }
+
+    const errors: string[] = [];
+
+    // Validar cada campo del mentor
+    if (!Array.isArray(mentor.expertiseArea) || mentor.expertiseArea.length < 1) {
+      errors.push("El área de experiencia debe ser un array con al menos un elemento válido");
+    } else if (
+      !mentor.expertiseArea.every((area: string) =>
+        (Object.values(Sector) as string[]).includes(area)
+      )
+    ) {
+      errors.push("El área de experiencia contiene valores no válidos");
+    }
+
+    if (!Object.values(Expertise).includes(mentor.expertiseLevel)) {
+      errors.push("El nivel de experiencia es inválido");
+    }
+
+    if (!Object.values(Platform).includes(mentor.plataformas)) {
+      errors.push("La plataforma es inválida");
+    }
+    if (typeof mentor.mentoryCost !== "number" || mentor.mentoryCost <= 0) {
+      errors.push("El costo de mentorías debe ser un número positivo");
+    }
+
+    if (!Array.isArray(mentor.language) || mentor.language.length < 1) {
+      errors.push("Los idiomas deben ser un array con al menos un elemento válido");
+    } else if (
+      !mentor.language.every((lang: string) =>
+        (Object.values(Language) as string[]).includes(lang)
+      )
+    ) {
+      errors.push("Los idiomas contienen valores no válidos");
+    }
+
+    if (typeof mentor.aboutMentories !== "string" || mentor.aboutMentories.length > 500) {
+      errors.push("La descripción de las mentorías debe ser un string de hasta 500 caracteres");
+    }
+
+    if (errors.length > 0) {
+      throw new Error(errors.join(". "));
+    }
+
+    return true;
+  }),
 ];
 
 
