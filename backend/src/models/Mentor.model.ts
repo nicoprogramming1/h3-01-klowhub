@@ -8,7 +8,7 @@ class MentorModel extends Model {
   public userProId!: string;
   public expertiseArea!: Sector[];
   public expertiseLevel!: Expertise;
-  public platform!: Platform[];
+  public platform!: Platform;
   public mentoryCost!: number;
   public aboutMentories!: string;
   public language!: Language[];
@@ -40,7 +40,7 @@ MentorModel.init(
       allowNull: false,
     },
     platform: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     mentoryCost: {
