@@ -2,7 +2,7 @@ import { Transaction } from "sequelize";
 import sequelize from "../config/database";
 import { CourseModel, CourseModuleModel, LessonModel } from "../models/";
 import { MESSAGES } from "../utils/messages";
-import { CourseDTO } from "../dtos/course.dto";
+import { CourseDTO, LessonDataDTO } from "../dtos/course.dto";
 
 const saveCourse = async (courseData: CourseDTO): Promise<CourseDTO | null> => {
   const transaction: Transaction = await sequelize.transaction();
@@ -120,4 +120,30 @@ export const updateCourse = async (
   }
 };
 
-export default { saveCourse, findCourse, updateCourse };
+
+export const updateLesson = async (
+  id: string,
+  lessonData: Partial<LessonDataDTO>
+): Promise<CourseDTO | null> => {
+  try {
+    const [rowsAffected] = await CourseModel.update(lessonData, {
+      where: { id },
+    });
+
+    if (rowsAffected === 0) {
+      const error: any = new Error(MESSAGES.UPDATE_ERROR);
+      error.status = 204;
+      throw error;
+    }
+
+    const updatedCourse = await CourseModel.findByPk(id);
+    return updatedCourse ? (updatedCourse.toJSON() as CourseDTO) : null;
+  } catch (error: any) {
+    if (error.name === "SequelizeConnectionError") {
+      throw new Error(MESSAGES.CONNECTION_ERROR);
+    }
+    throw error;
+  }
+};
+
+export default { saveCourse, findCourse, updateCourse, updateLesson };
