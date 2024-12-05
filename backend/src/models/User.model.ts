@@ -2,7 +2,6 @@ import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/database";
 import { generateShortID } from "../utils/generateShortID";
 import { Membership } from "./enum/enum";
-import { ProductModel } from "./Product.model";
 
 class UserModel extends Model {
   public id!: string;
@@ -14,7 +13,7 @@ class UserModel extends Model {
   public imageProfile!: string
   public membership!: Membership | null
   public isValid!: boolean;
-  public products!: ProductModel[]
+  public products!: string[]
 }
 
 UserModel.init(
