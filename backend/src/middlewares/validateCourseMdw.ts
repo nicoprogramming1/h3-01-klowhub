@@ -8,7 +8,7 @@ export const validateCourseRegister: ValidationChain[] = [
     .withMessage('El título del curso es requerido.')
     .isString()
     .withMessage('El título del curso debe ser un texto.'),
-  body('course.detail')
+  body('course.description')
     .notEmpty()
     .withMessage('El detalle del curso es requerido.')
     .isString()
@@ -64,7 +64,7 @@ export const validateModuleRegister: ValidationChain[] = [
     .withMessage('El título del módulo es requerido.')
     .isString()
     .withMessage('El título del módulo debe ser un texto.'),
-  body('modules.*.detail')
+  body('modules.*.description')
     .notEmpty()
     .withMessage('El detalle del módulo es requerido.')
     .isString()
@@ -81,7 +81,7 @@ export const validateLessonsRegister: ValidationChain[] = [
     .withMessage('El título de la lección es requerido.')
     .isString()
     .withMessage('El título de la lección debe ser un texto.'),
-  body('modules.*.lessons.*.detail')
+  body('modules.*.lessons.*.description')
     .notEmpty()
     .withMessage('El detalle de la lección es requerido.')
     .isString()
