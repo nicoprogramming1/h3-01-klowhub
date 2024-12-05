@@ -7,7 +7,7 @@ dotenv.config();
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { userData } = req.body;
+    const userData = req.body;
 
     // Asignar imagen de perfil por default desde la carpeta 'public/images'
     const DEFAULT_IMAGE_URL = `${req.protocol}://${req.get("host")}/static/images/default-profile.jpg`;
