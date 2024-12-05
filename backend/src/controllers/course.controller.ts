@@ -267,7 +267,7 @@ export const deleteCourse = async (req: Request, res: Response) => {
       return;
     }
 
-    const courseDeleted = await courseService.buyCourse(id, courseId);
+    const courseDeleted = await courseService.deleteCourse(courseId);
 
     res.status(200).json({
       message: MESSAGES.ELIMINATE_SUCCESS,
