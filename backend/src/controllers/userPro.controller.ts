@@ -43,7 +43,7 @@ export const registerUserPro = async (req: Request, res: Response) => {
     // Asignar imagen de perfil por defecto desde la carpeta 'public/images'
     const DEFAULT_IMAGE_URL = `${req.protocol}://${req.get(
       "host"
-    )}/static/images/default-profile.jpg`;
+    )}/static/images/default-profile..png`;
     userProData.imageProfile = DEFAULT_IMAGE_URL;
 
     userProData.userId = id

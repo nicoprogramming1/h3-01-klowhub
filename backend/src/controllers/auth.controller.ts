@@ -10,7 +10,7 @@ export const register = async (req: Request, res: Response) => {
     const userData = req.body;
 
     // Asignar imagen de perfil por default desde la carpeta 'public/images'
-    const DEFAULT_IMAGE_URL = `${req.protocol}://${req.get("host")}/static/images/default-profile.jpg`;
+    const DEFAULT_IMAGE_URL = `${req.protocol}://${req.get("host")}/static/images/default-profile.png`;
     const imageProfile = DEFAULT_IMAGE_URL;
 
     const newUser = await registerUser(userData, imageProfile);
