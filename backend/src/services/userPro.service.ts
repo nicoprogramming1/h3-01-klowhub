@@ -57,7 +57,7 @@ export const getUserProById = async (id: string): Promise<UserProDTO | null> =>{
     const foundedUserPro = await UserProModel.findByPk(id)
 
   if(!foundedUserPro){
-    const error: any = new Error(MESSAGES.USER_NOT_FOUND)
+    const error: any = new Error(MESSAGES.USER_PRO_NOEXIST)
     error.statusCode = 404
     throw error
   }
