@@ -46,6 +46,8 @@ export const registerUserPro = async (req: Request, res: Response) => {
     )}/static/images/default-profile.jpg`;
     userProData.imageProfile = DEFAULT_IMAGE_URL;
 
+    userProData.userId = id
+
     const newUserPro = await userProService.saveUserPro(userProData, id);
 
     if (!newUserPro) {
@@ -187,8 +189,6 @@ export const updateUserPro = async (req: Request, res: Response) => {
       return;
     }
 
-    console.log("controller antes de updateUserPro. id:", id);
-
     const updatedUser = await userProService.updateUserPro(id, userProData);
 
     if (!updatedUser) {
@@ -199,7 +199,6 @@ export const updateUserPro = async (req: Request, res: Response) => {
     }
 
     const userProId = updatedUser.id;
-    console.log("controller antes de comprobar mentor. userProId:", userProId);
 
     if (!userProId) {
       res.status(204).json({
