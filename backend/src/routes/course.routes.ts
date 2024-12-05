@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createCourse, getOneCourse } from '../controllers/course.controller';
+import { createCourse, getOneCourse, listCourses } from '../controllers/course.controller';
 import {
   validateCourseRegistration,
   handleValidationErrors,
@@ -24,5 +24,9 @@ courseRouter
   .route('/:id')
   .get(idByParameterValidator, validateFetchCourse, handleValidationErrors, getOneCourse)
   .post(authenticate, validateCourseRegistration, handleValidationErrors, createCourse)
+
+courseRouter
+  .route('/')
+  .get(handleValidationErrors, listCourses)
 
 export default courseRouter;
