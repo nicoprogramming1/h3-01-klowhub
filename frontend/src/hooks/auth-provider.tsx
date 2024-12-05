@@ -21,7 +21,8 @@ interface User {
   id: string;
   email: string;
   longName: string;
-  image?: string;
+  imageProfile?: string;
+  about: string;
 }
 
 interface AuthContextType {
@@ -36,6 +37,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [newToken, setNewToken] = useState(false);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -79,7 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     checkAuthStatus();
-  }, []);
+  }, [newToken]);
 
   // Usar useCallback para evitar la redefinición de login en cada render
   const login = useCallback(
@@ -108,8 +110,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (token) {
           setToken(token);
+          setNewToken(true);
           setIsLoggedIn(true);
-          setUser(data.user);
+          // setUser(data.user);
           toast.success("Usuario conectado");
           const lastVisitedPage =
             localStorage.getItem("lastVisitedPage") ?? "/";
@@ -138,6 +141,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       setIsLoggedIn(false);
+      setNewToken(false);
       setUser(null);
       deleteToken();
 

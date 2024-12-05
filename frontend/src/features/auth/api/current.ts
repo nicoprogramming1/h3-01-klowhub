@@ -18,7 +18,7 @@ export const currentUser = async () => {
 
     const dataToken = jwt.decode(token.value) as DecodedToken | null;
     const { id } = dataToken || {};
-    const response = await fetch(`${API_URL}/api/user/${id}`, {
+    const response = await fetch(`${API_URL}/api/user/myProfile/${id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token.value}`,
@@ -28,7 +28,7 @@ export const currentUser = async () => {
     // toast.success(`${dataToken?.id} está conectado`);
     const data = await response.json();
     console.log({ data });
-    return data.user;
+    return data.data;
   } catch {
     throw new Error("Error de conexión con el servidor");
   }
