@@ -29,7 +29,7 @@ export const registerUser = async (
       longName: userData.longName,
       email: userData.email,
       password: hashedPassword,
-      imageProfile: imageProfile,
+      /* imageProfile: imageProfile, */
     });
 
     if (!newUser) {
