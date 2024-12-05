@@ -14,7 +14,6 @@ class UserModel extends Model {
   public imageProfile!: string
   public membership!: Membership | null
   public isValid!: boolean;
-  public isVendor!: boolean // por defecto es false hasta que se registra como vendedor
   public products!: ProductModel[]
 }
 
@@ -67,11 +66,6 @@ UserModel.init(
       type: DataTypes.BOOLEAN,
       defaultValue: true,
       field: "is_valid",
-    },
-    isVendor: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-      field: "is_vendor",
     },
   },
   {

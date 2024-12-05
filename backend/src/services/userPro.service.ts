@@ -12,8 +12,8 @@ export const saveUserPro = async (
   const transaction: Transaction = await sequelize.transaction();
   try {
     // Verificar si el usuario ya tiene un perfil de vendedor
-    const existingUser = await UserModel.findOne({
-      where: { id, isValid: true },
+    const existingUser = await UserProModel.findOne({
+      where: { userId: id, isValid: true },
       transaction,
     });
     if (!existingUser) {
@@ -22,16 +22,6 @@ export const saveUserPro = async (
       throw error;
     }
 
-    if (existingUser.isVendor) {
-      const error: any = new Error(
-        "Este usuario ya tiene un perfil de vendedor"
-      );
-      error.status = 400;
-      throw error;
-    }
-
-    // Actualizar el campo isVendor a true del UserModel básico
-    existingUser.isVendor = true;
     await existingUser.save({ transaction });
 
     const newUserPro = await UserProModel.create(userProData, { transaction });
@@ -65,7 +55,7 @@ export const saveUserPro = async (
   }
 };
 
-export const getUserProByUserId = async (
+export const getMyUserProById = async (
   userId: string
 ): Promise<UserProDTO | null> => {
   try {
@@ -93,12 +83,12 @@ export const getUserProByUserId = async (
 };
 
 export const updateUserPro = async (
-  id: string,
+  userId: string,
   userData: Partial<UserProDTO>
-): Promise<UserProDTO | null> => {
+): Promise<UserProDTO | undefined> => {
   try {
     const existingUser = await UserProModel.findOne({
-      where: { id, isValid: true },
+      where: { userId: userId, isValid: true },
     });
 
     if (!existingUser) {
@@ -107,13 +97,25 @@ export const updateUserPro = async (
       throw existError;
     }
 
-    Object.assign(existingUser, userData);
-    await existingUser.save();
-    return existingUser;
+    const id = existingUser.id
+
+    const [rowsAffected] = await UserProModel.update(userData, {
+      where: { id },
+    });
+
+    if (rowsAffected === 0) {
+      const error: any = new Error(MESSAGES.UPDATE_ERROR);
+      error.status = 204;
+      throw error;
+    }
+
+    const updatedUserPro = await UserProModel.findByPk(id);
+    return updatedUserPro ? (updatedUserPro.toJSON() as UserProDTO) : undefined;
+
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
-    throw error; // Re-lanza otros errores para que sean manejados por el controller
+    throw error;
   }
 };
