@@ -37,7 +37,7 @@ export const imageRegisterUserPro = async (req: Request, res: Response) => {
       return;
     }
 
-    const userPro = await userProService.getUserProByUserId(id);
+    const userPro = await userProService.getMyUserProById(id);
 
     if (!userPro) {
       res.status(404).json({
