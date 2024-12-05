@@ -32,12 +32,12 @@ export const registerUserPro = async (req: Request, res: Response) => {
       return;
     }
 
-    const gotMembership = await userService.getUserMembership(id)
-    if(!gotMembership){
+    const gotMembership = await userService.getUserMembership(id);
+    if (!gotMembership) {
       res.status(404).json({
-        message: MESSAGES.MEMBERSHIP_NULL
-      })
-      return
+        message: MESSAGES.MEMBERSHIP_NULL,
+      });
+      return;
     }
 
     // Asignar imagen de perfil por defecto desde la carpeta 'public/images'
@@ -45,24 +45,22 @@ export const registerUserPro = async (req: Request, res: Response) => {
       "host"
     )}/static/images/default-profile.jpg`;
     userProData.imageProfile = DEFAULT_IMAGE_URL;
-    
-    userProData.userId = id;
-    
+
     const newUserPro = await userProService.saveUserPro(userProData, id);
-    
-    if(!newUserPro){
+
+    if (!newUserPro) {
       res.status(500).json({
-        message: MESSAGES.USER_CREATE_ERROR
-      })
-      return
+        message: MESSAGES.USER_CREATE_ERROR,
+      });
+      return;
     }
 
-    if(mentor){
-      mentor.userProId = newUserPro.id
-      const newMentor = await mentorService.saveMentor(mentor)
-      newUserPro.mentor = newMentor
+    if (mentor) {
+      mentor.userProId = newUserPro.id;
+      const newMentor = await mentorService.saveMentor(mentor);
+      newUserPro.mentor = newMentor;
     }
-    
+
     res.status(201).json({
       message: MESSAGES.CREATE_SUCCESS,
       data: newUserPro,
@@ -70,15 +68,17 @@ export const registerUserPro = async (req: Request, res: Response) => {
   } catch (error: any) {
     if (res.headersSent) {
       console.error("Error en registerPro: ", MESSAGES.HEADERS_SENT);
-      return;
+      res.status(500).json({
+        message: MESSAGES.HEADERS_SENT,
+      });
+      return
     }
     const statusCode = error.status || 500;
     const message = error.message || MESSAGES.CREATE_ERROR;
-    
-    res.status(statusCode).json({ message });
-    }
-  };
 
+    res.status(statusCode).json({ message });
+  }
+};
 
 export const getMyUserProById = async (req: Request, res: Response) => {
   try {
@@ -110,10 +110,42 @@ export const getMyUserProById = async (req: Request, res: Response) => {
   } catch (error: any) {
     if (res.headersSent) {
       console.error("Error en registerPro: ", MESSAGES.HEADERS_SENT);
-      return;
+      res.status(500).json({
+        message: MESSAGES.HEADERS_SENT,
+      });
     }
     const statusCode = error.status || 500;
     res.status(statusCode).json({ message: error.message });
+  }
+};
+
+export const getUserPro = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      res.status(400).json({
+        message: MESSAGES.ID_MISSING,
+      });
+      return;
+    }
+
+    const user = await userProService.getUserProById(id);
+
+    res.status(200).json({
+      message: MESSAGES.FETCH_SUCCESS,
+      data: user
+    })
+  } catch (error: any) {
+    if (res.headersSent) {
+      console.error("Error en registerPro: ", MESSAGES.HEADERS_SENT);
+      res.status(500).json({
+        message: MESSAGES.HEADERS_SENT,
+      });
+    }
+    const statusCode = error.status || 500;
+    res.status(statusCode).json({
+      message: error.message,
+    });
   }
 };
 
@@ -134,12 +166,12 @@ export const updateUserPro = async (req: Request, res: Response) => {
     }
 
     const authenticatedUserId = (req.user as { id: string }).id;
-    
+
     // Verificar si el ID del usuario autenticado coincide con el ID en la URL
     if (id !== authenticatedUserId) {
       res.status(403).json({ message: MESSAGES.FORBIDDEN });
     }
-    
+
     if (!id) {
       res.status(400).json({
         message: MESSAGES.ID_MISSING,
@@ -147,38 +179,38 @@ export const updateUserPro = async (req: Request, res: Response) => {
       return;
     }
 
-    const gotMembership = await userService.getUserMembership(id)
-    if(!gotMembership){
+    const gotMembership = await userService.getUserMembership(id);
+    if (!gotMembership) {
       res.status(404).json({
-        message: MESSAGES.MEMBERSHIP_NULL
-      })
-      return
+        message: MESSAGES.MEMBERSHIP_NULL,
+      });
+      return;
     }
 
-    console.log("controller antes de updateUserPro. id:", id)
-    
+    console.log("controller antes de updateUserPro. id:", id);
+
     const updatedUser = await userProService.updateUserPro(id, userProData);
-    
-    if(!updatedUser){
+
+    if (!updatedUser) {
       res.status(500).json({
-        message: MESSAGES.UPDATE_ERROR
-      })
-      return
+        message: MESSAGES.UPDATE_ERROR,
+      });
+      return;
     }
-    
-    const userProId = updatedUser.id
-    console.log("controller antes de comprobar mentor. userProId:", userProId)
-    
-    if(!userProId){
+
+    const userProId = updatedUser.id;
+    console.log("controller antes de comprobar mentor. userProId:", userProId);
+
+    if (!userProId) {
       res.status(204).json({
-        message: MESSAGES.UPDATE_ERROR
-      })
-      return
+        message: MESSAGES.UPDATE_ERROR,
+      });
+      return;
     }
-    
-    if(mentor){
-      const newMentor = await mentorService.updateMentor(userProId, mentor)
-      updatedUser.mentor = newMentor
+
+    if (mentor) {
+      const newMentor = await mentorService.updateMentor(userProId, mentor);
+      updatedUser.mentor = newMentor;
     }
 
     res.status(200).json({
@@ -187,8 +219,10 @@ export const updateUserPro = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     if (res.headersSent) {
-      console.error("Error en updateUserPro: ", MESSAGES.HEADERS_SENT);
-      return;
+      console.error("Error en registerPro: ", MESSAGES.HEADERS_SENT);
+      res.status(500).json({
+        message: MESSAGES.HEADERS_SENT,
+      });
     }
 
     const statusCode = error.status || 500;
