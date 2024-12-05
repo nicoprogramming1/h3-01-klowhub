@@ -10,7 +10,7 @@ export const register = async (req: Request, res: Response) => {
     const userData = req.body;
 
     // Asignar imagen de perfil por default desde la carpeta 'public/images'
-    const DEFAULT_IMAGE_URL = `${req.protocol}://${req.get("host")}/static/images/default-profile.jpg`;
+    const DEFAULT_IMAGE_URL = `${req.protocol}://${req.get("host")}/static/images/default-profile.png`;
     const imageProfile = DEFAULT_IMAGE_URL;
 
     const newUser = await registerUser(userData, imageProfile);
@@ -48,8 +48,8 @@ export const register = async (req: Request, res: Response) => {
 //Controlador de inicio de sesión y añadiendo dispositivo de donde se inicio
 export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password, imageProfile, device, app, country, city, ipAddress } = req.body;
-
+    const { email, password, device, app, country, city, ipAddress } = req.body;
+    
     const { user, token } = await loginUser(
       email,
       password,

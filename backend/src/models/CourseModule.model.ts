@@ -6,7 +6,7 @@ class CourseModuleModel extends Model {
   public id!: string;
   public courseId!: string;
   public title!: string;
-  public detail!: string;
+  public description!: string;
 }
 
 CourseModuleModel.init(
@@ -31,7 +31,7 @@ CourseModuleModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    detail: {
+    description: {
       type: DataTypes.STRING,
       allowNull: false,
     },

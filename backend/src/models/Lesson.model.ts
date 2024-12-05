@@ -7,7 +7,7 @@ class LessonModel extends Model {
   public id!: string;
   public courseModuleId!: string;
   public title!: string;
-  public detail!: string;
+  public description!: string;
   public lessonLink!: string;
 }
 
@@ -33,7 +33,7 @@ LessonModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    detail: {
+    description: {
       type: DataTypes.STRING,
       allowNull: false,
     },

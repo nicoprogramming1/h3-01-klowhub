@@ -9,7 +9,7 @@ import {
 
 export interface UserDTO {
   id?: string;
-  longName: string;
+  longName?: string;
   email: string;
   password?: string;
   about?: string;

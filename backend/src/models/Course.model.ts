@@ -1,11 +1,13 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database';
 import { ProductModel } from './Product.model';
-import { Competence, Platform, Sector, Tag } from './enum/enum';
+import { Competence, Language, Tool } from './enum/enum';
 import { generateShortID } from '../utils/generateShortID';
 
 class CourseModel extends ProductModel {
   public competence!: Competence;
+  public tools!: Tool[]
+  public languages!: Language[]
 }
 
 CourseModel.init(
@@ -19,12 +21,12 @@ CourseModel.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    detail: {
-      type: DataTypes.STRING,
+    description: {
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     aboutLearn: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
       field: 'about_learn',
     },
@@ -47,6 +49,14 @@ CourseModel.init(
     tags: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
+    },
+    tools: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+    },
+    languages: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true
     },
     price: {
       type: DataTypes.DOUBLE,

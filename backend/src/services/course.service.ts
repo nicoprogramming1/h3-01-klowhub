@@ -6,7 +6,6 @@ import { CourseDTO, LessonDataDTO } from "../dtos/course.dto";
 
 const saveCourse = async (courseData: CourseDTO): Promise<CourseDTO | null> => {
   const transaction: Transaction = await sequelize.transaction();
-
   try {
     const course = await CourseModel.create(courseData.course, { transaction });
 

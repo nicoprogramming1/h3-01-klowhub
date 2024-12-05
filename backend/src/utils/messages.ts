@@ -35,5 +35,6 @@ export const MESSAGES = {
   USER_CREATE_ERROR: "No fue posible crear el usuario",
   USER_NOT_FOUND: "El usuario no existe",
   USER_PRO_ALREADY: "Ya es un usuario Pro",
+  USER_PRO_NOEXIST: "El usuario debe ser Pro para realizar esta acción",
   UNAUTHENTICATED: "Debes estar autenticado",
 };
