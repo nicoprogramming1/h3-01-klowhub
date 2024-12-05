@@ -24,6 +24,7 @@ MentorModel.init(
     userProId: {
       type: DataTypes.STRING,
       allowNull: false,
+      field: "user_pro_id",
       references: {
         model: 'users_pro',
         key: 'id',
@@ -34,10 +35,12 @@ MentorModel.init(
     expertiseArea: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
+      field: "expertise_area",
     },
     expertiseLevel: {
       type: DataTypes.STRING,
       allowNull: false,
+      field: "expertise_level",
     },
     platform: {
       type: DataTypes.STRING,
@@ -46,10 +49,12 @@ MentorModel.init(
     mentoryCost: {
       type: DataTypes.FLOAT,
       allowNull: false,
+      field: "mentory_cost",
     },
     aboutMentories: {
       type: DataTypes.TEXT,
       allowNull: false,
+      field: "about_mentories",
     },
     language: {
       type: DataTypes.ARRAY(DataTypes.STRING),
