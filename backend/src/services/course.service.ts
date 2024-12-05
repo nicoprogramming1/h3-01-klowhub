@@ -1,4 +1,4 @@
-import { Transaction } from "sequelize";
+import { Op, Transaction } from "sequelize";
 import sequelize from "../config/database";
 import {
   CourseModel,
@@ -193,6 +193,52 @@ export const buyCourse = async (
   }
 };
 
+export const deleteCourse = async (courseId: string): Promise<string | null> => {
+  const transaction: Transaction = await sequelize.transaction();
+
+  try {
+    const course = await CourseModel.findByPk(courseId);
+    if (!course) {
+      const error: any = new Error(MESSAGES.COURSE_NOT_FOUND);
+      error.status = 404;
+      throw error;
+    }
+
+    // Eliminar el curso de la tabla courses
+    const rowsAffected = await CourseModel.destroy({ where: { id: courseId }, transaction });
+    if (rowsAffected === 0) {
+      const error: any = new Error(MESSAGES.ELIMINATE_ERROR);
+      error.status = 500;
+      throw error;
+    }
+
+    // Recuperar usuarios que tengan este curso en su lista de productos
+    const users = await UserModel.findAll({
+      where: { products: { [Op.contains]: [courseId] } }, // Usuarios cuyo campo 'products' incluye el courseId
+      transaction,
+    });
+
+    // Eliminar el curso de la lista de productos de cada usuario
+    await Promise.all(
+      users.map(async (user) => {
+        user.products = user.products.filter((productId) => productId !== courseId);
+        await user.save({ transaction });
+      })
+    );
+
+    // Confirmar la transacción
+    await transaction.commit();
+    return courseId;
+  } catch (error: any) {
+    await transaction.rollback();
+    if (error.name === "SequelizeConnectionError") {
+      throw new Error(MESSAGES.CONNECTION_ERROR);
+    }
+    throw error;
+  }
+};
+
+
 
 export default {
   saveCourse,
@@ -201,4 +247,5 @@ export default {
   updateLesson,
   getAllCourses,
   buyCourse,
+  deleteCourse,
 };
