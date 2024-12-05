@@ -14,7 +14,16 @@ export const registerUserPro = async (req: Request, res: Response) => {
     const { id } = req.params; // ID del usuario asociado
     const { mentor, ...userProData } = req.body;
 
-    console.log(mentor)
+    if (!req.user) {
+      res.status(401).json({ message: MESSAGES.UNAUTHENTICATED });
+    }
+
+    const authenticatedUserId = (req.user as { id: string }).id;
+
+    // Verificar si el ID del usuario autenticado coincide con el ID en la URL
+    if (id !== authenticatedUserId) {
+      res.status(403).json({ message: MESSAGES.FORBIDDEN });
+    }
 
     if (!id) {
       res.status(400).json({
@@ -71,16 +80,27 @@ export const registerUserPro = async (req: Request, res: Response) => {
   };
 
 
-export const getUserProByUserId = async (req: Request, res: Response) => {
+export const getMyUserProById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const user = await userProService.getUserProByUserId(id);
+    const user = await userProService.getMyUserProById(id);
 
     if (!user) {
       res.status(404).json({
         message: MESSAGES.USER_NOT_FOUND,
       });
+    }
+
+    if (!req.user) {
+      res.status(401).json({ message: MESSAGES.UNAUTHENTICATED });
+    }
+
+    const authenticatedUserId = (req.user as { id: string }).id;
+
+    // Verificar si el ID del usuario autenticado coincide con el ID en la URL
+    if (id !== authenticatedUserId) {
+      res.status(403).json({ message: MESSAGES.FORBIDDEN });
     }
 
     res.status(200).json({
@@ -99,17 +119,67 @@ export const getUserProByUserId = async (req: Request, res: Response) => {
 
 export const updateUserPro = async (req: Request, res: Response) => {
   try {
-    const userData = req.body;
-    const { id } = req.params;
-
-    if (!id || !userData) {
+    if (!req.body) {
       res.status(400).json({
         message: MESSAGES.MISSED_DATA,
       });
       return;
     }
 
-    const updatedUser = await userProService.updateUserPro(id, userData);
+    const { id } = req.params; // ID del usuario asociado
+    const { mentor, ...userProData } = req.body;
+
+    if (!req.user) {
+      res.status(401).json({ message: MESSAGES.UNAUTHENTICATED });
+    }
+
+    const authenticatedUserId = (req.user as { id: string }).id;
+    
+    // Verificar si el ID del usuario autenticado coincide con el ID en la URL
+    if (id !== authenticatedUserId) {
+      res.status(403).json({ message: MESSAGES.FORBIDDEN });
+    }
+    
+    if (!id) {
+      res.status(400).json({
+        message: MESSAGES.ID_MISSING,
+      });
+      return;
+    }
+
+    const gotMembership = await userService.getUserMembership(id)
+    if(!gotMembership){
+      res.status(404).json({
+        message: MESSAGES.MEMBERSHIP_NULL
+      })
+      return
+    }
+
+    console.log("controller antes de updateUserPro. id:", id)
+    
+    const updatedUser = await userProService.updateUserPro(id, userProData);
+    
+    if(!updatedUser){
+      res.status(500).json({
+        message: MESSAGES.UPDATE_ERROR
+      })
+      return
+    }
+    
+    const userProId = updatedUser.id
+    console.log("controller antes de comprobar mentor. userProId:", userProId)
+    
+    if(!userProId){
+      res.status(204).json({
+        message: MESSAGES.UPDATE_ERROR
+      })
+      return
+    }
+    
+    if(mentor){
+      const newMentor = await mentorService.updateMentor(userProId, mentor)
+      updatedUser.mentor = newMentor
+    }
 
     res.status(200).json({
       message: MESSAGES.UPDATE_SUCCESS,
