@@ -187,8 +187,8 @@ export const updateCourse = async (req: Request, res: Response) => {
 
 export const buyCourse = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;  // id del user
-    const courseId = req.body;
+    const { id } = req.params; // id del user
+    const { courseId } = req.body;
 
     if (!req.user) {
       res.status(401).json({ message: MESSAGES.UNAUTHENTICATED });
@@ -215,12 +215,12 @@ export const buyCourse = async (req: Request, res: Response) => {
       return;
     }
 
-    const courseBought = await courseService.buyCourse(id, courseId)
+    const courseBought = await courseService.buyCourse(id, courseId);
 
     res.status(200).json({
       message: MESSAGES.COURSE_BUY_SUCCESS,
-      data: courseBought
-    })
+      data: courseBought,
+    });
   } catch (error: any) {
     if (res.headersSent) {
       console.error("Error en buyCourse: ", MESSAGES.HEADERS_SENT);
@@ -231,6 +231,58 @@ export const buyCourse = async (req: Request, res: Response) => {
     }
     const statusCode = error.status || 500;
     const message = error.message || MESSAGES.COURSE_BUY_ERROR;
+    res.status(statusCode).json({
+      message,
+    });
+  }
+};
+
+export const deleteCourse = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // id del user
+    const { courseId } = req.body;
+
+    if (!req.user) {
+      res.status(401).json({ message: MESSAGES.UNAUTHENTICATED });
+    }
+
+    const authenticatedUserId = (req.user as { id: string }).id;
+
+    // Verificar si el ID del usuario autenticado coincide con el ID en la URL
+    if (id !== authenticatedUserId) {
+      res.status(403).json({ message: MESSAGES.FORBIDDEN });
+    }
+
+    if (!id) {
+      res.status(400).json({
+        message: MESSAGES.ID_MISSING,
+      });
+      return;
+    }
+
+    if (!courseId) {
+      res.status(400).json({
+        message: MESSAGES.COURSE_ID_MISSING,
+      });
+      return;
+    }
+
+    const courseDeleted = await courseService.buyCourse(id, courseId);
+
+    res.status(200).json({
+      message: MESSAGES.ELIMINATE_SUCCESS,
+      data: courseDeleted,
+    });
+  } catch (error: any) {
+    if (res.headersSent) {
+      console.error("Error en buyCourse: ", MESSAGES.HEADERS_SENT);
+      res.status(500).json({
+        message: MESSAGES.HEADERS_SENT,
+      });
+      return;
+    }
+    const statusCode = error.status || 500;
+    const message = error.message || MESSAGES.ELIMINATE_ERROR;
     res.status(statusCode).json({
       message,
     });
