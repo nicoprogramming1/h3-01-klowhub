@@ -1,15 +1,26 @@
-import { PaymentMethod, Sector, Tool } from "../models/enum/enum";
+import {
+  Expertise,
+  Language,
+  PaymentMethod,
+  Platform,
+  Sector,
+  Tool,
+} from "../models/enum/enum";
 
 export interface UserDTO {
+  id?: string;
   longName: string;
   email: string;
+  password?: string;
+  about?: string;
+  imageProfile?: string;
 }
 
 export interface UserProDTO {
   id?: string;
   firstName: string;
   lastName: string;
-  description?: string;
+  about?: string;
   country?: string;
   sector: Sector[];
   sectorsExperience?: string;
@@ -22,6 +33,17 @@ export interface UserProDTO {
   paymentMethod: PaymentMethod;
   accountData: string;
   imageProfile?: string;
-  userId?: string
-  isMentor?: boolean  // si quiere ser mentor el front enviara un true, sino no lo envia
+  userId?: string;
+  mentor?: MentorDTO;
+}
+
+export interface MentorDTO {
+  id?: string;
+  userProId: string;
+  expertiseArea: Sector[];
+  expertiseLevel: Expertise;
+  platform: Platform[];
+  mentoryCost: number;
+  aboutMentories: string;
+  language: Language[];
 }

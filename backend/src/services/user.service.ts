@@ -16,13 +16,14 @@ export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
       throw new Error(MESSAGES.USER_NOT_FOUND);
     }
 
-    // Construir DTO
-    return {
+    const userDTO: UserDTO = {
       longName: user.longName,
       email: user.email,
-      /* country: user.country,
-      imageProfile: user.imageProfile ? user.imageProfile.toString("base64") : undefined, */
+      about: user.about,
+      imageProfile: user.imageProfile,
     };
+
+    return userDTO;
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
@@ -31,11 +32,49 @@ export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
   }
 };
 
+export const findUserByEmail = async (email: string): Promise<boolean> => {
+  try {
+    const findedProfile = await UserModel.findOne({where: {email}});
+    if (findedProfile) {
+      const error: any = new Error(MESSAGES.EMAIL_ALREADY);
+      error.status = 400;
+      throw error;
+    }
+    return false;
+  } catch (error: any) {
+    if (error.name === "SequelizeConnectionError") {
+      throw new Error(MESSAGES.CONNECTION_ERROR);
+    }
+    throw error;
+  }
+};
+
+export const findMyUser = async (id: string): Promise<UserModel | null> => {
+  try {
+    const findedProfile = await UserModel.findByPk(id);
+    if (!findedProfile) {
+      const error: any = new Error(MESSAGES.USER_NOT_FOUND);
+      error.status = 404;
+      throw error;
+    }
+
+    const { password, ...profileWithoutPassword } = findedProfile.toJSON();
+
+    return profileWithoutPassword;
+  } catch (error: any) {
+    if (error.name === "SequelizeConnectionError") {
+      throw new Error(MESSAGES.CONNECTION_ERROR);
+    }
+    throw error;
+  }
+};
+
+
 export const updateUserById = async (
   id: string,
   updateData: Partial<UserDTO>,
   password?: string
-): Promise<UserModel | null> => {
+): Promise<UserDTO | null> => {
   const transaction: Transaction = await sequelize.transaction();
 
   try {
@@ -51,16 +90,21 @@ export const updateUserById = async (
     if (password) {
       validatePassword(password);
       user.password = await encryptPassword(password);
-    } /* 
-    if (updateData.imageProfile) {
-      user.imageProfile = Buffer.from(updateData.imageProfile.split(",")[1], "base64");
-    } */
+    }
 
     Object.assign(user, updateData);
     await user.save({ transaction });
 
     await transaction.commit();
-    return user;
+
+    const userDTO: UserDTO = {
+      longName: user.longName,
+      email: user.email,
+      about: user.about,
+      imageProfile: user.imageProfile,
+    };
+
+    return userDTO;
   } catch (error: any) {
     await transaction.rollback();
     if (error.name === "SequelizeConnectionError") {
@@ -109,7 +153,6 @@ export const deactivateUserByPk = async (
     throw new Error(`${MESSAGES.USER_NOT_FOUND} | ${error.message}`);
   }
 };
-
 
 export const changeMembership = async (
   id: string,

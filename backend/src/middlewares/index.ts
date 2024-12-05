@@ -13,5 +13,5 @@ export {
   idByParameterValidator,
   updateUserValidator,
 } from "./validateUser";
-export { validateUserPro, validateUpdateUserPro } from "./validateUserPro";
+export { validateUserPro, validateUserProUpdate } from "./validateUserPro";
 export { uploadImageMdw } from "./multerMdw";

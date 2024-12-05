@@ -2,38 +2,48 @@ import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import { registerUser, loginUser, logoutUser } from '../services/auth.service';
 import { MESSAGES } from '../utils/messages';
+import { UserDTO } from '../dtos/user.dto';
 dotenv.config();
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { longName, email, password } = req.body;
+    const { userData } = req.body;
 
-    const newUser = await registerUser(longName, email, password);
+    // Asignar imagen de perfil por default desde la carpeta 'public/images'
+    const DEFAULT_IMAGE_URL = `${req.protocol}://${req.get("host")}/static/images/default-profile.jpg`;
+    const imageProfile = DEFAULT_IMAGE_URL;
+
+    const newUser = await registerUser(userData, imageProfile);
+
+    if(!newUser){
+      res.status(500).json({
+        message: MESSAGES.USER_CREATE_ERROR
+      })
+      return
+    }
+
+    const newUserDto: UserDTO = {
+      id: newUser.id,
+      longName: newUser.longName,
+      email: newUser.email,
+      imageProfile: newUser.imageProfile,
+    }
 
     res.status(201).json({
       message: MESSAGES.USER_CREATE_SUCCESS,
-      user: {
-        id: newUser.id,
-        longName: newUser.longName,
-        email: newUser.email,
-        role: newUser.role,
-        isValid: newUser.isValid,
-      },
+      data: newUserDto
     });
   } catch (error: any) {
     if (res.headersSent) {
-      console.error("Error en getUserMembership: ", MESSAGES.HEADERS_SENT);
+      console.error("Error en registerUser: ", MESSAGES.HEADERS_SENT);
       return;
     }
-    if (error.message === 'Este email ya está registrado') {
-      res.status(400).json({ message: error.message });
-      return;
-    } else {
-      res.status(500).json({ message: 'Error interno del servidor' });
-      return;
+    const statusCode = error.status || 500;
+    const message = error.message || MESSAGES.USER_CREATE_ERROR;
+    
+    res.status(statusCode).json({ message });
     }
-  }
-};
+  };
 
 //Controlador de inicio de sesión y añadiendo dispositivo de donde se inicio
 export const login = async (req: Request, res: Response) => {
@@ -50,7 +60,7 @@ export const login = async (req: Request, res: Response) => {
       ipAddress
     );
 
-    res.json({ user, token });
+    res.status(200).json({ token });
   } catch (error: any) {
     if (res.headersSent) {
       console.error("Error en getUserMembership: ", MESSAGES.HEADERS_SENT);
@@ -84,7 +94,7 @@ export const logout = async (req: Request, res: Response) => {
 
     const result = await logoutUser(device, app, token);
 
-    res.json({
+    res.status(200).json({
       result,
     });
   } catch (error: any) {

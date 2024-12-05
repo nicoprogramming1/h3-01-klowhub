@@ -89,3 +89,48 @@ export const getOneCourse = async (req: Request, res: Response) => {
     res.status(statusCode).json({ message });
   }
 };
+
+export const updateCourse = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const courseData = req.body;
+
+    if (!id) {
+      res.status(400).json({
+        message: MESSAGES.ID_MISSING,
+      });
+      return;
+    }
+
+    if (!courseData) {
+      res.status(400).json({
+        message: MESSAGES.MISSED_DATA,
+      });
+      return;
+    }
+
+    const updatedCourse = await courseService.updateCourse(id, courseData);
+
+    if (!updatedCourse) {
+      res.status(204).json({
+        message: MESSAGES.UPDATE_ERROR,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: MESSAGES.UPDATE_SUCCESS,
+      data: updatedCourse,
+    });
+  } catch (error: any) {
+    if (res.headersSent) {
+      console.error("Error en getCourse: ", MESSAGES.HEADERS_SENT);
+      return;
+    }
+
+    const statusCode = error.status || 500;
+    const message = error.message || MESSAGES.UPDATE_ERROR;
+
+    res.status(statusCode).json({ message });
+  }
+};
