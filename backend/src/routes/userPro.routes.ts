@@ -1,7 +1,7 @@
 import passport from "passport";
 import express from 'express';
-import { getUserProByUserId, registerUserPro, updateUserPro } from '../controllers/userPro.controller'
-import { idByParameterValidator, handleValidationErrors, validateUserPro, updateUserValidator } from '../middlewares'
+import { getMyUserProById, registerUserPro, updateUserPro } from '../controllers/userPro.controller'
+import { idByParameterValidator, handleValidationErrors, validateUserPro, validateUserProUpdate } from '../middlewares'
 import { uploadImageMdw } from '../middlewares'
 import { imageController } from "../controllers";
 
@@ -12,8 +12,8 @@ const multerMdw = uploadImageMdw.single('imageProfile')    // mdw de carga de im
 // User PRO -> el id es del user básico asociado a su perfil PRO
 userRouter.route('/:id')
     .post(authenticate, idByParameterValidator, validateUserPro, multerMdw, handleValidationErrors, registerUserPro)
-    .get(authenticate, idByParameterValidator, handleValidationErrors, getUserProByUserId)
-    .patch(authenticate, idByParameterValidator, updateUserValidator, handleValidationErrors, updateUserPro)
+    .get(authenticate, idByParameterValidator, handleValidationErrors, getMyUserProById)
+    .patch(authenticate, idByParameterValidator, validateUserProUpdate, handleValidationErrors, updateUserPro)
 
 userRouter.route('/imageProfile/:id')
     .patch(authenticate, idByParameterValidator, multerMdw, handleValidationErrors, imageController.imageRegisterUserPro)
