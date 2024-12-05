@@ -7,27 +7,28 @@ import UserProModel from "./UserPro.model";
 import MentorModel from "./Mentor.model";
 
 // DeviceSession con User
-DeviceSession.belongsTo(UserModel, { foreignKey: "userId" });
 UserModel.hasMany(DeviceSession, { foreignKey: "userId" });
+DeviceSession.belongsTo(UserModel, { foreignKey: "userId" });
 
 // Course con User
 UserModel.hasMany(CourseModel, { foreignKey: "ownerId" });
+CourseModel.belongsTo(UserModel, { foreignKey: "ownerId" });
 
-// Course con CourseModule
+// CourseModule con Course
 CourseModel.hasMany(CourseModuleModel, { foreignKey: "courseId" });
 CourseModuleModel.belongsTo(CourseModel, { foreignKey: "courseId" });
 
-// CourseModule con Lesson
+// Lesson con CourseModule
 CourseModuleModel.hasMany(LessonModel, { foreignKey: "courseModuleId" });
 LessonModel.belongsTo(CourseModuleModel, { foreignKey: "courseModuleId" });
 
 // UserPro con User
-UserProModel.belongsTo(UserModel, { foreignKey: "userId" });
 UserModel.hasOne(UserProModel, { foreignKey: "userId" });
+UserProModel.belongsTo(UserModel, { foreignKey: "userId" });
 
 // Mentor con UserPro
-MentorModel.belongsTo(UserProModel, { foreignKey: "userProId" });
 UserProModel.hasOne(MentorModel, { foreignKey: "userProId" });
+MentorModel.belongsTo(UserProModel, { foreignKey: "userProId" });
 
 export {
   CourseModel,
