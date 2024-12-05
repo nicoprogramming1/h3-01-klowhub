@@ -29,12 +29,11 @@ export interface UserProDTO {
   portfolioLink?: string;
   academicFormation?: string;
   certificationLink?: string;
-  certificationFiles?: string[];
   paymentMethod: PaymentMethod;
   accountData: string;
   imageProfile?: string;
   userId?: string;
-  mentor?: MentorDTO;
+  mentor?: MentorDTO | null;
 }
 
 export interface MentorDTO {
