@@ -1,9 +1,17 @@
-import { Expertise, Language, PaymentMethod, Platform, Sector, Tool } from "../models/enum/enum";
+import {
+  Expertise,
+  Language,
+  PaymentMethod,
+  Platform,
+  Sector,
+  Tool,
+} from "../models/enum/enum";
 
 export interface UserDTO {
-  id?: string,
+  id?: string;
   longName: string;
   email: string;
+  password?: string;
   about?: string;
   imageProfile?: string;
 }
@@ -25,12 +33,12 @@ export interface UserProDTO {
   paymentMethod: PaymentMethod;
   accountData: string;
   imageProfile?: string;
-  userId?: string,
-  mentor?: MentorDTO
+  userId?: string;
+  mentor?: MentorDTO;
 }
 
 export interface MentorDTO {
-  id?: string,
+  id?: string;
   userProId: string;
   expertiseArea: Sector[];
   expertiseLevel: Expertise;
