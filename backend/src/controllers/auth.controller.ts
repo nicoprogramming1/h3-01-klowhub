@@ -48,7 +48,7 @@ export const register = async (req: Request, res: Response) => {
 //Controlador de inicio de sesión y añadiendo dispositivo de donde se inicio
 export const login = async (req: Request, res: Response) => {
   try {
-    const { email, password, device, app, country, city, ipAddress } = req.body;
+    const { email, password, imageProfile, device, app, country, city, ipAddress } = req.body;
 
     const { user, token } = await loginUser(
       email,
@@ -60,7 +60,7 @@ export const login = async (req: Request, res: Response) => {
       ipAddress
     );
 
-    res.status(200).json({ token });
+    res.status(200).json({ user, token });
   } catch (error: any) {
     if (res.headersSent) {
       console.error("Error en getUserMembership: ", MESSAGES.HEADERS_SENT);
