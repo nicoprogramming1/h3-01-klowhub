@@ -1,10 +1,30 @@
 import { Request, Response } from "express";
 import courseService from "../services/course.service";
 import { MESSAGES } from "../utils/messages";
+import { userProService } from "../services";
 
 export const createCourse = async (req: Request, res: Response) => {
   try {
+    const { id } = req.params
     const courseData = req.body;
+
+    if (!req.user) {
+      res.status(401).json({ message: MESSAGES.UNAUTHENTICATED });
+    }
+
+    const authenticatedUserId = (req.user as { id: string }).id;
+
+    // Verificar si el ID del usuario autenticado coincide con el ID en la URL
+    if (id !== authenticatedUserId) {
+      res.status(403).json({ message: MESSAGES.FORBIDDEN });
+    }
+
+    if(!id){
+      res.status(400).json({
+        message: MESSAGES.ID_MISSING
+      })
+      return
+    }
 
     if (
       !courseData ||
@@ -16,6 +36,9 @@ export const createCourse = async (req: Request, res: Response) => {
       });
       return;
     }
+
+    // comprobar que el usuario tenga un perfil Pro
+    await userProService.getMyUserProById(id)
 
     // Asignar imagen por defecto para el curso
     const DEFAULT_COURSE_IMAGE_URL = `${req.protocol}://${req.get(
@@ -34,6 +57,9 @@ export const createCourse = async (req: Request, res: Response) => {
         lesson.imageMain = lesson.imageMain || DEFAULT_LESSON_IMAGE_URL;
       });
     });
+
+    // le adherimos el id del user que lo esta creando
+    courseData.course.ownerId = id
 
     const newCourse = await courseService.saveCourse(courseData);
 
