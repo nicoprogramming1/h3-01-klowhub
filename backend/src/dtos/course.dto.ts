@@ -21,14 +21,14 @@ export interface CourseDTO {
   export interface ModuleDataDTO {
     id?: string,
     title?: string;
-    detail?: string;
+    description?: string;
     lessons?: LessonDataDTO[];
   }
 
   export interface LessonDataDTO {
     id?: string,
     title?: string;
-    detail?: string;
+    description?: string;
     lessonLink?: string;
     imageMain?: string
   }

@@ -5,7 +5,7 @@ import { userProService } from "../services";
 
 export const createCourse = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
     const courseData = req.body;
 
     if (!req.user) {
@@ -19,11 +19,11 @@ export const createCourse = async (req: Request, res: Response) => {
       res.status(403).json({ message: MESSAGES.FORBIDDEN });
     }
 
-    if(!id){
+    if (!id) {
       res.status(400).json({
-        message: MESSAGES.ID_MISSING
-      })
-      return
+        message: MESSAGES.ID_MISSING,
+      });
+      return;
     }
 
     if (
@@ -38,7 +38,7 @@ export const createCourse = async (req: Request, res: Response) => {
     }
 
     // comprobar que el usuario tenga un perfil Pro
-    await userProService.getMyUserProById(id)
+    await userProService.getMyUserProById(id);
 
     // Asignar imagen por defecto para el curso
     const DEFAULT_COURSE_IMAGE_URL = `${req.protocol}://${req.get(
@@ -59,7 +59,7 @@ export const createCourse = async (req: Request, res: Response) => {
     });
 
     // le adherimos el id del user que lo esta creando
-    courseData.course.ownerId = id
+    courseData.course.ownerId = id;
 
     const newCourse = await courseService.saveCourse(courseData);
 
@@ -116,6 +116,30 @@ export const getOneCourse = async (req: Request, res: Response) => {
   }
 };
 
+export const listCourses = async (req: Request, res: Response) => {
+  try {
+    const courses = await courseService.getAllCourses();
+
+    res.status(200).json({
+      message: MESSAGES.FETCH_SUCCESS,
+      data: courses,
+    });
+  } catch (error: any) {
+    if (res.headersSent) {
+      console.error("Error en registerPro: ", MESSAGES.HEADERS_SENT);
+      res.status(500).json({
+        message: MESSAGES.HEADERS_SENT,
+      });
+      return;
+    }
+    const statusCode = error.statusCode || 500;
+    const message = error.message || MESSAGES.FETCH_ERROR;
+    res.status(statusCode).json({
+      message,
+    });
+  }
+};
+
 export const updateCourse = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -158,5 +182,109 @@ export const updateCourse = async (req: Request, res: Response) => {
     const message = error.message || MESSAGES.UPDATE_ERROR;
 
     res.status(statusCode).json({ message });
+  }
+};
+
+export const buyCourse = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // id del user
+    const { courseId } = req.body;
+
+    if (!req.user) {
+      res.status(401).json({ message: MESSAGES.UNAUTHENTICATED });
+    }
+
+    const authenticatedUserId = (req.user as { id: string }).id;
+
+    // Verificar si el ID del usuario autenticado coincide con el ID en la URL
+    if (id !== authenticatedUserId) {
+      res.status(403).json({ message: MESSAGES.FORBIDDEN });
+    }
+
+    if (!id) {
+      res.status(400).json({
+        message: MESSAGES.ID_MISSING,
+      });
+      return;
+    }
+
+    if (!courseId) {
+      res.status(400).json({
+        message: MESSAGES.COURSE_ID_MISSING,
+      });
+      return;
+    }
+
+    const courseBought = await courseService.buyCourse(id, courseId);
+
+    res.status(200).json({
+      message: MESSAGES.COURSE_BUY_SUCCESS,
+      data: courseBought,
+    });
+  } catch (error: any) {
+    if (res.headersSent) {
+      console.error("Error en buyCourse: ", MESSAGES.HEADERS_SENT);
+      res.status(500).json({
+        message: MESSAGES.HEADERS_SENT,
+      });
+      return;
+    }
+    const statusCode = error.status || 500;
+    const message = error.message || MESSAGES.COURSE_BUY_ERROR;
+    res.status(statusCode).json({
+      message,
+    });
+  }
+};
+
+export const deleteCourse = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params; // id del user
+    const { courseId } = req.body;
+
+    if (!req.user) {
+      res.status(401).json({ message: MESSAGES.UNAUTHENTICATED });
+    }
+
+    const authenticatedUserId = (req.user as { id: string }).id;
+
+    // Verificar si el ID del usuario autenticado coincide con el ID en la URL
+    if (id !== authenticatedUserId) {
+      res.status(403).json({ message: MESSAGES.FORBIDDEN });
+    }
+
+    if (!id) {
+      res.status(400).json({
+        message: MESSAGES.ID_MISSING,
+      });
+      return;
+    }
+
+    if (!courseId) {
+      res.status(400).json({
+        message: MESSAGES.COURSE_ID_MISSING,
+      });
+      return;
+    }
+
+    const courseDeleted = await courseService.deleteCourse(courseId);
+
+    res.status(200).json({
+      message: MESSAGES.ELIMINATE_SUCCESS,
+      data: courseDeleted,
+    });
+  } catch (error: any) {
+    if (res.headersSent) {
+      console.error("Error en buyCourse: ", MESSAGES.HEADERS_SENT);
+      res.status(500).json({
+        message: MESSAGES.HEADERS_SENT,
+      });
+      return;
+    }
+    const statusCode = error.status || 500;
+    const message = error.message || MESSAGES.ELIMINATE_ERROR;
+    res.status(statusCode).json({
+      message,
+    });
   }
 };

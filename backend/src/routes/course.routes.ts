@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createCourse, getOneCourse } from '../controllers/course.controller';
+import { createCourse, getOneCourse, listCourses, buyCourse, deleteCourse } from '../controllers/course.controller';
 import {
   validateCourseRegistration,
   handleValidationErrors,
@@ -24,5 +24,17 @@ courseRouter
   .route('/:id')
   .get(idByParameterValidator, validateFetchCourse, handleValidationErrors, getOneCourse)
   .post(authenticate, validateCourseRegistration, handleValidationErrors, createCourse)
+
+courseRouter
+  .route('/buy/:id')
+  .post(authenticate, handleValidationErrors, buyCourse)
+
+courseRouter
+  .route('/delete/:id')
+  .delete(authenticate, handleValidationErrors, deleteCourse)
+
+courseRouter
+  .route('/')
+  .get(handleValidationErrors, listCourses)
 
 export default courseRouter;
