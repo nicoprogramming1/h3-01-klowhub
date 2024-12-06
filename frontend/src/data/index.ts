@@ -182,7 +182,7 @@ export const fakeDataCursesBig = [
     description:
       "Aprende los fundamentos del desarrollo web con HTML, CSS y JavaScript, creando páginas web desde cero.",
     tags: ["Web", "HTML", "CSS"],
-    calification: 4.8,
+    calification: 3.4,
     link: "/",
     image: "/images/card/image1.png",
     price: 49.99,
@@ -413,5 +413,24 @@ export const fakeDataCursesBig = [
     link: "/",
     image: "/images/card/image4.png",
     price: 149.99,
+  },
+];
+
+export const fakeDataImages = [
+  {
+    id: 1,
+    image: "/images/card/image1.png",
+  },
+  {
+    id: 2,
+    image: "/images/card/image2.png",
+  },
+  {
+    id: 3,
+    image: "/images/card/image3.png",
+  },
+  {
+    id: 4,
+    image: "/images/card/image4.png",
   },
 ];

@@ -5,7 +5,6 @@ import { useAuth } from "@/hooks/auth-provider";
 import CarouselHeader from "./carousel-header";
 import CarouselCourses from "./carousel-courses";
 import CarouselApplications from "./carousel-applications";
-import MemberTitle from "./member-title";
 import MemberData from "./member-data";
 import LearningProgressDashboard from "./learning-progress";
 
@@ -31,7 +30,6 @@ const DashboardComponent = () => {
       {isAuthenticated && <LearningProgressDashboard />}
       <CarouselCourses />
       <CarouselApplications />
-      <MemberTitle />
       <MemberData />
     </DashboardContent>
   );

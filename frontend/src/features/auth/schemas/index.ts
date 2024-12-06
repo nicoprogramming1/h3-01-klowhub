@@ -10,7 +10,6 @@ export const LoginSchema = z.object({
   password: z.string().min(1, {
     message: "Ingresar Contraseña",
   }),
-  code: z.string().optional(),
 });
 
 export const RegisterSchema = z.object({

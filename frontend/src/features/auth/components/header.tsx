@@ -13,13 +13,16 @@ const Header = ({ label, className }: Readonly<HeaderProps>) => {
         className
       )}
     >
-      <div className="flex dark:bg-gray-500 bg-white p-1 rounded-sm">
+      {/* <div className="flex dark:bg-gray-500 bg-white p-1 rounded-sm">
         <h1 className="text-2xl font-semibold">
           Klowhub{" "}
           <span className="bg-primario p-1 rounded-md text-white font-medium text-start text-xl ml-2">
             {label}
           </span>{" "}
         </h1>
+      </div> */}
+      <div className="flex rounded-sm">
+        <h1 className="text-2xl font-semibold">Klowhub </h1>
       </div>
 
       {/* <div className="w-full flex flex-col items-center justify-center gap-y-2">

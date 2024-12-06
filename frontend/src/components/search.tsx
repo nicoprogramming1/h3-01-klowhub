@@ -48,7 +48,7 @@ export default function SearchComponent({
             Search
           </label>
           <input
-            className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500 bg-primario-100/40 dark:bg-gray-900 f"
+            className="peer block w-full rounded-md border border-primary py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500 bg-background dark:bg-gray-900 "
             placeholder={placeholder}
             {...register("query")}
             defaultValue={searchParams.get("query")?.toString()}

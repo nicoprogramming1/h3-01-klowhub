@@ -14,7 +14,7 @@ const AllCoursesComponent = () => {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const coursesPerPage = 9;
+  const coursesPerPage = 12;
   useEffect(() => {
     setSearch(searchParams.get("query")?.toString() || "");
   }, [searchParams]);
@@ -53,11 +53,14 @@ const AllCoursesComponent = () => {
 
   return (
     <DashboardContent>
-      <PartBody description="Encuentra el aprendizaje que estás buscando">
+      <PartBody
+        description="Encuentra el aprendizaje que estás buscando"
+        className="gap-y-2"
+      >
         <SearchComponent placeholder={"Busca cursos"} />
       </PartBody>
 
-      <PartBody className="items-center justify-center ">
+      <PartBody className="items-center justify-center gap-y-2">
         <MyPagination
           totalPages={totalPages}
           currentPage={currentPage}
@@ -65,9 +68,11 @@ const AllCoursesComponent = () => {
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
           {currentCourses.map((course) => (
-            <div key={course.id} onClick={() => handleCardClick(course.id)}>
-              <CardGeneral {...course} />
-            </div>
+            <CardGeneral
+              {...course}
+              handleNavigation={handleCardClick}
+              key={course.id}
+            />
           ))}
         </div>
         <MyPagination

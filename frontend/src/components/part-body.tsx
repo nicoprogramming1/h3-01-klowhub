@@ -16,7 +16,7 @@ const PartBody = ({
   return (
     <div
       className={cn(
-        "flex flex-col  justify-center p-4 sm:px-8 w-full h-full bg-primario-100/80 dark:bg-gray-900  rounded-sm gap-y-4 ",
+        "flex flex-col  justify-center p-4 sm:px-8 w-full h-fit bg-primario-100/40 dark:bg-gray-900  rounded-sm ",
         className
       )}
     >

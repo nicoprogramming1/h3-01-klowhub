@@ -22,7 +22,7 @@ const CardMember = ({
   price,
 }: CardMemberProps) => {
   return (
-    <Card className="flex flex-col  w-full min-h-[350px] h-full   bg-primario-200/80 dark:bg-gray-700/80  rounded-md overflow-hidden ">
+    <Card className="flex flex-col  w-full min-h-[350px] h-full   bg-background dark:bg-gray-700/80  rounded-md overflow-hidden ">
       <CardHeader className="flex basis-2/5    p-0 m-0 relative ">
         <Image src={image ?? "/images/user/image-3.png"} alt="header" fill />
 

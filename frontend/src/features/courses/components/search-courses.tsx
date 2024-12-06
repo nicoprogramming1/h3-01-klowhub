@@ -4,7 +4,7 @@ import SearchComponent from "@/components/search";
 const SearchCourses = () => {
   return (
     <PartBody
-      className=""
+      className="gap-y-2"
       description={"Encuentra el aprendizaje que estás buscando"}
     >
       <SearchComponent placeholder={"Busca cursos"} navigate={true} />

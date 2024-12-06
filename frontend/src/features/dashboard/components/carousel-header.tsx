@@ -14,6 +14,7 @@ import { type CarouselApi } from "@/components/ui/carousel";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import PartBody from "@/components/part-body";
+import { fakeDataHeaderLinks } from "@/data";
 
 const CarouselHeader = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -21,28 +22,7 @@ const CarouselHeader = () => {
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
 
-  const fakeData = [
-    {
-      id: 1,
-      title: "Aprende en KlowHub",
-      link: "/",
-    },
-    {
-      id: 2,
-      title: "Encuentra aplicaciones",
-      link: "/",
-    },
-    {
-      id: 3,
-      title: "Elige un mentor",
-      link: "/",
-    },
-    {
-      id: 4,
-      title: "Publica proyectos",
-      link: "/",
-    },
-  ];
+  const fakeData = fakeDataHeaderLinks;
 
   useEffect(() => {
     if (!api) {

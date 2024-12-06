@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/card";
 import Header from "./header";
 import Social from "./social";
-import BackButton from "./back-button";
+import BackButton from "./link-button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 

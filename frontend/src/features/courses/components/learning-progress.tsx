@@ -10,6 +10,7 @@ const LearningProgressCourses = () => {
       description={
         "Retoma donde lo dejaste. Vuelve a ver tu último video y sigueaprendiendo sin perder el ritmo."
       }
+      className="gap-y-4"
     >
       <div className="flex px-2 items-center justify-center ">
         <CardLearningProgress {...fakeData} />
