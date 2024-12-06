@@ -22,7 +22,12 @@ interface User {
   email: string;
   longName: string;
   imageProfile?: string;
-  about: string;
+  about?: string;
+  membership?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  products?: string;
+  role: string;
 }
 
 interface AuthContextType {

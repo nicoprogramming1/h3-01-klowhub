@@ -25,10 +25,10 @@ export default function InfoProfile() {
       ></PartBody>
 
       <div className="flex flex-col sm:flex-row gap-2 w-full h-full">
-        <PartBody className="sm:w-2/3 gap-2 h-full" title={user.imageProfile}>
+        <PartBody className="sm:w-2/3 gap-2 h-full pt-8">
           <div className="flex flex-row gap-2 w-full h-full">
-            <div className="flex flex-col gap-2 w-1/3">
-              <div className="flex flex-col items-center gap-5">
+            <div className="flex flex-col gap-2 w-1/3 items-center justify-center">
+              <div className="flex flex-col items-center justify-center gap-2">
                 {user.imageProfile ? (
                   <div className="flex ">
                     <Avatar className="size-24 hover:opacity-75 transition ">
@@ -46,35 +46,44 @@ export default function InfoProfile() {
                     </AvatarFallback>
                   </Avatar>
                 )}
-                <div className="flex flex-col gap-1 justify-center items-center">
-                  <p className="text-xs text-primario-300">
-                    Sube tu foto de perfil
-                  </p>
-                  <p className="text-[10px] text-muted-foreground">
-                    JPG, PNG, SVG or JPEG
-                  </p>
-                </div>
+                <p className=" font-semibold">
+                  {user.longName.split(" ")[0].toUpperCase()}
+                  {/* <span className="bg-custom-gradient-light dark:bg-custom-gradient-dark p-1 rounded-sm">
+                  PRO
+                </span> */}
+                </p>{" "}
               </div>
             </div>
             <div className="flex flex-col gap-2 w-2/3 text-sm justify-center h-full ">
-              <p>
-                Vendedor{" "}
+              <p className="text-sm ">
+                Usuario
                 <span className="bg-custom-gradient-light dark:bg-custom-gradient-dark p-1 rounded-sm">
-                  PRO
+                  {user.membership || "BÁSICO"}
                 </span>
               </p>{" "}
-              <p>Escribe una breve descripción de ti</p>
-              <p className="text-muted-foreground text-xs">
-                Esta será la información que los compradores verán cuando
-                visiten tu perfil. Te recomendamos incluir tus áreas de
-                experiencia y los tipos de soluciones que ofreces.
-              </p>
-              <div className="flex flex-col h-full"></div>
+              <p>Sobre mi </p>
+              <div className="flex flex-col h-full bg-primario-100/40 dark:bg-gray-800 px-4 py-3 rounded-md">
+                <p className=" text-xs">
+                  {user.about || "Edita tu perfil para agregar tu biografía"}
+                </p>
+              </div>
             </div>
           </div>
           <div className="flex flex-col gap-2 w-full h-full">
             <div className="w-full flex flex-col gap-2">
               <div className="flex flex-wrap gap-2 items-center w-full">
+                <span className="px-3 py-1  rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit">
+                  {"REACT"}
+                </span>
+                <span className="px-3 py-1  rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit">
+                  {"UX/UI"}
+                </span>
+                <span className="px-3 py-1  rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit">
+                  {"JAVASCRIPT"}
+                </span>
+                <span className="px-3 py-1  rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit">
+                  {"NODEJS"}
+                </span>
                 {/* {field.value?.map((tag: string, index: number) => (
                   <span
                     key={index}
@@ -101,7 +110,7 @@ export default function InfoProfile() {
 
         <PartBody className="w-full sm:w-1/3 sm:p-0 sm:px-0 flex-col h-full  justify-start gap-2 rounded-lg ">
           <div className="flex  w-full min-h-[150px]  relative overflow-hidden rounded-t-lg">
-            <Image src="/images/default.png" alt="header" fill />
+            <Image src="/images/card/image1.png" alt="header" fill />
           </div>
           <div className="flex flex-col w-full h-full  justify-around items-center text-sm gap-2 p-2">
             <h1>Optimiza tu perfil</h1>
