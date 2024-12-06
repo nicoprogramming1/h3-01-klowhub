@@ -24,7 +24,7 @@ export const MESSAGES = {
   LOGOUT_ERROR: "Error al cerrar la sesión",
   MEMBERSHIP_ALREADY: "El usuario ya posee esta membresía",
   MEMBERSHIP_INVALID: "La membresía proporcionada no es válida",
-  MEMBERSHIP_NULL: "El usuario no tiene membresía",
+  MEMBERSHIP_NULL: "El usuario no tiene membresía PRO",
   MENTOR_ALREADY: "El usuario ya es mentor",
   MENTOR_CREATE_ERROR: "Ha ocurrido un error en la creación del mentor",
   MENTOR_CREATE_SUCCESS: "Ha sido creado el mentor con éxito",
