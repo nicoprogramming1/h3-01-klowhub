@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { registerUser, loginUser, logoutUser } from '../services/auth.service';
 import { MESSAGES } from '../utils/messages';
 import { UserDTO } from '../dtos/user.dto';
+import { Membership } from '../models/enum/enum';
 dotenv.config();
 
 export const register = async (req: Request, res: Response) => {
@@ -27,6 +28,7 @@ export const register = async (req: Request, res: Response) => {
       longName: newUser.longName,
       email: newUser.email,
       imageProfile: newUser.imageProfile,
+      membership: Membership.BASICO
     }
 
     res.status(201).json({

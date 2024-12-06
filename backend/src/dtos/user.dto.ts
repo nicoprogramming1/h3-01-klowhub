@@ -14,6 +14,7 @@ export interface UserDTO {
   password?: string;
   about?: string;
   imageProfile?: string;
+  membership: string
 }
 
 export interface UserProDTO {
