@@ -9,7 +9,7 @@ interface DecodedToken extends JwtPayload {
   id?: string; // Agrega aquí las propiedades esperadas
 }
 
-export const currentUser = async () => {
+export const currentUserPro = async () => {
   try {
     const token = await getToken();
 
@@ -19,7 +19,7 @@ export const currentUser = async () => {
 
     const dataToken = jwt.decode(token.value) as DecodedToken | null;
     const { id } = dataToken || {};
-    const response = await fetch(`${API_URL}/api/user/myProfile/${id}`, {
+    const response = await fetch(`${API_URL}/api/userPro/profile/${id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token.value}`,

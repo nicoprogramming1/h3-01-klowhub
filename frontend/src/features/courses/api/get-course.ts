@@ -1,15 +1,9 @@
 "use server";
 
-import jwt, { JwtPayload } from "jsonwebtoken";
-
 import { API_URL } from "@/constants";
 import { getToken } from "@/features/utils/token";
 
-interface DecodedToken extends JwtPayload {
-  id?: string; // Agrega aquí las propiedades esperadas
-}
-
-export const currentUser = async () => {
+export const getCourse = async (id: string) => {
   try {
     const token = await getToken();
 
@@ -17,16 +11,13 @@ export const currentUser = async () => {
       throw new Error("Error al obtener el token de authenticacion");
     }
 
-    const dataToken = jwt.decode(token.value) as DecodedToken | null;
-    const { id } = dataToken || {};
-    const response = await fetch(`${API_URL}/api/user/myProfile/${id}`, {
+    const response = await fetch(`${API_URL}/api/course/profile/${id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
     });
 
-    // toast.success(`${dataToken?.id} está conectado`);
     const data = await response.json();
     console.log({ data });
     return data.data;

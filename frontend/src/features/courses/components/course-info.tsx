@@ -1,9 +1,7 @@
 import { BsClockHistory } from "react-icons/bs";
-import Image from "next/image";
-
 import DashboardContent from "@/components/content-dashboard";
 import PartBody from "@/components/part-body";
-
+import LoadingDefault from "@/components/loading";
 import { CourseData } from "../interfaces";
 import { StarRating } from "@/components/start-rating";
 import CarouselImages from "@/components/carousel-images";
@@ -22,17 +20,106 @@ import {
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import CarouselCourses from "@/features/dashboard/components/carousel-courses";
+import {
+  Language,
+  Platform,
+  Sector,
+  Tag,
+  Tool,
+} from "@/features/profile/interfaces";
+import { getCourse } from "../api/get-course";
+import { useEffect, useState } from "react";
+import { currentUserPro } from "@/features/profile/api/get-profile-pro";
+import { UserPro } from "@/features/profile/components/info-profile-PRO";
 
 interface CourseInfoProps {
   info: CourseData;
 }
 
+export interface Course {
+  course: {
+    id?: string;
+    title?: string;
+    description?: string;
+    aboutLearn?: string;
+    platform?: Platform;
+    imageMain?: string;
+    sector?: Sector;
+    tags?: Tag[];
+    tools?: Tool[];
+    languages?: Language[];
+    price?: number;
+    ownerId?: string;
+  };
+  modules?: Module[];
+}
+
+export interface Module {
+  id?: string;
+  title?: string;
+  description?: string;
+  lessons?: Lesson[];
+}
+
+export interface Lesson {
+  id?: string;
+  title?: string;
+  description?: string;
+  lessonLink?: string;
+  imageMain?: string;
+}
+
 const CourseInfo = ({ info }: CourseInfoProps) => {
   const { user } = useAuth();
+  const id = ""; // id del curso
 
   const avatarFallback = user?.longName
     ? user?.longName.charAt(0).toUpperCase()
     : user?.email.charAt(0).toUpperCase() ?? "U";
+
+  const [course, setCourse] = useState<Course>();
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const data = await getCourse(id);
+        setCourse(data);
+      } catch (error) {
+        console.error("Error al verificar el estado de autenticación:", error);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  console.log({ user });
+  console.log({ course });
+  if (!course) {
+    return <LoadingDefault />;
+  }
+  console.log({ course });
+
+  const [userPro, setUserPro] = useState<UserPro>();
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const data = await currentUserPro();
+        setUserPro(data);
+      } catch (error) {
+        console.error("Error al verificar el estado de autenticación:", error);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  console.log({ user });
+  console.log({ userPro });
+  if (!userPro) {
+    return <LoadingDefault />;
+  }
+  console.log({ userPro });
 
   return (
     <DashboardContent>
@@ -56,7 +143,7 @@ const CourseInfo = ({ info }: CourseInfoProps) => {
             <div className="flex flex-row gap-2">
               <div className="flex flex-col items-center justify-center gap-2 ">
                 <Avatar className="size-12">
-                  <AvatarImage src={user?.image} alt="header" />
+                  <AvatarImage src={user?.imageProfile} alt="header" />
                   <AvatarFallback className="text-white bg-primario-300  dark:bg-primario font-medium flex items-center justify-center text-2xl">
                     {avatarFallback}
                   </AvatarFallback>
@@ -66,31 +153,18 @@ const CourseInfo = ({ info }: CourseInfoProps) => {
                 </div>
               </div>
               <div className="flex flex-col  px-2 gap-2">
-                <h1 className="text-sm">Diego Martínez </h1>
+                <h1 className="text-sm">{user?.longName}</h1>
                 <p className="text-xs text-justify leading-normal">
-                  Experto en desarrollo de aplicaciones no-code con más de 5
-                  años de experiencia en AppSheet, ayudando a empresas y
-                  emprendedores a optimizar sus procesos de manera eficiente y
-                  accesible.
+                  {user?.about}
                 </p>
               </div>
             </div>
-            <h2>
-              Una aplicación que te ayudará a gestionar mejor tus proyectos
-            </h2>
+            <h2>Acerca de este curso</h2>
             <p className="text-xs text-justify leading-normal">
-              ¿Quieres optimizar tus procesos y mejorar la productividad de tu
-              pequeña empresa sin invertir una fortuna en desarrollo de
-              software? Esta aplicación te permitirá gestionar tus proyectos,
-              clientes, inventario y mucho más. Imagina tener una herramienta a
-              medida que se adapte a las necesidades únicas de tu negocio, sin
-              necesidad de escribir una sola línea de código.Gracias a esta
-              aplicación podrás: automatizar tareas repetitivas, mejorar la
-              colaboración entre equipos, acceder a tus datos en tiempo real y
-              tomar decisiones más informadas.
+              {course.course.description}
             </p>
 
-            <h2>Todo para la gestión de tus proyectos</h2>
+            <h2>Después de </h2>
 
             <ul
               id="taskList"
@@ -179,7 +253,7 @@ const CourseInfo = ({ info }: CourseInfoProps) => {
             <div className="flex flex-col gap-2">
               <div className="flex flex-row items-center justify-start gap-2 pl-4">
                 <Avatar className="size-10">
-                  <AvatarImage src={user?.image} alt="header" />
+                  <AvatarImage src={user?.imageProfile} alt="header" />
                   <AvatarFallback className="text-white bg-primario-300  dark:bg-primario font-medium flex items-center justify-center text-xl">
                     {avatarFallback}
                   </AvatarFallback>

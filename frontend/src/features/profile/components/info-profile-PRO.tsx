@@ -10,15 +10,71 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/auth-provider";
 import { ImageIcon, TvMinimalPlay } from "lucide-react";
 import Image from "next/image";
+import { currentUserPro } from "../api/get-profile-pro";
+import { useEffect, useState } from "react";
+import {
+  Expertise,
+  Language,
+  PaymentMethod,
+  Platform,
+  Sector,
+  Tool,
+} from "../interfaces";
+
+export interface UserPro {
+  id: string;
+  firstName: string;
+  lastName: string;
+  about?: string;
+  country?: string;
+  sector: Sector[];
+  sectorsExperience?: string;
+  tools: Tool[];
+  toolsExperience?: string;
+  portfolioLink?: string;
+  academicFormation?: string;
+  certificationLink?: string;
+  paymentMethod: PaymentMethod;
+  accountData: string;
+  imageProfile?: string;
+  userId: string;
+  mentor?: MentorDTO | null;
+}
+
+export interface MentorDTO {
+  id?: string;
+  userProId: string;
+  expertiseArea: Sector[];
+  expertiseLevel: Expertise;
+  platform: Platform[];
+  mentoryCost: number;
+  aboutMentories: string;
+  language: Language[];
+}
 
 export default function InfoProfilePRO() {
   const { user } = useAuth();
-  console.log({ user });
+  const [userPro, setUserPro] = useState<UserPro>();
 
-  if (!user) {
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const data = await currentUserPro();
+        setUserPro(data);
+      } catch (error) {
+        console.error("Error al verificar el estado de autenticación:", error);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  console.log({ user });
+  console.log({ userPro });
+  if (!userPro) {
     return <LoadingDefault />;
   }
-
+  console.log({ userPro });
   return (
     <DashboardContent>
       <PartBody
@@ -31,11 +87,11 @@ export default function InfoProfilePRO() {
           <div className="flex flex-row gap-2 w-full h-full">
             <div className="flex flex-col gap-2 w-1/3 md:w-1/4 items-center justify-center">
               <div className="flex flex-col items-center justify-center gap-2">
-                {user.imageProfile ? (
+                {userPro.imageProfile ? (
                   <div className="flex ">
                     <Avatar className="size-24  transition ">
                       <AvatarImage
-                        src={user.imageProfile}
+                        src={userPro.imageProfile}
                         alt="header"
                         className="rounded-full"
                       />
@@ -48,7 +104,9 @@ export default function InfoProfilePRO() {
                     </AvatarFallback>
                   </Avatar>
                 )}
-                <p className=" font-semibold">{user.longName}</p>{" "}
+                <p className="font-semibold">
+                  {userPro.firstName} {userPro.lastName}
+                </p>{" "}
               </div>
             </div>
             <div className="flex flex-col gap-5 w-2/3 md:w-3/4 text-sm justify-between  ">
@@ -56,7 +114,7 @@ export default function InfoProfilePRO() {
                 <p className="text-sm ">
                   Usuario
                   <span className="bg-custom-gradient-light dark:bg-custom-gradient-dark p-1 rounded-sm">
-                    {user.membership || "PRO"}
+                    {user?.membership || "PRO"}
                   </span>
                 </p>{" "}
                 <Button variant="outline" className="">
@@ -67,7 +125,7 @@ export default function InfoProfilePRO() {
               <div className="flex flex-col h-full w-full bg-white/40 dark:bg-gray-800 px-4 py-3 rounded-md  gap-2 ">
                 <p>Sobre mi </p>
                 <p className=" text-xs text-muted-foreground">
-                  {user.about || "Edita tu perfil para agregar tu biografía"}
+                  {userPro.about || "Edita tu perfil para agregar tu biografía"}
                 </p>
               </div>
             </div>
@@ -75,22 +133,13 @@ export default function InfoProfilePRO() {
 
           <div className="flex flex-wrap gap-2 items-center justify-stretch w-full">
             <span className="px-3 py-1  rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit">
-              {"REACT"}
+              {"NO CODE"}
             </span>
             <span className="px-3 py-1  rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit">
               {"UX/UI"}
             </span>
             <span className="px-3 py-1  rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit">
-              {"JAVASCRIPT"}
-            </span>
-            <span className="px-3 py-1  rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit">
-              {"REACT"}
-            </span>
-            <span className="px-3 py-1  rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit">
-              {"REACT"}
-            </span>
-            <span className="px-3 py-1  rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit">
-              {"UX/UI"}
+              {"PRO"}
             </span>
           </div>
         </PartBody>
@@ -139,6 +188,7 @@ export default function InfoProfilePRO() {
           </Button>
         </div>
       </PartBody>
+
       <div className="flex flex-col md:flex-row gap-2 w-full h-full">
         <PartBody className="text-sm gap-4 ">
           <h1 className=" text-primario dark:text-primario-300 font-semibold">
@@ -152,36 +202,37 @@ export default function InfoProfilePRO() {
             plataforma.
           </p>
           <p>Selecciona los sectores en las que tenés experiencia</p>
+
           <div className="flex gap-3 items-center text-xs">
-            <div className="border rounded-lg border-primario-300 text-primario-300 bg-transparent px-2 py-1">
-              <p>Sector de Experiencia</p>
-            </div>
-            <div className="border rounded-lg border-primario-300 text-primario-300 bg-transparent px-2 py-1">
-              <p>Sector de Experiencia</p>
-            </div>
+            {userPro.sector.map((sector, index) => (
+              <div
+                key={index}
+                className="border rounded-lg border-primario-300 text-primario-300 bg-transparent px-2 py-1"
+              >
+                <p>{sector}</p>
+              </div>
+            ))}
           </div>
+
           <p>Experiencia en otros sectores</p>
           <p className="text-xs  text-muted-foreground">
-            Estamos a solo un paso de completar tu perfil de vendedor.
-            Proporciónanos algunos detalles adicionales para poder validar tu
-            identidad y ofrecerte la mejor experiencia como creador en nuestra
-            plataforma.
+            {userPro.sectorsExperience}
           </p>
           <p>Herramientas utilizadas</p>
           <div className="flex gap-3 items-center text-xs">
-            <div className="border rounded-lg border-primario-300 text-primario-300 bg-transparent px-2 py-1">
-              <p>Herramienta</p>
-            </div>
-            <div className="border rounded-lg border-primario-300 text-primario-300 bg-transparent px-2 py-1">
-              <p>Herramienta</p>
-            </div>
+            {userPro.tools.map((tool, index) => (
+              <div
+                key={index}
+                className="border rounded-lg border-primario-300 text-primario-300 bg-transparent px-2 py-1"
+              >
+                <p>{tool}</p>
+              </div>
+            ))}
           </div>
+
           <p>Experiencia con las Herramientas utilizadas</p>
           <p className="text-xs  text-muted-foreground">
-            Estamos a solo un paso de completar tu perfil de vendedor.
-            Proporciónanos algunos detalles adicionales para poder validar tu
-            identidad y ofrecerte la mejor experiencia como creador en nuestra
-            plataforma.
+            {userPro.toolsExperience}
           </p>
           <p>Enlace al porfolio</p>
           <Button
@@ -189,7 +240,7 @@ export default function InfoProfilePRO() {
             variant="link"
             size="sm"
           >
-            http//www.porfolio.com
+            {userPro.portfolioLink}
           </Button>
         </PartBody>
         <PartBody className="text-sm gap-4 h-full items-start justify-start">
@@ -197,24 +248,7 @@ export default function InfoProfilePRO() {
             Educación
           </h1>
           <p>Formación académica</p>
-          <p className="text-xs ">
-            Estamos a solo un paso de completar tu perfil de vendedor.
-            Proporciónanos algunos detalles adicionales para poder validar tu
-            identidad y ofrecerte la mejor experiencia como creador en nuestra
-            plataforma.
-          </p>
-          <p className="text-xs ">
-            Estamos a solo un paso de completar tu perfil de vendedor.
-            Proporciónanos algunos detalles adicionales para poder validar tu
-            identidad y ofrecerte la mejor experiencia como creador en nuestra
-            plataforma.
-          </p>
-          <p className="text-xs ">
-            Estamos a solo un paso de completar tu perfil de vendedor.
-            Proporciónanos algunos detalles adicionales para poder validar tu
-            identidad y ofrecerte la mejor experiencia como creador en nuestra
-            plataforma.
-          </p>
+          <p className="text-xs ">{userPro.academicFormation}</p>
         </PartBody>
       </div>
       <PartBody className="text-sm gap-4 h-full items-start justify-start">
@@ -223,25 +257,25 @@ export default function InfoProfilePRO() {
         </h1>
         <div className="flex flex-col gap-y-4 w-full">
           <div className="flex flex-row gap-x-2">
-            <p>Maria Lopez</p>
+            <p>Eva Braun</p>
             <StarRating rating={2.8} />
           </div>
           <p className="text-xs">
-            Nunca pensé que podría organizar mi negocio tan rapido Gracias a
-            Sebastián, ahora puedo automatizar varias tareas en mi trabajo. ¡Muy
-            recomendado!
+            El enfoque fue muy práctico y directo, lo que hizo que aplicar lo
+            aprendido fuera sencillo. Definitivamente me ayudó a ver mejoras
+            concretas en poco tiempo.
           </p>
           <Separator className="w-full" />
         </div>
         <div className="flex flex-col gap-y-4 w-full">
           <div className="flex flex-row gap-x-2">
-            <p>Maria Lopez</p>
+            <p>Rogelio Aramis</p>
             <StarRating rating={4.4} />
           </div>
           <p className="text-xs">
-            Nunca pensé que podría organizar mi negocio tan rapido Gracias a
-            Sebastián, ahora puedo automatizar varias tareas en mi trabajo. ¡Muy
-            recomendado!
+            Tenía dudas sobre si realmente me sería útil, pero la experiencia
+            fue mucho más enriquecedora de lo que esperaba. Ahora tengo
+            herramientas concretas para gestionar mejor mis proyectos.
           </p>
           <Separator className="w-full" />
         </div>

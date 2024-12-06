@@ -1,5 +1,7 @@
 "use client";
 import { z } from "zod";
+import Image from "next/image";
+import { toast } from "sonner";
 
 import { ImageIcon } from "lucide-react";
 import { useRef } from "react";
@@ -19,11 +21,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { createProfileSchema } from "../schema";
+import {
+  createProfileProSchema,
+  ExpertiseEnum,
+  LanguageEnum,
+  PlatformEnum,
+  SectorEnum,
+  ToolEnum,
+} from "../schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -35,21 +43,46 @@ import {
 } from "@/components/ui/select";
 import DocumentUpload from "@/components/document-upload";
 import { Checkbox } from "@/components/ui/checkbox";
-import { toast } from "sonner";
 
 const FormProfilePro = () => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const sectorOptions = Object.values(SectorEnum.Enum);
+  const toolsOptions = Object.values(ToolEnum.Enum);
+  const languageOptions = Object.values(LanguageEnum.Enum);
+  const PlatformEnum = Object.values(PlatformEnum.Enum);
+  const ExpertiseEnum = Object.values(ExpertiseEnum.Enum);
 
-  const form = useForm<z.infer<typeof createProfileSchema>>({
-    resolver: zodResolver(createProfileSchema),
+  const form = useForm<z.infer<typeof createProfileProSchema>>({
+    resolver: zodResolver(createProfileProSchema),
     defaultValues: {
-      imageProfile: "",
+      firstName: "",
+      lastName: "",
+      about: "",
+      imageProfile: undefined,
       tags: [],
+      country: "",
+      sector: [],
+      sectorsExperience: "",
+      tools: [],
+      toolsExperience: "",
+      portfolioLink: "",
+      academicFormation: "",
+      certificationLink: "",
+      paymentMethod: "Criptomonedas", // Uno de los valores del enum PaymentMethodEnum
+      accountData: "",
+      mentor: {
+        expertiseArea: [],
+        expertiseLevel: undefined, // Enum: "Junior" | "Semi senior" | "Senior"
+        platform: [], // Enum: "AppSheet" | "PowerApps"
+        mentoryCost: 0,
+        aboutMentories: "",
+        language: [], // Enum: "Español" | "Inglés" | "Alemán" | "Portugués"
+      },
       isMentor: false,
     },
   });
 
-  const onSubmit = (data: z.infer<typeof createProfileSchema>) => {
+  const onSubmit = (data: z.infer<typeof createProfileProSchema>) => {
     const payload = {
       ...data,
       // tags: data.tags.join(","), // Convierte a cadena aquí
@@ -74,6 +107,8 @@ const FormProfilePro = () => {
 
     toast.error(`Errores en el formulario:\n${errorMessages}`);
   };
+
+  // const isMentor = form.watch("isMentor");
   return (
     <DashboardContent>
       <Form {...form}>
@@ -215,7 +250,7 @@ const FormProfilePro = () => {
                   <div className="flex flex-col h-full">
                     <FormField
                       control={form.control}
-                      name="description"
+                      name="about"
                       render={({ field }) => (
                         <FormItem className="flex flex-col w-full h-full">
                           <FormLabel>Descripcion</FormLabel>
@@ -233,15 +268,15 @@ const FormProfilePro = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-2 w-full h-full">
+              <div className="flex flex-col lg:flex-row gap-2 w-full h-full">
                 <FormField
                   control={form.control}
                   name="tags"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col w-full h-full">
                       <FormLabel>Habilidades</FormLabel>
                       <FormControl>
-                        <div className="w-full flex flex-col gap-2">
+                        <div className="w-full flex flex-col  gap-2">
                           <div className="flex flex-wrap gap-2 items-center w-full">
                             {field.value?.map((tag: string, index: number) => (
                               <span
@@ -253,7 +288,9 @@ const FormProfilePro = () => {
                                   type="button"
                                   className="text-red-500"
                                   onClick={() => {
-                                    const updatedTags = [...field.value];
+                                    const updatedTags = [
+                                      ...(field.value || []),
+                                    ];
                                     updatedTags.splice(index, 1); // Elimina el tag
                                     field.onChange(updatedTags);
                                   }}
@@ -265,15 +302,21 @@ const FormProfilePro = () => {
                             <Input
                               type="text"
                               placeholder="Agregar una habilidad"
-                              className=" text-xs"
+                              className=" text-xs lg:w-[180px]  w-full"
                               onKeyDown={(e) => {
                                 if (e.key === "Enter" || e.key === ",") {
                                   e.preventDefault();
                                   const newTag = e.currentTarget.value
                                     .trim()
                                     .toUpperCase();
-                                  if (newTag && !field.value.includes(newTag)) {
-                                    field.onChange([...field.value, newTag]);
+                                  if (
+                                    newTag &&
+                                    !field.value?.includes(newTag)
+                                  ) {
+                                    field.onChange([
+                                      ...(field.value || []),
+                                      newTag,
+                                    ]);
                                     e.currentTarget.value = ""; // Limpia el input
                                   }
                                 }
@@ -281,6 +324,24 @@ const FormProfilePro = () => {
                             />
                           </div>
                         </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col  h-full justify-end ">
+                      <FormLabel>País</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Ingrese el país"
+                          className="text-xs"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -308,7 +369,7 @@ const FormProfilePro = () => {
           </div>
 
           <PartBody className="text-sm gap-3">
-            <h1 className=" text-primario dark:text-primario-300">
+            <h1 className=" text-primario dark:text-primario-300 text-lg">
               Experiencia
             </h1>
             <p>Completa tu perfil PRO</p>
@@ -318,237 +379,214 @@ const FormProfilePro = () => {
               identidad y ofrecerte la mejor experiencia como creador en nuestra
               plataforma.
             </p>
-            <p className="text-sm">
-              Seleccioná los sectores en las que tenés experiencia
-            </p>
 
-            <FormField
-              control={form.control}
-              name="sector"
-              render={({ field }) => {
-                const handleAddSector = (newSector: string) => {
-                  if (
-                    newSector.trim() &&
-                    !field.value?.includes(newSector.toUpperCase())
-                  ) {
-                    field.onChange([
-                      ...(field.value || []),
-                      newSector.toUpperCase(),
-                    ]);
-                  }
-                };
+            <div className="flex flex-col md:flex-row gap-2 w-full h-full">
+              <div className="flex flex-col w-full h-full gap-2">
+                <FormField
+                  control={form.control}
+                  name="sector"
+                  render={({ field }) => {
+                    const handleAddSector = (
+                      newSector: (typeof SectorEnum._def.values)[number]
+                    ) => {
+                      if (newSector && !field.value?.includes(newSector)) {
+                        field.onChange([...(field.value || []), newSector]);
+                      }
+                    };
 
-                return (
-                  <FormItem>
-                    <FormControl>
-                      <div className="w-full flex flex-col gap-2">
-                        {/* Lista de sectores seleccionados */}
-                        <div className="flex flex-wrap gap-2 items-center w-full">
-                          {field.value?.map((item: string, index: number) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit"
-                            >
-                              {item}
-                              <button
-                                type="button"
-                                className="text-red-500"
-                                onClick={() => {
-                                  const updatedItem = [...field.value];
-                                  updatedItem.splice(index, 1); // Elimina el tag
-                                  field.onChange(updatedItem);
+                    return (
+                      <FormItem>
+                        <FormLabel>
+                          Seleccioná los sectores en las que tenés experiencia
+                        </FormLabel>
+                        <FormControl>
+                          <div className="w-full flex flex-col gap-2">
+                            {/* Lista de sectores seleccionados */}
+                            <div className="flex flex-wrap gap-2 items-center w-full">
+                              {field.value?.map(
+                                (item: string, index: number) => (
+                                  <span
+                                    key={index}
+                                    className="px-3 py-1 rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit"
+                                  >
+                                    {item}
+                                    <button
+                                      type="button"
+                                      className="text-red-500"
+                                      onClick={() => {
+                                        const updatedItem = [...field.value];
+                                        updatedItem.splice(index, 1); // Elimina el tag
+                                        field.onChange(updatedItem);
+                                      }}
+                                    >
+                                      ×
+                                    </button>
+                                  </span>
+                                )
+                              )}
+                            </div>
+
+                            <div className="flex flex-row gap-2  items-center">
+                              {/* Select para sectores existentes y opción de agregar */}
+                              <Select
+                                onValueChange={(value) => {
+                                  const validSector =
+                                    SectorEnum.safeParse(value);
+                                  if (validSector.success) {
+                                    handleAddSector(validSector.data);
+                                  } else {
+                                    alert(
+                                      "El sector seleccionado no es válido"
+                                    );
+                                  }
+                                }}
+
+                                // onValueChange={field.onChange}
+                              >
+                                <SelectTrigger className="w-full  ">
+                                  <SelectValue placeholder="Selecciona sectores" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Sectores</SelectLabel>
+                                    {sectorOptions.map((sector) => (
+                                      <SelectItem key={sector} value={sector}>
+                                        {sector}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="sectorsExperience"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Describa la experiencia que posee en estos sectores.
+                      </FormLabel>
+                      <FormControl className="">
+                        <Textarea
+                          {...field}
+                          placeholder="Describa aquí tu experiencia..."
+                          className="w-full h-fit sm:h-fit  text-xs"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex flex-col w-full h-full gap-2">
+                <FormField
+                  control={form.control}
+                  name="tools"
+                  render={({ field }) => {
+                    const handleAddItem = (
+                      newItem: (typeof ToolEnum._def.values)[number]
+                    ) => {
+                      if (newItem && !field.value?.includes(newItem)) {
+                        field.onChange([...(field.value || []), newItem]);
+                      }
+                    };
+                    return (
+                      <FormItem>
+                        <FormLabel>
+                          ¿Con qué herramientas tenés experiencia?
+                        </FormLabel>
+                        <FormControl>
+                          <div className="w-full flex flex-col gap-2">
+                            {/* Lista de sectores seleccionados */}
+                            <div className="flex flex-wrap gap-2 items-center w-full">
+                              {field.value?.map(
+                                (item: string, index: number) => (
+                                  <span
+                                    key={index}
+                                    className="px-3 py-1 rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit"
+                                  >
+                                    {item}
+                                    <button
+                                      type="button"
+                                      className="text-red-500"
+                                      onClick={() => {
+                                        const updatedItem = [...field.value];
+                                        updatedItem.splice(index, 1); // Elimina el tag
+                                        field.onChange(updatedItem);
+                                      }}
+                                    >
+                                      ×
+                                    </button>
+                                  </span>
+                                )
+                              )}
+                            </div>
+
+                            <div className="flex flex-row gap-2 justify-center items-center">
+                              {/* Select para sectores existentes y opción de agregar */}
+                              <Select
+                                onValueChange={(value) => {
+                                  const validItem = ToolEnum.safeParse(value);
+                                  if (validItem.success) {
+                                    handleAddItem(validItem.data);
+                                  } else {
+                                    alert(
+                                      "El sector seleccionado no es válido"
+                                    );
+                                  }
                                 }}
                               >
-                                ×
-                              </button>
-                            </span>
-                          ))}
-                        </div>
+                                <SelectTrigger className="w-full  ">
+                                  <SelectValue placeholder="Selecciona Herramientas" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Herramientas</SelectLabel>
+                                    {toolsOptions.map((item) => (
+                                      <SelectItem key={item} value={item}>
+                                        {item}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
 
-                        <div className="flex flex-row gap-2 justify-center items-center">
-                          {/* Select para sectores existentes y opción de agregar */}
-                          <Select
-                            onValueChange={(value) => {
-                              handleAddSector(value);
-                            }}
-                          >
-                            <SelectTrigger className="w-[180px] ">
-                              <SelectValue placeholder="Selecciona sectores" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Sectores</SelectLabel>
-                                <SelectItem value="technology">
-                                  Tecnología
-                                </SelectItem>
-                                <SelectItem value="finance">
-                                  Finanzas
-                                </SelectItem>
-                                <SelectItem value="healthcare">
-                                  Salud
-                                </SelectItem>
-                                <SelectItem value="education">
-                                  Educación
-                                </SelectItem>
-                                <SelectItem value="retail">Comercio</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-
-                          {/* Input para agregar un nuevo sector */}
-                          <Input
-                            type="text"
-                            placeholder="Agregar un Sector Nuevo"
-                            className="text-xs "
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" || e.key === ",") {
-                                e.preventDefault();
-                                const newItem = e.currentTarget.value.trim();
-                                handleAddSector(newItem);
-                                e.currentTarget.value = ""; // Limpia el input
-                              }
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-
-            <p>Describa la experiencia que posee en estos sectores.</p>
-
-            <div className="flex flex-col">
-              <FormField
-                control={form.control}
-                name="sectorsExperience"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl className="">
-                      <Textarea
-                        {...field}
-                        placeholder="Describa aquí tu experiencia..."
-                        className="w-full h-fit sm:h-fit  text-xs"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <p className="text-sm">¿Con qué herramientas tenés experiencia?</p>
-
-            <FormField
-              control={form.control}
-              name="tools"
-              render={({ field }) => {
-                const handleAddSector = (newSector: string) => {
-                  if (
-                    newSector.trim() &&
-                    !field.value?.includes(newSector.toUpperCase())
-                  ) {
-                    field.onChange([
-                      ...(field.value || []),
-                      newSector.toUpperCase(),
-                    ]);
-                  }
-                };
-
-                return (
-                  <FormItem>
-                    <FormControl>
-                      <div className="w-full flex flex-col gap-2">
-                        {/* Lista de sectores seleccionados */}
-                        <div className="flex flex-wrap gap-2 items-center w-full">
-                          {field.value?.map((item: string, index: number) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit"
-                            >
-                              {item}
-                              <button
-                                type="button"
-                                className="text-red-500"
-                                onClick={() => {
-                                  const updatedItem = [...field.value];
-                                  updatedItem.splice(index, 1); // Elimina el tag
-                                  field.onChange(updatedItem);
-                                }}
-                              >
-                                ×
-                              </button>
-                            </span>
-                          ))}
-                        </div>
-
-                        <div className="flex flex-row gap-2 justify-center items-center">
-                          {/* Select para sectores existentes y opción de agregar */}
-                          <Select
-                            onValueChange={(value) => {
-                              handleAddSector(value);
-                            }}
-                          >
-                            <SelectTrigger className="w-[180px] ">
-                              <SelectValue placeholder="Selecciona Herramientas" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Sectores</SelectLabel>
-                                <SelectItem value="REACT">React</SelectItem>
-                                <SelectItem value="Express">Express</SelectItem>
-                                <SelectItem value="Tailwind">
-                                  Tailwind
-                                </SelectItem>
-                                <SelectItem value="Typescript">
-                                  Typescript
-                                </SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-
-                          <Input
-                            type="text"
-                            placeholder="Agregar una Nueva Herramienta"
-                            className="text-xs "
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter" || e.key === ",") {
-                                e.preventDefault();
-                                const newItem = e.currentTarget.value.trim();
-                                handleAddSector(newItem);
-                                e.currentTarget.value = ""; // Limpia el input
-                              }
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
-
-            <p>Describa la experiencia que posee en estos sectores.</p>
-
-            <div className="flex flex-col">
-              <FormField
-                control={form.control}
-                name="toolsExperience"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl className="">
-                      <Textarea
-                        {...field}
-                        placeholder="Describa aquí tu experiencia..."
-                        className="w-full h-fit sm:h-fit  text-xs"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="toolsExperience"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        Describa la experiencia que posee en estas herramientas.
+                      </FormLabel>
+                      <FormControl className="">
+                        <Textarea
+                          {...field}
+                          placeholder="Describa aquí tu experiencia..."
+                          className="w-full h-fit sm:h-fit  text-xs"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
             <p>
@@ -556,7 +594,7 @@ const FormProfilePro = () => {
               <span className="text-muted-foreground">(Opcional)</span>
             </p>
 
-            <p>
+            <p className="text-muted-foreground text-xs">
               Si tienes un portafolio en línea, este es el lugar perfecto para
               destacarlo y mostrar tu trabajo a posibles compradores.
             </p>
@@ -565,7 +603,7 @@ const FormProfilePro = () => {
               control={form.control}
               name="portfolioLink"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col w-full md:w-1/2 ">
                   <FormLabel>Portafolio Link</FormLabel>
                   <FormControl className="">
                     <Input
@@ -582,7 +620,7 @@ const FormProfilePro = () => {
 
           <PartBody className="text-sm gap-2 flex-col sm:flex-row h-full">
             <div className="flex flex-col  gap-3 sm:w-2/3 h-full w-full">
-              <h1 className=" text-primario dark:text-primario-300">
+              <h1 className=" text-primario dark:text-primario-300 text-lg font-semibold">
                 Educación
               </h1>
               <p className="text-xs">
@@ -608,37 +646,36 @@ const FormProfilePro = () => {
                 )}
               />
             </div>
-            <div className="flex flex-col sm:w-1/3">
+            <div className="flex flex-col sm:w-1/3 gap-2">
               <p>Agregá certificaciones relevantes</p>
               <div className="flex w-full justify-center items-center">
                 <DocumentUpload />
               </div>
-              <div>
-                <FormField
-                  control={form.control}
-                  name="certificationLink"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Certificaciones</FormLabel>
-                      <FormControl className="">
-                        <Input
-                          {...field}
-                          placeholder="https://www.example.com"
-                          className="text-xs"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+
+              <FormField
+                control={form.control}
+                name="certificationLink"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Certificaciones</FormLabel>
+                    <FormControl className="">
+                      <Input
+                        {...field}
+                        placeholder="https://www.example.com"
+                        className="text-xs"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </PartBody>
 
           <PartBody className="text-sm gap-3">
-            <h1 className=" text-primario dark:text-primario-300 font-semibold">
+            <p className=" text-primario dark:text-primario-300 font-semibold text-lg">
               Datos de Cobro
-            </h1>
+            </p>
             <p>Elige cómo te gustaría recibir los pagos de tus ventas.</p>
             <div className="flex flex-col sm:flex-row w-full gap-2">
               <FormField
@@ -696,7 +733,7 @@ const FormProfilePro = () => {
             <p className=" text-primario dark:text-primario-300 font-semibold">
               Ofrece sesiones de mentoría
             </p>
-            <p className="text-xs dark:text-muted-foreground">
+            <p className="text-sm dark:text-muted-foreground">
               Además de vender tus cursos y apps, ahora puedes ofrecer sesiones
               de mentoría personalizadas a otros creadores y emprendedores.
               Comparte tu experiencia y ayuda a otros a alcanzar sus objetivos,
@@ -717,12 +754,294 @@ const FormProfilePro = () => {
                   <div className="space-y-1 leading-none">
                     <FormLabel>Activar perfil como mentor</FormLabel>
                     <FormDescription>
-                      Tendras acceso a funcinalidades de mentor
+                      Tendrás acceso a funcionalidades de mentor
                     </FormDescription>
                   </div>
                 </FormItem>
               )}
             />
+
+            {/* {isMentor && (
+              <div className="flex flex-col gap-2 w-full">
+                hola
+                <FormField
+                  control={form.control}
+                  name="mentor.expertiseArea"
+                  render={({ field }) => {
+                    const handleAddItem = (
+                      newSector: (typeof SectorEnum._def.values)[number]
+                    ) => {
+                      if (newSector && !field.value?.includes(newSector)) {
+                        field.onChange([...(field.value || []), newSector]);
+                      }
+                    };
+
+                    return (
+                      <FormItem>
+                        <FormLabel>¿En qué área eres experto?</FormLabel>
+                        <FormControl>
+                          <div className="w-full flex flex-col gap-2">
+                            <div className="flex flex-wrap gap-2 items-center w-full">
+                              {field.value?.map(
+                                (item: string, index: number) => (
+                                  <span
+                                    key={index}
+                                    className="px-3 py-1 rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit"
+                                  >
+                                    {item}
+                                    <button
+                                      type="button"
+                                      className="text-red-500"
+                                      onClick={() => {
+                                        const updatedItem = [...field.value];
+                                        updatedItem.splice(index, 1); // Elimina el tag
+                                        field.onChange(updatedItem);
+                                      }}
+                                    >
+                                      ×
+                                    </button>
+                                  </span>
+                                )
+                              )}
+                            </div>
+
+                            <div className="flex flex-row gap-2  items-center">
+                              <Select
+                                onValueChange={(value) => {
+                                  const validSector =
+                                    SectorEnum.safeParse(value);
+                                  if (validSector.success) {
+                                    handleAddItem(validSector.data);
+                                  } else {
+                                    alert(
+                                      "El sector seleccionado no es válido"
+                                    );
+                                  }
+                                }}
+
+                                // onValueChange={field.onChange}
+                              >
+                                <SelectTrigger className="w-full  ">
+                                  <SelectValue placeholder="Selecciona sectores" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Sectores</SelectLabel>
+                                    {sectorOptions.map((sector) => (
+                                      <SelectItem key={sector} value={sector}>
+                                        {sector}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <FormField
+                  control={form.control}
+                  name="mentor.expertiseLevel"
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Indica tu nivel de expertise.</FormLabel>
+                        <FormControl>
+                          <div className="flex flex-col space-y-2">
+                            {ExpertiseEnum.map((expertise) => (
+                              <div
+                                key={expertise}
+                                className="flex items-center space-x-2"
+                              >
+                                <Checkbox
+                                  checked={field.value === expertise}
+                                  onCheckedChange={(checked) =>
+                                    field.onChange(checked ? expertise : "")
+                                  }
+                                />
+                                <label>{expertise}</label>
+                              </div>
+                            ))}
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <FormField
+                  control={form.control}
+                  name="mentor.platform"
+                  render={({ field }) => {
+                    const handleToggleItem = (
+                      sector: (typeof PlatformEnum._def.values)[number]
+                    ) => {
+                      if (field.value?.includes(sector)) {
+                        // Eliminar si ya está seleccionado
+                        field.onChange(
+                          field.value.filter((item) => item !== sector)
+                        );
+                      } else {
+                        // Agregar si no está seleccionado
+                        field.onChange([...(field.value || []), sector]);
+                      }
+                    };
+
+                    return (
+                      <FormItem>
+                        <FormLabel>¿En qué área eres experto?</FormLabel>
+                        <FormControl>
+                          <div className="flex flex-col gap-4">
+                            {PlatformEnum.map((sector) => (
+                              <div
+                                key={sector}
+                                className="flex items-center space-x-2"
+                              >
+                                <Checkbox
+                                  checked={field.value?.includes(sector)}
+                                  onCheckedChange={() =>
+                                    handleToggleItem(sector)
+                                  }
+                                />
+                                <label className="text-sm">{sector}</label>
+                              </div>
+                            ))}
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="mentor.mentoryCost"
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>
+                          ¿Cuál es el costo de tu hora de mentoria?
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            placeholder="INgrese el moonto por hora"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <FormField
+                  control={form.control}
+                  name="mentor.aboutMentories"
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>
+                          Cuenta un poco más sobre tus mentorías
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            placeholder="Ingrese aquí tus mentorías"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+                <FormField
+                  control={form.control}
+                  name="mentor.language"
+                  render={({ field }) => {
+                    const handleAddItem = (
+                      newSector: (typeof LanguageEnum._def.values)[number]
+                    ) => {
+                      if (newSector && !field.value?.includes(newSector)) {
+                        field.onChange([...(field.value || []), newSector]);
+                      }
+                    };
+
+                    return (
+                      <FormItem>
+                        <FormLabel>
+                          ¿En qué idiomas ofreces las mentorias?
+                        </FormLabel>
+                        <FormControl>
+                          <div className="w-full flex flex-col gap-2">
+                            <div className="flex flex-wrap gap-2 items-center w-full">
+                              {field.value?.map(
+                                (item: string, index: number) => (
+                                  <span
+                                    key={index}
+                                    className="px-3 py-1 rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit"
+                                  >
+                                    {item}
+                                    <button
+                                      type="button"
+                                      className="text-red-500"
+                                      onClick={() => {
+                                        const updatedItem = [...field.value];
+                                        updatedItem.splice(index, 1); // Elimina el tag
+                                        field.onChange(updatedItem);
+                                      }}
+                                    >
+                                      ×
+                                    </button>
+                                  </span>
+                                )
+                              )}
+                            </div>
+
+                            <div className="flex flex-row gap-2  items-center">
+                              <Select
+                                onValueChange={(value) => {
+                                  const validSector =
+                                    LanguageEnum.safeParse(value);
+                                  if (validSector.success) {
+                                    handleAddItem(validSector.data);
+                                  } else {
+                                    alert(
+                                      "El sector seleccionado no es válido"
+                                    );
+                                  }
+                                }}
+
+                                // onValueChange={field.onChange}
+                              >
+                                <SelectTrigger className="w-full  ">
+                                  <SelectValue placeholder="Selecciona sectores" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    <SelectLabel>Sectores</SelectLabel>
+                                    {languageOptions.map((sector) => (
+                                      <SelectItem key={sector} value={sector}>
+                                        {sector}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+              </div>
+            )} */}
           </PartBody>
           <Button type="submit">submit</Button>
         </form>

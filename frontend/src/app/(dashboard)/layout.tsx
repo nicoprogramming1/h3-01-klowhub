@@ -17,7 +17,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Navbar />
             </div>
             <ScrollArea className="flex h-screen w-full justify-between">
-              <main className="h-screen pt-16 w-screen  flex flex-col justify-between ">
+              <main className="h-screen pt-16 w-full max-w-screen-2xl  flex flex-col justify-between ">
                 {children}
                 <Footer />
               </main>

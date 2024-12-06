@@ -7,6 +7,7 @@ import CarouselCourses from "./carousel-courses";
 import CarouselApplications from "./carousel-applications";
 import MemberData from "./member-data";
 import LearningProgressDashboard from "./learning-progress";
+import LoadingDefault from "@/components/loading";
 
 const DashboardComponent = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +23,7 @@ const DashboardComponent = () => {
 
   if (isLoading) {
     // Puedes mostrar un loader o un mensaje mientras esperas la autenticación
-    return <div>Loading...</div>;
+    return <LoadingDefault />;
   }
   return (
     <DashboardContent>
