@@ -38,7 +38,7 @@ export const createCourse = async (req: Request, res: Response) => {
     }
 
     // comprobar que el usuario tenga un perfil Pro
-    await userProService.getMyUserProById(id);
+    const myUserPro = await userProService.getMyUserProById(id);
 
     // Asignar imagen por defecto para el curso
     const DEFAULT_COURSE_IMAGE_URL = `${req.protocol}://${req.get(
@@ -58,8 +58,8 @@ export const createCourse = async (req: Request, res: Response) => {
       });
     });
 
-    // le adherimos el id del user que lo esta creando
-    courseData.course.ownerId = id;
+    // le adherimos el id del userPro que lo esta creando
+    courseData.course.ownerId = myUserPro?.id;
 
     const newCourse = await courseService.saveCourse(courseData);
 
