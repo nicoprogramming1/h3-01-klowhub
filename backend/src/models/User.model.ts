@@ -14,6 +14,7 @@ class UserModel extends Model {
   public membership!: Membership | null
   public isValid!: boolean;
   public products!: string[]
+  public googleId!: string
 }
 
 UserModel.init(
@@ -66,6 +67,11 @@ UserModel.init(
       defaultValue: true,
       field: "is_valid",
     },
+    googleId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
+    }
   },
   {
     sequelize,
