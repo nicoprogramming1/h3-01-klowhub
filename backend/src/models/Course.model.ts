@@ -67,7 +67,7 @@ CourseModel.init(
       allowNull: false,
       field: 'owner_id',
       references: {
-        model: 'users',
+        model: 'users_pro',
         key: 'id',
       },
       onUpdate: 'CASCADE',
