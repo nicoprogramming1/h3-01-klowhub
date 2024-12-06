@@ -34,6 +34,7 @@ export interface UserProDTO {
   accountData: string;
   imageProfile?: string;
   userId?: string;
+  isMentor?: boolean
   mentor?: MentorDTO | null;
 }
 

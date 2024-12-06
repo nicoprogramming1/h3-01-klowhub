@@ -20,6 +20,7 @@ class UserProModel extends Model {
   public accountData!: string;
   public imageProfile!: string;
   public isValid!: boolean; // perfil activo/inactivo
+  public isMentor!: boolean; // perfil mentor true/false
   public userId!: string; // id de su perfil de usuario básico (User.model.ts)
 }
 
@@ -100,6 +101,11 @@ UserProModel.init(
       type: DataTypes.BOOLEAN,
       defaultValue: true,
       field: "is_valid",
+    },
+    isMentor: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      field: "is_mentor",
     },
     userId: {
       type: DataTypes.STRING(10),
