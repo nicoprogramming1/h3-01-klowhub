@@ -23,7 +23,7 @@ courseRouter.route('/imageLesson/:id')
 courseRouter
   .route('/:id')
   .get(idByParameterValidator, validateFetchCourse, handleValidationErrors, getOneCourse)
-  .post(authenticate, validateCourseRegistration, handleValidationErrors, createCourse)
+  .post(authenticate, validateCourseRegistration, handleValidationErrors, createCourse) // id del userPro
 
 courseRouter
   .route('/buy/:id')
