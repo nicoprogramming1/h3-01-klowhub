@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { mentorService, userProService, userService } from "../services";
 import { MESSAGES } from "../utils/messages";
+import { Membership } from "../models/enum/enum";
 
 export const registerUserPro = async (req: Request, res: Response) => {
   try {
@@ -32,8 +33,8 @@ export const registerUserPro = async (req: Request, res: Response) => {
       return;
     }
 
-    const gotMembership = await userService.getUserMembership(id);
-    if (!gotMembership) {
+    const gotProMembership = await userService.getUserMembership(id);
+    if (gotProMembership !== Membership.BASICO) {
       res.status(404).json({
         message: MESSAGES.MEMBERSHIP_NULL,
       });
@@ -47,6 +48,10 @@ export const registerUserPro = async (req: Request, res: Response) => {
     userProData.imageProfile = DEFAULT_IMAGE_URL;
 
     userProData.userId = id
+    
+    if(mentor){
+      userProData.isMentor = true
+    }
 
     const newUserPro = await userProService.saveUserPro(userProData, id);
 
@@ -57,7 +62,7 @@ export const registerUserPro = async (req: Request, res: Response) => {
       return;
     }
 
-    if (mentor) {
+    if(mentor) {
       mentor.userProId = newUserPro.id;
       const newMentor = await mentorService.saveMentor(mentor);
       newUserPro.mentor = newMentor;

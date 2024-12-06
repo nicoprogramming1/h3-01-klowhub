@@ -39,6 +39,7 @@ export const saveUserPro = async (
       certificationLink: newUserPro.certificationLink,
       paymentMethod: newUserPro.paymentMethod,
       imageProfile: newUserPro.imageProfile,
+      isMentor: newUserPro.isMentor || false,
     }
 
     await transaction.commit();
