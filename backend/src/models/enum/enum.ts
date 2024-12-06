@@ -2,7 +2,9 @@ export enum Tag {
     LOWCODE = "LowCode",
     NOCODE = "NoCode",
     COURSE = "Course",
-    APPLICATION = "Application"
+    APPLICATION = "Application",
+    UXUI = "UX/UI",
+    PRO = "PRO",
   }
   
   export enum Platform {
