@@ -88,7 +88,7 @@ const FormProfilePro = ({ router }: Props) => {
   const platformsEnum = Object.values(PlatformEnum.Enum);
   const expertisesEnum = Object.values(Expertise);
   
-
+  // deberia enviar tambien el ID qe llega como parametro del plan elegido en la view de plan aunqe no es primordial
 
   const onSubmit = (data: z.infer<typeof createProfileProSchema>) => {
     const payload = {
