@@ -50,19 +50,6 @@ export const ExpertiseEnum = z.enum(["Junior", "Semi senior", "Senior"]);
 export const PaymentMethodEnum = z.enum(["Criptomonedas", "Paypal", "Stripe"]);
 
 export const MentorDTOSchema = z.object({
-  id: z.string().optional(),
-  expertiseArea: z
-    .array(SectorEnum)
-    .nonempty("Debe seleccionar al menos un área de especialización"),
-  expertiseLevel: ExpertiseEnum.optional(),
-  platform: z
-    .array(PlatformEnum)
-    .nonempty("Debe seleccionar al menos una plataforma"),
-  mentoryCost: z.number().min(0, "El costo debe ser un número positivo"),
-  aboutMentories: z.string().min(10, "Debe tener al menos 10 caracteres"),
-  language: z
-    .array(LanguageEnum)
-    .nonempty("Debe seleccionar al menos un idioma"),
 });
 
 export const createProfileProSchema = z.object({
@@ -112,6 +99,6 @@ export const createProfileProSchema = z.object({
     .string()
     .trim()
     .min(1, "Debe proporcionar los datos de la cuenta"),
-  mentor: MentorDTOSchema.nullable().optional(),
+    mentor: MentorDTOSchema,
   isMentor: z.boolean(),
 });

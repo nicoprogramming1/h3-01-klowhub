@@ -27,7 +27,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     toast.success("Registro exitoso");
     return { success: "Registro exitoso" };
   } catch (error) {
-    toast.error("Error de coneccion con el servidor");
+    toast.error("Error de conexion con el servidor");
     return { message: "Error de conexión con el servidor", error: error };
   }
 };

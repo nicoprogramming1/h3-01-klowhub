@@ -27,7 +27,7 @@ export const postUserPro = async (
 
     const dataToken = jwt.decode(token.value) as DecodedToken | null;
     const { id } = dataToken || {};
-    const response = await fetch(`${API_URL}/api/user/myProfile/${id}`, {
+    const response = await fetch(`${API_URL}/api/userPro/${id}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token.value}`,
@@ -38,15 +38,15 @@ export const postUserPro = async (
 
     if (!response.ok) {
       const errorData = await response.json();
-      toast.error(errorData.message || "Error al registrar");
-      throw new Error(errorData.message || "Error al registrar");
+     /*  toast.error(errorData.message || "Error al registrar"); */
+      /* throw new Error(errorData.message || "Error al registrar"); */
     }
     const userPro = await response.json();
     console.log({ userPro });
-    toast.success("Registro exitoso");
+    /* toast.success("Registro exitoso"); */
     return { success: "Registro exitoso" };
   } catch {
-    toast.error("Error de coneccion con el servidor");
-    throw new Error("Error de conexión con el servidor");
+    /* toast.error("Error de coneccion con el servidor"); */
+    /* throw new Error("Error de conexión con el servidor"); */
   }
 };

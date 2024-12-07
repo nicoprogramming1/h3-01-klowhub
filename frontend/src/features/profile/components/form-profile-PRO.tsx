@@ -4,7 +4,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 
 import { ImageIcon } from "lucide-react";
-import { useRef } from "react";
+import { startTransition, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -43,15 +43,14 @@ import {
 } from "@/components/ui/select";
 import DocumentUpload from "@/components/document-upload";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Expertise, Platform } from "../interfaces";
+import { postUserPro } from "../api/post-profile-pro";
 
-const FormProfilePro = () => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const sectorOptions = Object.values(SectorEnum.Enum);
-  const toolsOptions = Object.values(ToolEnum.Enum);
-  const languageOptions = Object.values(LanguageEnum.Enum);
-  const PlatformEnum = Object.values(PlatformEnum.Enum);
-  const ExpertiseEnum = Object.values(ExpertiseEnum.Enum);
+interface Props {
+  router: any; // Puedes ajustar el tipo
+}
 
+const FormProfilePro = ({ router }: Props) => {
   const form = useForm<z.infer<typeof createProfileProSchema>>({
     resolver: zodResolver(createProfileProSchema),
     defaultValues: {
@@ -81,14 +80,31 @@ const FormProfilePro = () => {
       isMentor: false,
     },
   });
+  
+  const inputRef = useRef<HTMLInputElement>(null);
+  const sectorOptions = Object.values(SectorEnum.Enum);
+  const toolsOptions = Object.values(ToolEnum.Enum);
+  const languageOptions = Object.values(LanguageEnum.Enum);
+  const platformsEnum = Object.values(PlatformEnum.Enum);
+  const expertisesEnum = Object.values(Expertise);
+  
+
 
   const onSubmit = (data: z.infer<typeof createProfileProSchema>) => {
     const payload = {
       ...data,
       // tags: data.tags.join(","), // Convierte a cadena aquí
     };
-    window.alert(JSON.stringify(payload));
+     JSON.stringify(payload); 
+    startTransition(() => {
+      postUserPro(payload).then((data) => {
+        if (data?.success) {
+          router.push("/");
+        }
+      });
+    });
   };
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -269,6 +285,7 @@ const FormProfilePro = () => {
                 </div>
               </div>
               <div className="flex flex-col lg:flex-row gap-2 w-full h-full">
+
                 <FormField
                   control={form.control}
                   name="tags"
@@ -696,11 +713,11 @@ const FormProfilePro = () => {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Métodos de Pago</SelectLabel>
-                            <SelectItem value="criptomonedas">
+                            <SelectItem value="Criptomonedas">
                               Criptomonedas
                             </SelectItem>
-                            <SelectItem value="paypal">Paypal</SelectItem>
-                            <SelectItem value="stripe">Stripe</SelectItem>
+                            <SelectItem value="Paypal">Paypal</SelectItem>
+                            <SelectItem value="Stripe">Stripe</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -761,289 +778,8 @@ const FormProfilePro = () => {
               )}
             />
 
-            {/* {isMentor && (
-              <div className="flex flex-col gap-2 w-full">
-                hola
-                <FormField
-                  control={form.control}
-                  name="mentor.expertiseArea"
-                  render={({ field }) => {
-                    const handleAddItem = (
-                      newSector: (typeof SectorEnum._def.values)[number]
-                    ) => {
-                      if (newSector && !field.value?.includes(newSector)) {
-                        field.onChange([...(field.value || []), newSector]);
-                      }
-                    };
-
-                    return (
-                      <FormItem>
-                        <FormLabel>¿En qué área eres experto?</FormLabel>
-                        <FormControl>
-                          <div className="w-full flex flex-col gap-2">
-                            <div className="flex flex-wrap gap-2 items-center w-full">
-                              {field.value?.map(
-                                (item: string, index: number) => (
-                                  <span
-                                    key={index}
-                                    className="px-3 py-1 rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit"
-                                  >
-                                    {item}
-                                    <button
-                                      type="button"
-                                      className="text-red-500"
-                                      onClick={() => {
-                                        const updatedItem = [...field.value];
-                                        updatedItem.splice(index, 1); // Elimina el tag
-                                        field.onChange(updatedItem);
-                                      }}
-                                    >
-                                      ×
-                                    </button>
-                                  </span>
-                                )
-                              )}
-                            </div>
-
-                            <div className="flex flex-row gap-2  items-center">
-                              <Select
-                                onValueChange={(value) => {
-                                  const validSector =
-                                    SectorEnum.safeParse(value);
-                                  if (validSector.success) {
-                                    handleAddItem(validSector.data);
-                                  } else {
-                                    alert(
-                                      "El sector seleccionado no es válido"
-                                    );
-                                  }
-                                }}
-
-                                // onValueChange={field.onChange}
-                              >
-                                <SelectTrigger className="w-full  ">
-                                  <SelectValue placeholder="Selecciona sectores" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectGroup>
-                                    <SelectLabel>Sectores</SelectLabel>
-                                    {sectorOptions.map((sector) => (
-                                      <SelectItem key={sector} value={sector}>
-                                        {sector}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-                <FormField
-                  control={form.control}
-                  name="mentor.expertiseLevel"
-                  render={({ field }) => {
-                    return (
-                      <FormItem>
-                        <FormLabel>Indica tu nivel de expertise.</FormLabel>
-                        <FormControl>
-                          <div className="flex flex-col space-y-2">
-                            {ExpertiseEnum.map((expertise) => (
-                              <div
-                                key={expertise}
-                                className="flex items-center space-x-2"
-                              >
-                                <Checkbox
-                                  checked={field.value === expertise}
-                                  onCheckedChange={(checked) =>
-                                    field.onChange(checked ? expertise : "")
-                                  }
-                                />
-                                <label>{expertise}</label>
-                              </div>
-                            ))}
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-                <FormField
-                  control={form.control}
-                  name="mentor.platform"
-                  render={({ field }) => {
-                    const handleToggleItem = (
-                      sector: (typeof PlatformEnum._def.values)[number]
-                    ) => {
-                      if (field.value?.includes(sector)) {
-                        // Eliminar si ya está seleccionado
-                        field.onChange(
-                          field.value.filter((item) => item !== sector)
-                        );
-                      } else {
-                        // Agregar si no está seleccionado
-                        field.onChange([...(field.value || []), sector]);
-                      }
-                    };
-
-                    return (
-                      <FormItem>
-                        <FormLabel>¿En qué área eres experto?</FormLabel>
-                        <FormControl>
-                          <div className="flex flex-col gap-4">
-                            {PlatformEnum.map((sector) => (
-                              <div
-                                key={sector}
-                                className="flex items-center space-x-2"
-                              >
-                                <Checkbox
-                                  checked={field.value?.includes(sector)}
-                                  onCheckedChange={() =>
-                                    handleToggleItem(sector)
-                                  }
-                                />
-                                <label className="text-sm">{sector}</label>
-                              </div>
-                            ))}
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="mentor.mentoryCost"
-                  render={({ field }) => {
-                    return (
-                      <FormItem>
-                        <FormLabel>
-                          ¿Cuál es el costo de tu hora de mentoria?
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="number"
-                            placeholder="INgrese el moonto por hora"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-                <FormField
-                  control={form.control}
-                  name="mentor.aboutMentories"
-                  render={({ field }) => {
-                    return (
-                      <FormItem>
-                        <FormLabel>
-                          Cuenta un poco más sobre tus mentorías
-                        </FormLabel>
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            placeholder="Ingrese aquí tus mentorías"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-                <FormField
-                  control={form.control}
-                  name="mentor.language"
-                  render={({ field }) => {
-                    const handleAddItem = (
-                      newSector: (typeof LanguageEnum._def.values)[number]
-                    ) => {
-                      if (newSector && !field.value?.includes(newSector)) {
-                        field.onChange([...(field.value || []), newSector]);
-                      }
-                    };
-
-                    return (
-                      <FormItem>
-                        <FormLabel>
-                          ¿En qué idiomas ofreces las mentorias?
-                        </FormLabel>
-                        <FormControl>
-                          <div className="w-full flex flex-col gap-2">
-                            <div className="flex flex-wrap gap-2 items-center w-full">
-                              {field.value?.map(
-                                (item: string, index: number) => (
-                                  <span
-                                    key={index}
-                                    className="px-3 py-1 rounded-sm flex items-center gap-2 border border-primary text-[10px] h-fit"
-                                  >
-                                    {item}
-                                    <button
-                                      type="button"
-                                      className="text-red-500"
-                                      onClick={() => {
-                                        const updatedItem = [...field.value];
-                                        updatedItem.splice(index, 1); // Elimina el tag
-                                        field.onChange(updatedItem);
-                                      }}
-                                    >
-                                      ×
-                                    </button>
-                                  </span>
-                                )
-                              )}
-                            </div>
-
-                            <div className="flex flex-row gap-2  items-center">
-                              <Select
-                                onValueChange={(value) => {
-                                  const validSector =
-                                    LanguageEnum.safeParse(value);
-                                  if (validSector.success) {
-                                    handleAddItem(validSector.data);
-                                  } else {
-                                    alert(
-                                      "El sector seleccionado no es válido"
-                                    );
-                                  }
-                                }}
-
-                                // onValueChange={field.onChange}
-                              >
-                                <SelectTrigger className="w-full  ">
-                                  <SelectValue placeholder="Selecciona sectores" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectGroup>
-                                    <SelectLabel>Sectores</SelectLabel>
-                                    {languageOptions.map((sector) => (
-                                      <SelectItem key={sector} value={sector}>
-                                        {sector}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-              </div>
-            )} */}
           </PartBody>
-          <Button type="submit">submit</Button>
+          <Button type="submit">Registrar</Button>
         </form>
       </Form>
     </DashboardContent>
