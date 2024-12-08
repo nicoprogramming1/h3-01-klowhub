@@ -45,9 +45,9 @@ Registrar usuarioPro => POST /userPro/:id
 Modificar usuarioPro => PATCH /userPro/:id
 Cargar/Modificar foto de usuarioPro => PATCH /userPro/imageProfile/:id
 Consultar perfil de usuarioPro => GET /userPro/profile/:id
-Lucid visual collaboration suite: Log in
-Go from imagining the future to building it. Log in to access Lucidchart for intelligent diagramming or Lucidspark for virtual whiteboarding. Teams can collaborate, ideate, and build projects in real time.
-Membership
+
+
+# Membership
 
 Consultar membresía de usuario => GET /membership/:id
 Cambiar membresía de usuario => PATCH /membership/:id
