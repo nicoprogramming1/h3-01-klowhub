@@ -14,10 +14,6 @@ La rama predeterminada de desarrollo es "dev"
 
 - Backend: dentro de la carpeta backend, luego de instalar las dependencias con "npm install", ejecutar la aplicación mediante "npm run dev"
 
-Clases de diseño (entidades y enumeraciones y las relaciones entre ellos)
-
-https://lucid.app/lucidchart/ae84b02d-155e-483d-be41-8fa752bb5d9d/edit?invitationId=inv_d489a101-c136-412a-9eb0-9093350af57a&page=HWEp-vi-RSFO
-
 
 # BACKEND
 
