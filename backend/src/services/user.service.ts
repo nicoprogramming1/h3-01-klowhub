@@ -34,7 +34,7 @@ export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
 
 export const findUserByEmail = async (email: string): Promise<boolean> => {
   try {
-    const findedProfile = await UserModel.findOne({where: {email}});
+    const findedProfile = await UserModel.findOne({ where: { email } });
     if (findedProfile) {
       const error: any = new Error(MESSAGES.EMAIL_ALREADY);
       error.status = 400;
@@ -69,10 +69,9 @@ export const findMyUser = async (id: string): Promise<UserModel | null> => {
   }
 };
 
-
 export const updateUserById = async (
   id: string,
-  updateData: Partial<UserDTO>,
+  updateData?: Partial<UserDTO>,
   password?: string
 ): Promise<UserDTO | null> => {
   const transaction: Transaction = await sequelize.transaction();

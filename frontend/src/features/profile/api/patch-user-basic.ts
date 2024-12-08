@@ -4,17 +4,16 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 import { API_URL } from "@/constants";
 import { getToken } from "@/features/utils/token";
-import { createProfileProSchema } from "../schema";
+import { ProfileBasicSchema } from "../schema";
 import { toast } from "sonner";
 
 interface DecodedToken extends JwtPayload {
   id?: string; // Agrega aquí las propiedades esperadas
 }
 
-export const postUserPro = async (
-  values: z.infer<typeof createProfileProSchema>
-) => {
-  const validateFields = createProfileProSchema.safeParse(values);
+export const patchUser = async (values: z.infer<typeof ProfileBasicSchema>) => {
+  const { setUser } = useAuth();
+  const validateFields = ProfileBasicSchema.safeParse(values);
   if (!validateFields) {
     toast.error("Campos Invalidos");
   }
@@ -27,8 +26,8 @@ export const postUserPro = async (
 
     const dataToken = jwt.decode(token.value) as DecodedToken | null;
     const { id } = dataToken || {};
-    const response = await fetch(`${API_URL}/api/userPro/${id}`, {
-      method: "POST",
+    const response = await fetch(`${API_URL}/api/user/${id}`, {
+      method: "PATCH",
       headers: {
         Authorization: `Bearer ${token.value}`,
         "Content-Type": "application/json",
@@ -42,8 +41,8 @@ export const postUserPro = async (
       toast.error(errorData.errors[0].msg || "Error al registrar");
       throw new Error(errorData.message || "Error al registrar");
     }
-    const userPro = await response.json();
-    console.log({ userPro });
+    const userBASIC = await response.json();
+    console.log({ userBASIC });
     toast.success("Registro exitoso");
     return { success: "Registro exitoso" };
   } catch {
