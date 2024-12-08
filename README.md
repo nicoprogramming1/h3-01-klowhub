@@ -14,100 +14,68 @@ La rama predeterminada de desarrollo es "dev"
 
 - Backend: dentro de la carpeta backend, luego de instalar las dependencias con "npm install", ejecutar la aplicación mediante "npm run dev"
 
-## Endpoints
-Cada endpoint expone su url y un formato de prueba JSON válido
+Clases de diseño (entidades y enumeraciones y las relaciones entre ellos)
 
-### Auth
-Los siguientes endpoints hacen referencia a las funcionalidades de registro e inicio/cierre de sesión
+https://lucid.app/lucidchart/ae84b02d-155e-483d-be41-8fa752bb5d9d/edit?invitationId=inv_d489a101-c136-412a-9eb0-9093350af57a&page=HWEp-vi-RSFO
 
 
-#### - Registro usuario (no necesita auth)
+# BACKEND
 
-localhost:3000/api/auth/register
+## | Endpoints (rutas) |
 
-{
-  "longName": "Clara Diaz",
-  "email": "clara@example.com",
-  "password": "123456"
-}
+/api
 
 
-#### - Login (no necesita auth)
+# Authentication
 
-localhost:3000/api/auth/login
-
-{
-  "email": "clara@example.com",
-  "password": "123456",
-  "device": "iPhone 14",
-  "app": "KlowHubApp",
-  "country": "USA",
-  "ipAddress": "192.168.0.1",
-  "city": "New York"
-}
+Registrar usuario => POST /auth/register
+Iniciar sesión => POST /auth/login
+Cerrar sesión => POST /auth/logout
 
 
-#### - Logout
+# User
 
-localhost:3000/api/auth/logout
+Consultar un usuario => GET /user/:id
+Eliminar usuario y usuarioPRO => DELETE /user/:id
+Modificar usuario => PATCH /user/:id
+Cargar/Modificar foto de usuario => PATCH /user/imageProfile/:id
+Consultar perfil de usuario => GET /user/myProfile/:id
 
-{
-  "device": "iPhone 14",
-  "app": "KlowHubApp"
-}
+
+# UserPRO
+
+Consultar un usuarioPro => GET /userPro/:id
+Registrar usuarioPro => POST /userPro/:id
+Modificar usuarioPro => PATCH /userPro/:id
+Cargar/Modificar foto de usuarioPro => PATCH /userPro/imageProfile/:id
+Consultar perfil de usuarioPro => GET /userPro/profile/:id
+Lucid visual collaboration suite: Log in
+Go from imagining the future to building it. Log in to access Lucidchart for intelligent diagramming or Lucidspark for virtual whiteboarding. Teams can collaborate, ideate, and build projects in real time.
+Membership
+
+Consultar membresía de usuario => GET /membership/:id
+Cambiar membresía de usuario => PATCH /membership/:id
 
 
-#### - Registrar curso
+# Course
 
-localhost:3000/api/course/
+Listar cursos => GET /course/
+Consultar curso => GET /course/:id
+Registrar curso => POST /course/:id
+Registrar/Modificar foto de curso => POST /course/imageCourse/:id
+Registrar/Modificar foto de lección de curso => POST /course/imageLesson/:id
+Modificar curso: PATCH /course/:id
+Comprar curso => POST /course/buy/:id
+Eliminar curso => DELETE /course/delete/:id
+Comprar curso => POST /course/buy/:id
 
-{
-  "course": {
-    "title": "Curso de Todo Web",
-    "detail": "Aprende a crear sitios web desde cero.",
-    "competence": "Basic",
-    "aboutLearn": "HTML, CSS, JavaScript",
-    "platform": "PowerApps",
-    "imageMain": "https://example.com/url-to-lesson-1",
-    "sector": "Educational",
-    "tags": "Tag1",
-    "price": 100,
-    "ownerId": "m3sujkm452"
-  },
-  "modules": [
-    {
-      "title": "Módulo 1: Introducción",
-      "detail": "Conocimientos básicos para empezar.",
-      "lessons": [
-        {
-          "title": "Lección 1: ¿Qué es la web?",
-          "detail": "Conceptos básicos de la web.",
-          "lessonLink": "https://example.com/url-to-lesson-1",
-          "additionalPdf1": "https://example.com/url-to-lesson-1",
-          "additionalPdf2": "https://example.com/url-to-lesson-2"
-        },
-        {
-         "title": "Lección 2: Primeros pasos con HTML",
-          "detail": "Estructurando contenido.",
-          "lessonLink": "https://example.com/url-to-lesson-1",
-          "additionalPdf1": "https://example.com/url-to-lesson-1",
-          "additionalPdf2": "https://example.com/url-to-lesson-2"
-        }
-      ]
-    },
-    {
-      "title": "Módulo 2: CSS Básico",
-      "detail": "Dando estilo a tus páginas.",
-      "lessons": [
-        {
-          "title": "Lección 1: Introducción a CSS",
-          "detail": "Cómo funciona el CSS.",
-          "lessonLink": "https://example.com/url-to-lesson-1",
-          "additionalPdf1": "https://example.com/url-to-lesson-1",
-          "additionalPdf2": "https://example.com/url-to-lesson-2"
-        }
-      ]
-    }
-  ]
-}
 
+## | Tecnologías |
+
+El desarrollo del proyecto se realizó utilizando Express y Node.js como framework y entorno de ejecución respectivamente, con TypeScript para un código más robusto y tipado. La base de datos utilizada fue PostgreSQL, gestionada mediante el ORM Sequelize para facilitar las operaciones y mantener un modelo de datos consistente."
+
+Se utilizaron las siguientes dependencias externas (librerías):
+Multer para la gestión de imágenes
+Cloudinary para la carga y recuperación de imágenes en la nube
+Express-validator para gestionar las validaciones
+Sequelize ORM para gestionar la base de datos
