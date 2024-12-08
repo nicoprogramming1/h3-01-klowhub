@@ -20,6 +20,7 @@ import {
   Sector,
   Tool,
 } from "../interfaces";
+import { useRouter } from "next/navigation";
 
 export interface UserPro {
   id: string;
@@ -55,6 +56,7 @@ export interface MentorDTO {
 export default function InfoProfilePRO() {
   const { user } = useAuth();
   const [userPro, setUserPro] = useState<UserPro>();
+  const router = useRouter();
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -69,12 +71,14 @@ export default function InfoProfilePRO() {
     checkAuthStatus();
   }, []);
 
-  console.log({ user });
-  console.log({ userPro });
+  const handleEdit = () => {
+    router.push("/profile/pro");
+  };
+
   if (!userPro) {
     return <LoadingDefault />;
   }
-  console.log({ userPro });
+
   return (
     <DashboardContent>
       <PartBody
@@ -117,7 +121,7 @@ export default function InfoProfilePRO() {
                     {user?.membership || "PRO"}
                   </span>
                 </p>{" "}
-                <Button variant="outline" className="">
+                <Button variant="outline" className="" onClick={handleEdit}>
                   Editar
                 </Button>
               </div>

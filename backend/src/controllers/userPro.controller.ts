@@ -34,7 +34,7 @@ export const registerUserPro = async (req: Request, res: Response) => {
     }
 
     const gotProMembership = await userService.getUserMembership(id);
-    if (gotProMembership !== Membership.BASICO) {
+    if (gotProMembership === Membership.BASICO) {
       res.status(404).json({
         message: MESSAGES.MEMBERSHIP_NULL,
       });
@@ -42,15 +42,15 @@ export const registerUserPro = async (req: Request, res: Response) => {
     }
 
     // Asignar imagen de perfil por defecto desde la carpeta 'public/images'
-    const DEFAULT_IMAGE_URL = `${req.protocol}://${req.get(
-      "host"
-    )}/static/images/default-profile..png`;
-    userProData.imageProfile = DEFAULT_IMAGE_URL;
+    // const DEFAULT_IMAGE_URL = `${req.protocol}://${req.get(
+    //   "host"
+    // )}/static/images/default-profile.png`;
+    // userProData.imageProfile = DEFAULT_IMAGE_URL;
 
-    userProData.userId = id
-    
-    if(mentor){
-      userProData.isMentor = true
+    userProData.userId = id;
+
+    if (mentor) {
+      userProData.isMentor = true;
     }
 
     const newUserPro = await userProService.saveUserPro(userProData, id);
@@ -62,7 +62,7 @@ export const registerUserPro = async (req: Request, res: Response) => {
       return;
     }
 
-    if(mentor) {
+    if (mentor) {
       mentor.userProId = newUserPro.id;
       const newMentor = await mentorService.saveMentor(mentor);
       newUserPro.mentor = newMentor;
@@ -78,7 +78,7 @@ export const registerUserPro = async (req: Request, res: Response) => {
       res.status(500).json({
         message: MESSAGES.HEADERS_SENT,
       });
-      return
+      return;
     }
     const statusCode = error.status || 500;
     const message = error.message || MESSAGES.CREATE_ERROR;
@@ -140,8 +140,8 @@ export const getUserPro = async (req: Request, res: Response) => {
 
     res.status(200).json({
       message: MESSAGES.FETCH_SUCCESS,
-      data: user
-    })
+      data: user,
+    });
   } catch (error: any) {
     if (res.headersSent) {
       console.error("Error en registerPro: ", MESSAGES.HEADERS_SENT);

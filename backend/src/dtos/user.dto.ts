@@ -10,11 +10,11 @@ import {
 export interface UserDTO {
   id?: string;
   longName?: string;
-  email: string;
+  email?: string;
   password?: string;
   about?: string;
   imageProfile?: string;
-  membership?: string
+  membership?: string;
 }
 
 export interface UserProDTO {
@@ -34,7 +34,7 @@ export interface UserProDTO {
   accountData: string;
   imageProfile?: string;
   userId?: string;
-  isMentor?: boolean
+  isMentor?: boolean;
   mentor?: MentorDTO | null;
 }
 

@@ -23,9 +23,10 @@ import {
 
 import {
   createProfileProSchema,
-  ExpertiseEnum,
-  LanguageEnum,
-  PlatformEnum,
+  PaymentMethodEnum,
+  // PlatformEnum,
+  // ExpertiseEnum,
+  // LanguageEnum,
   SectorEnum,
   ToolEnum,
 } from "../schema";
@@ -43,21 +44,24 @@ import {
 } from "@/components/ui/select";
 import DocumentUpload from "@/components/document-upload";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Expertise, Platform } from "../interfaces";
+// import { Expertise, Platform } from "../interfaces";
 import { postUserPro } from "../api/post-profile-pro";
+import { useAuth } from "@/hooks/auth-provider";
+import { patchUser } from "../api/patch-user-basic";
 
 interface Props {
   router: any; // Puedes ajustar el tipo
 }
 
 const FormProfilePro = ({ router }: Props) => {
+  const { user } = useAuth();
   const form = useForm<z.infer<typeof createProfileProSchema>>({
     resolver: zodResolver(createProfileProSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      about: "",
-      imageProfile: undefined,
+      firstName: user?.longName.split(" ")[0] ?? "",
+      lastName: user?.longName.split(" ")[1] ?? "",
+      about: user?.about ?? "",
+      imageProfile: user?.imageProfile ?? undefined,
       tags: [],
       country: "",
       sector: [],
@@ -67,27 +71,29 @@ const FormProfilePro = ({ router }: Props) => {
       portfolioLink: "",
       academicFormation: "",
       certificationLink: "",
-      paymentMethod: "Criptomonedas", // Uno de los valores del enum PaymentMethodEnum
+      paymentMethod: "CRIPTOMONEDAS", // Uno de los valores del enum PaymentMethodEnum
       accountData: "",
-      mentor: {
-        expertiseArea: [],
-        expertiseLevel: undefined, // Enum: "Junior" | "Semi senior" | "Senior"
-        platform: [], // Enum: "AppSheet" | "PowerApps"
-        mentoryCost: 0,
-        aboutMentories: "",
-        language: [], // Enum: "Español" | "Inglés" | "Alemán" | "Portugués"
-      },
+      // mentor: {
+      //   expertiseArea: [],
+      //   expertiseLevel: undefined, // Enum: "Junior" | "Semi senior" | "Senior"
+      //   platform: [], // Enum: "AppSheet" | "PowerApps"
+      //   mentoryCost: 0,
+      //   aboutMentories: "",
+      //   language: [], // Enum: "Español" | "Inglés" | "Alemán" | "Portugués"
+      // },
+      mentor: undefined,
       isMentor: false,
     },
   });
-  
+
   const inputRef = useRef<HTMLInputElement>(null);
   const sectorOptions = Object.values(SectorEnum.Enum);
   const toolsOptions = Object.values(ToolEnum.Enum);
-  const languageOptions = Object.values(LanguageEnum.Enum);
-  const platformsEnum = Object.values(PlatformEnum.Enum);
-  const expertisesEnum = Object.values(Expertise);
-  
+  const PaymentMethodOptions = Object.values(PaymentMethodEnum.Enum);
+  // const languageOptions = Object.values(LanguageEnum.Enum);
+  // const platformsOptions = Object.values(PlatformEnum.Enum);
+  // const expertisesEnum = Object.values(Expertise);
+
   // deberia enviar tambien el ID qe llega como parametro del plan elegido en la view de plan aunqe no es primordial
 
   const onSubmit = (data: z.infer<typeof createProfileProSchema>) => {
@@ -95,16 +101,25 @@ const FormProfilePro = ({ router }: Props) => {
       ...data,
       // tags: data.tags.join(","), // Convierte a cadena aquí
     };
-     JSON.stringify(payload); 
+    JSON.stringify(payload);
+    console.log("payload", payload);
+
+    const payloadBasic = {
+      longName: data.firstName + " " + data.lastName,
+      about: data.about,
+      imageProfile: data.imageProfile,
+      tags: data.tags,
+      country: data.country,
+    };
     startTransition(() => {
       postUserPro(payload).then((data) => {
         if (data?.success) {
+          patchUser(payloadBasic);
           router.push("/");
         }
       });
     });
   };
-
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -285,7 +300,6 @@ const FormProfilePro = ({ router }: Props) => {
                 </div>
               </div>
               <div className="flex flex-col lg:flex-row gap-2 w-full h-full">
-
                 <FormField
                   control={form.control}
                   name="tags"
@@ -713,11 +727,11 @@ const FormProfilePro = ({ router }: Props) => {
                         <SelectContent>
                           <SelectGroup>
                             <SelectLabel>Métodos de Pago</SelectLabel>
-                            <SelectItem value="Criptomonedas">
-                              Criptomonedas
-                            </SelectItem>
-                            <SelectItem value="Paypal">Paypal</SelectItem>
-                            <SelectItem value="Stripe">Stripe</SelectItem>
+                            {PaymentMethodOptions?.map((platform) => (
+                              <SelectItem key={platform} value={platform}>
+                                {platform}
+                              </SelectItem>
+                            ))}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -777,7 +791,6 @@ const FormProfilePro = ({ router }: Props) => {
                 </FormItem>
               )}
             />
-
           </PartBody>
           <Button type="submit">Registrar</Button>
         </form>
