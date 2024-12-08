@@ -22,7 +22,9 @@ export const updateUser = async (req: Request, res: Response) => {
 
     const { email } = updateData;
 
-    await userService.findUserByEmail(email);
+    if(email){
+      await userService.findUserByEmail(email);
+    }
 
     const updatedUser = await userService.updateUserById(
       id,

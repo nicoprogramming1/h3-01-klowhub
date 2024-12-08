@@ -10,7 +10,7 @@ import {
 export interface UserDTO {
   id?: string;
   longName?: string;
-  email: string;
+  email?: string;
   password?: string;
   about?: string;
   imageProfile?: string;
