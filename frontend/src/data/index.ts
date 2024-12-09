@@ -20,7 +20,7 @@ export const fakeDataApplications = [
     tags: ["Kubernetes", "DevOps", "Backend"],
     calification: 4.5,
     link: "/",
-    image: "/images/card/image3.png",
+    image: "/images/card/image1.png",
     price: 109.99,
   },
   {
@@ -56,7 +56,7 @@ export const fakeDataApplications = [
     tags: ["CRM", "Clientes", "Ventas"],
     calification: 3,
     link: "/",
-    image: "/images/card/image4.png",
+    image: "/images/card/image1.png",
     price: 99.99,
   },
 ];
@@ -232,7 +232,7 @@ export const fakeDataCursesBig = [
     tags: ["Diseño", "UX", "UI"],
     calification: 4.5,
     link: "/",
-    image: "/images/card/image4.png",
+    image: "/images/card/image3.png",
     price: 89.99,
   },
   {
@@ -280,7 +280,7 @@ export const fakeDataCursesBig = [
     tags: ["Docker", "DevOps", "Backend"],
     calification: 4.6,
     link: "/",
-    image: "/images/card/image4.png",
+    image: "/images/card/image2.png",
     price: 79.99,
   },
   {
@@ -327,7 +327,7 @@ export const fakeDataCursesBig = [
     tags: ["TypeScript", "JavaScript", "Frontend"],
     calification: 4.5,
     link: "/",
-    image: "/images/card/image4.png",
+    image: "/images/card/image1.png",
     price: 74.99,
   },
   {
@@ -375,7 +375,7 @@ export const fakeDataCursesBig = [
     tags: ["Unity", "Videojuegos", "Programación"],
     calification: 4.8,
     link: "/",
-    image: "/images/card/image4.png",
+    image: "/images/card/image1.png",
     price: 129.99,
   },
   {
@@ -387,7 +387,7 @@ export const fakeDataCursesBig = [
     tags: ["Kubernetes", "DevOps", "Backend"],
     calification: 4.5,
     link: "/",
-    image: "/images/card/image3.png",
+    image: "/images/card/image1.png",
     price: 109.99,
   },
   {
@@ -423,7 +423,7 @@ export const fakeDataCursesBig = [
     tags: ["Blockchain", "Criptomonedas", "Finanzas"],
     calification: 4.7,
     link: "/",
-    image: "/images/card/image4.png",
+    image: "/images/card/image2.png",
     price: 149.99,
   },
 ];
