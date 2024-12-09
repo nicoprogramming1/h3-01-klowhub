@@ -166,46 +166,41 @@ export default function InfoProfilePRO() {
         </PartBody>
       </div>
 
-      <PartBody className="text-sm gap-3 ">
-        <h1 className=" text-primario dark:text-primario-300">
-          Ofrece sesiones de mentoría
-        </h1>
-        <p className="text-xs dark:text-muted-foreground">
-          Además de vender tus cursos y apps, ahora puedes ofrecer sesiones de
-          mentoría personalizadas a otros creadores y emprendedores. Comparte tu
-          experiencia y ayuda a otros a alcanzar sus objetivos, mientras
-          expandes tu red y monetizas tus conocimientos. Conviértete en mentor y
-          deja tu huella en la comunidad.
-        </p>
-        <div className="flex flex-row text-xs gap-2 items-center">
-          <TvMinimalPlay className="size-5" /> <span>50 Sesiones</span>{" "}
-          <span>(35 Reseñas)</span>{" "}
-          <p>
-            <span>idioma:</span> Español
+      <div className="hidden">
+        <PartBody className="text-sm gap-3 ">
+          <h1 className=" text-primario dark:text-primario-300">
+            Ofrece sesiones de mentoría
+          </h1>
+          <p className="text-xs dark:text-muted-foreground">
+            Además de vender tus cursos y apps, ahora puedes ofrecer sesiones de
+            mentoría personalizadas a otros creadores y emprendedores. Comparte tu
+            experiencia y ayuda a otros a alcanzar sus objetivos, mientras
+            expandes tu red y monetizas tus conocimientos. Conviértete en mentor y
+            deja tu huella en la comunidad.
           </p>
-        </div>
-        <div className="flex justify-between">
-          <p>6USD/Hora</p>
-          <Button variant={"primario"} size={"sm"}>
-            {" "}
-            Reserva una Membresia
-          </Button>
-        </div>
-      </PartBody>
+          <div className="flex flex-row text-xs gap-2 items-center">
+            <TvMinimalPlay className="size-5" /> <span>50 Sesiones</span>{" "}
+            <span>(35 Reseñas)</span>{" "}
+            <p>
+              <span>idioma:</span> Español
+            </p>
+          </div>
+          <div className="flex justify-between">
+            <p>6USD/Hora</p>
+            <Button variant={"primario"} size={"sm"}>
+              {" "}
+              Reserva una Membresia
+            </Button>
+          </div>
+        </PartBody>
+      </div>
 
       <div className="flex flex-col md:flex-row gap-2 w-full h-full">
         <PartBody className="text-sm gap-4 ">
           <h1 className=" text-primario dark:text-primario-300 font-semibold">
             Experiencia
           </h1>
-          <p>Completa tu perfil PRO</p>
-          <p className="text-xs text-muted-foreground">
-            Estamos a solo un paso de completar tu perfil de vendedor.
-            Proporciónanos algunos detalles adicionales para poder validar tu
-            identidad y ofrecerte la mejor experiencia como creador en nuestra
-            plataforma.
-          </p>
-          <p>Selecciona los sectores en las que tenés experiencia</p>
+          <p>Sectores de experiencia</p>
 
           <div className="flex gap-3 items-center text-xs">
             {userPro.sector.map((sector, index) => (
