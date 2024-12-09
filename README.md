@@ -82,3 +82,36 @@ Se utilizaron las siguientes dependencias externas:
 - **Cloudinary**: Carga y recuperación de imágenes en la nube.
 - **Express-validator**: Validaciones.
 - **Sequelize ORM**: Gestión de la base de datos.
+
+| Decisiones y Tecnologías implementadas |
+
+**Arquitectura**
+Utilizamos una arquitectura RESTful para estructurar las API. Permite escalabilidad y modularidad en el desarrollo y ofrece una separación clara entre el cliente y el servidor.
+
+**Framework y Lenguaje**
+Optamos por Express.js como framework y Node.js como entorno de ejecución, complementado con TypeScript. Express.js: un framework minimalista y flexible que permite construir rápidamente API RESTful. Node.js: capacidad para manejar múltiples conexiones concurrentes de forma eficiente, ideal para aplicaciones web SaaS.
+TypeScript: Mejora la robustez del código con tipado estático, lo que facilita el desarrollo en equipo y la detección de errores en tiempo de desarrollo. 
+
+**Base de Datos**
+PostgreSQL fue elegido como base de datos relacional, gestionada mediante el ORM Sequelize quien simplifica la interacción con la base de datos, permitiendo trabajar con modelos, relaciones y migraciones de manera eficiente.
+
+**Gestión de Imágenes**
+Se utilizó Multer para manejar las cargas locales y Cloudinary para almacenamiento en la nube para optimizar el rendimiento, reduciendo la carga del servidor.
+
+**Validaciones**
+Se hizo uso de express-validator para las validaciones del lado del servidor para minimizar errores y prevenir ataques de seguridad como la inyección de datos maliciosos.
+
+**Autenticación y Autorización**
+Se implementó un sistema de autenticación con JWT (JSON Web Tokens) para asegurar la confidencialidad y seguridad de los datos.
+
+**Metodología de Trabajo**
+Se acordó el uso de una rama de desarrollo principal (dev) y control de versiones con Git para facilitar el trabajo en equipo, asegurando que las nuevas funcionalidades sean integradas de manera ordenada.
+
+**Escalabilidad y Rendimiento**
+Se implementó un diseño modular con controladores organizados por entidades, el cual facilita el mantenimiento y la escalabilidad al separar responsabilidades y mantener el código limpio.
+
+**Gestión de Errores**
+Se implementa el uso de middlewares centralizados para manejo de errores de forma uniforme tal que mejore la experiencia del desarrollador y del usuario, con mensajes de error claros y consistentes.
+
+**Pruebas y Calidad**
+Se implementan pruebas para asegurar la funcionalidad básica antes de automatizar pruebas más complejas sin retrasar el desarrollo.
