@@ -11,26 +11,55 @@ import { cn } from "@/lib/utils";
 
 interface ModeToggleProps {
   className?: string;
+  tipe?: "button" | "switch";
+  addText?: boolean;
 }
 
-export function ModeToggle({ className }: ModeToggleProps) {
-  const { setTheme, theme } = useTheme();
+export function ModeToggle({
+  className,
+  tipe = "button",
+  addText = false,
+}: Readonly<ModeToggleProps>) {
+  const { setTheme, theme, systemTheme } = useTheme();
+
+  const onhandleClick = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  let textToogle: string | undefined = systemTheme;
+
+  if (theme === "dark") {
+    textToogle = "Cambiar modo Dia";
+  } else {
+    textToogle = " Cambiar modo Noche";
+  }
 
   return (
     <div className={cn("flex justify-between items-center gap-x-2", className)}>
-      <Switch
-        checked={theme === "dark"}
-        onCheckedChange={(isChecked) => setTheme(isChecked ? "dark" : "light")}
-        aria-label="Toggle Dark Mode"
-      />
-      <Button
-        variant={"ghost"}
-        size={"sm"}
-        className="hover:bg-transparent  cursor-context-menu"
-      >
-        <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-      </Button>
+      {tipe === "switch" && (
+        <Switch
+          checked={theme === "dark"}
+          onCheckedChange={(isChecked) =>
+            setTheme(isChecked ? "dark" : "light")
+          }
+          aria-label="Toggle Dark Mode"
+        />
+      )}
+      {tipe === "button" && (
+        <Button
+          variant={"ghost"}
+          size={"sm"}
+          className="hover:bg-transparent/5  cursor-pointer flex justify-between w-full"
+          onClick={() => onhandleClick()}
+        >
+          {theme === "dark" ? (
+            <Sun className="h-[1.2rem] w-[1.2rem]" />
+          ) : (
+            <Moon className="h-[1.2rem] w-[1.2rem]" />
+          )}
+          {addText && <p>{textToogle}</p>}
+        </Button>
+      )}
     </div>
   );
 }

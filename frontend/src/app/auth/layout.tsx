@@ -1,5 +1,5 @@
 "use client";
-import Footer from "@/features/auth/components/footer";
+import Footer from "@/components/footer";
 import Header from "@/features/auth/components/header";
 import { usePathname } from "next/navigation";
 

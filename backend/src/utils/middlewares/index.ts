@@ -1,1 +1,0 @@
-export { validateRegister, validateLogin, validateLogout, handleValidationErrors } from './validateMdw';

@@ -1,5 +1,9 @@
+"use client";
+
+import DashboardComponent from "@/features/dashboard/components/component";
+
 const DashboardPage = () => {
-  return <div>DASHBOARD</div>;
+  return <DashboardComponent />;
 };
 
 export default DashboardPage;

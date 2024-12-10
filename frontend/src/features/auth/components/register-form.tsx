@@ -1,8 +1,6 @@
 "use client";
 import * as z from "zod";
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
@@ -16,60 +14,38 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FormError } from "@/components/form-error";
-import { FormSuccess } from "@/components/form-success";
 
-import { login } from "../api/login";
 import { RegisterSchema } from "../schemas";
 import CardWrapper from "./card-wrapper";
-import BackButton from "./back-button";
+import BackButton from "./link-button";
+import { register } from "../api/register";
+import { useRouter } from "next/navigation";
 
 const RegisterForm = () => {
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get("callbackUrl");
-  const urlError =
-    searchParams?.get("error") === "OAuthAccountNotLinked"
-      ? "Email already in use with diffferent provider"
-      : "";
-
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
-  const [isPending, startTransition] = useTransition();
-
-  const form = useForm<z.infer<typeof RegisterSchema>>({
-    resolver: zodResolver(RegisterSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-    },
-  });
-
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    setError("");
-    setSuccess("");
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
+    defaultValues: {
+      longName: "",
+      email: "",
+      password: "",
+    },
+  });
 
+  const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
     startTransition(() => {
-      login({ values, callbackUrl })
-        .then((data) => {
-          if (data?.error) {
-            form.reset();
-            setError(data?.error);
-          }
-          if (data?.success) {
-            form.reset();
-            setSuccess(data?.success);
-          }
-        })
-        .catch(() => {
-          setError("Algo ah salido mal");
-        });
+      register(values).then((data) => {
+        if (data?.success) {
+          router.push("/auth/login");
+        }
+      });
     });
   };
 
@@ -97,7 +73,7 @@ const RegisterForm = () => {
             <div className="space-y-4">
               <FormField
                 control={form.control}
-                name="name"
+                name="longName"
                 render={({ field }) => (
                   <FormItem>
                     {/* <FormLabel>Correo electrónico</FormLabel> */}
@@ -177,8 +153,8 @@ const RegisterForm = () => {
                 )}
               />
             </div>
-            <FormError message={error || urlError} />
-            <FormSuccess message={success} />
+            {/* <FormError message={error} />
+            <FormSuccess message={success} /> */}
             <div className="flex justify-center ">
               <Button
                 disabled={isPending}
