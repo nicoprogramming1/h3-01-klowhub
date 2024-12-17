@@ -56,6 +56,8 @@ Este proyecto se ha creado con [Next.js](https://nextjs.org).
 
 ## Endpoints (Rutas)
 
+Link Postman collection: https://drive.google.com/file/d/1anl7mv8b11ufGsAlWs3tAPLPPeOVgaq2/view?usp=sharing
+
 /api
 
 ### Authentication
