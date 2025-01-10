@@ -1,29 +1,25 @@
-import { UserModel, UserProModel } from "../models";
 import { UserDTO } from "../dtos/user.dto";
 import { MESSAGES } from "../utils/messages";
-import sequelize from "../config/database";
-import { encryptPassword, validatePassword } from "../utils/passwords";
 import { Membership } from "../models/enum/enum";
+import * as userRepository from "../repositories/userRepository";
+import { encryptPassword, validatePassword } from "../utils/passwords";
 import { Transaction } from "sequelize";
+import sequelize from "../config/database";
 
 export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
   try {
-    const user = await UserModel.findOne({
-      where: { id, isValid: true }, // filtra los usuarios activos solamente
-    });
+    const user = await userRepository.findUserById(id);
 
     if (!user) {
       throw new Error(MESSAGES.USER_NOT_FOUND);
     }
 
-    const userDTO: UserDTO = {
+    return {
       longName: user.longName,
       email: user.email,
       about: user.about,
       imageProfile: user.imageProfile,
     };
-
-    return userDTO;
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
@@ -34,33 +30,13 @@ export const findUserDTOByPk = async (id: string): Promise<UserDTO | null> => {
 
 export const findUserByEmail = async (email: string): Promise<boolean> => {
   try {
-    const findedProfile = await UserModel.findOne({ where: { email } });
-    if (findedProfile) {
+    const existingUser = await userRepository.findUserByEmail(email);
+    if (existingUser) {
       const error: any = new Error(MESSAGES.EMAIL_ALREADY);
       error.status = 400;
       throw error;
     }
     return false;
-  } catch (error: any) {
-    if (error.name === "SequelizeConnectionError") {
-      throw new Error(MESSAGES.CONNECTION_ERROR);
-    }
-    throw error;
-  }
-};
-
-export const findMyUser = async (id: string): Promise<UserModel | null> => {
-  try {
-    const findedProfile = await UserModel.findByPk(id);
-    if (!findedProfile) {
-      const error: any = new Error(MESSAGES.USER_NOT_FOUND);
-      error.status = 404;
-      throw error;
-    }
-
-    const { password, ...profileWithoutPassword } = findedProfile.toJSON();
-
-    return profileWithoutPassword;
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
@@ -77,10 +53,7 @@ export const updateUserById = async (
   const transaction: Transaction = await sequelize.transaction();
 
   try {
-    const user = await UserModel.findOne({
-      where: { id, isValid: true }, // Solo buscamos usuarios activos
-      transaction,
-    });
+    const user = await userRepository.findUserById(id);
 
     if (!user) {
       throw new Error(MESSAGES.USER_NOT_FOUND);
@@ -96,14 +69,12 @@ export const updateUserById = async (
 
     await transaction.commit();
 
-    const userDTO: UserDTO = {
+    return {
       longName: user.longName,
       email: user.email,
       about: user.about,
       imageProfile: user.imageProfile,
     };
-
-    return userDTO;
   } catch (error: any) {
     await transaction.rollback();
     if (error.name === "SequelizeConnectionError") {
@@ -113,43 +84,30 @@ export const updateUserById = async (
   }
 };
 
-// desactiva tanto el perfil basico como el pro si tuviera
-export const deactivateUserByPk = async (
-  id: string
-): Promise<UserModel | null> => {
+export const deactivateUserByPk = async (id: string): Promise<UserDTO | null> => {
   const transaction: Transaction = await sequelize.transaction();
+  
   try {
-    const user = await UserModel.findOne({
-      where: { id, isValid: true }, // filtra los usuarios activos solamente
-    });
-
+    const user = await userRepository.deactivateUser(id, transaction);
+    
     if (!user) {
       throw new Error(MESSAGES.USER_NOT_FOUND);
     }
 
-    // Busca al usuario pro (si existe)
-    const userPro = await UserProModel.findOne({
-      where: { userId: id, isValid: true }, // filtra los perfiles pro activos
-    });
-
-    if (userPro) {
-      userPro.isValid = false;
-      await userPro.save({ transaction });
-    }
-
-    // Desactiva el perfil básico
-    user.isValid = false;
-    await user.save({ transaction });
-
     await transaction.commit();
-    return user;
+
+    return {
+      longName: user.longName,
+      email: user.email,
+      about: user.about,
+      imageProfile: user.imageProfile,
+    };
   } catch (error: any) {
-    // Revertir la transacción en caso de error
     await transaction.rollback();
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
-    throw new Error(`${MESSAGES.USER_NOT_FOUND} | ${error.message}`);
+    throw new Error(error.message || MESSAGES.FETCH_ERROR);
   }
 };
 
@@ -158,69 +116,38 @@ export const changeMembership = async (
   membership: Membership
 ): Promise<UserDTO> => {
   try {
-    const user = await UserModel.findOne({
-      where: { id, isValid: true }, // filtra los usuarios activos solamente
-    });
-
-    if (!user) {
-      throw new Error("El usuario no existe");
-    }
-
     if (!(Object.values(Membership) as string[]).includes(membership)) {
       throw new Error("La membresía proporcionada no es válida");
     }
 
-    if (user.membership === membership) {
-      throw new Error("El usuario ya posee esa membresía");
+    const updatedUser = await userRepository.changeUserMembership(id, membership);
+
+    if (!updatedUser) {
+      throw new Error(MESSAGES.USER_NOT_FOUND);
     }
 
-    user.membership = membership;
-    await user.save();
-
-    return user as UserDTO;
+    return updatedUser as UserDTO;
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
     }
-    throw new Error(
-      error.message || "Error al cambiar la membresía del usuario"
-    );
+    throw new Error(error.message || "Error al cambiar la membresía del usuario");
   }
 };
 
-export const getUserMembership = async (
-  id: string
-): Promise<Membership | null> => {
+export const getUserMembership = async (id: string): Promise<Membership | null> => {
   try {
-    if (!id) {
-      const error: any = new Error(MESSAGES.MISSED_DATA);
-      error.status = 400; // Código de estado para datos faltantes
-      throw error;
-    }
-
-    const user = await UserModel.findOne({
-      where: { id, isValid: true },
-    });
+    const user = await userRepository.findUserById(id);
 
     if (!user) {
-      const error: any = new Error(MESSAGES.USER_NOT_FOUND);
-      error.status = 404; // Código de estado para "no encontrado"
-      throw error;
+      throw new Error(MESSAGES.USER_NOT_FOUND);
     }
 
-    if (!user.membership) {
-      null; // El usuario no tiene membresía asignada
-    }
-
-    return user.membership as Membership;
+    return user.membership || null;
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
-      const dbError: any = new Error(MESSAGES.CONNECTION_ERROR);
-      dbError.status = 500; // Error de conexión
-      throw dbError;
+      throw new Error(MESSAGES.CONNECTION_ERROR);
     }
-    const generalError: any = new Error(error.message || MESSAGES.FETCH_ERROR);
-    generalError.status = 500; // Error genérico de servidor
-    throw generalError;
+    throw new Error(MESSAGES.FETCH_ERROR);
   }
 };

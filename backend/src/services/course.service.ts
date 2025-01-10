@@ -1,44 +1,28 @@
-import { Op, Transaction } from "sequelize";
-import sequelize from "../config/database";
-import {
-  CourseModel,
-  CourseModuleModel,
-  LessonModel,
-  UserModel,
-} from "../models/";
-import { MESSAGES } from "../utils/messages";
+import { Transaction } from "sequelize";
 import { CourseDTO, LessonDataDTO } from "../dtos/course.dto";
+import { MESSAGES } from "../utils/messages";
+import * as courseRepository from "../repositories/courseRepository";
 
-const saveCourse = async (courseData: CourseDTO): Promise<CourseDTO | null> => {
+export const saveCourse = async (courseData: CourseDTO): Promise<CourseDTO | null> => {
   const transaction: Transaction = await sequelize.transaction();
   try {
-    const course = await CourseModel.create(courseData.course, { transaction });
-
+    const course = await courseRepository.createCourse(courseData.course, transaction);
     const modulesWithLessons = [];
 
-    // Crear los módulos y sus lecciones asociadas
+    // Crear módulos y lecciones dentro de la transacción
     for (const moduleData of courseData.modules!) {
-      const module = await CourseModuleModel.create(
-        {
-          ...moduleData,
-          courseId: course.id, // Relacionar el módulo con el curso
-        },
-        { transaction }
+      const module = await courseRepository.createCourseModule(
+        moduleData, course.id, transaction
       );
 
       const lessons = [];
       for (const lessonData of moduleData.lessons!) {
-        const lesson = await LessonModel.create(
-          {
-            ...lessonData,
-            courseModuleId: module.id, // Relacionar la lección con el módulo
-          },
-          { transaction }
+        const lesson = await courseRepository.createLesson(
+          lessonData, module.id, transaction
         );
-        lessons.push(lesson); // Agregar lección a la lista
+        lessons.push(lesson);
       }
-
-      modulesWithLessons.push({ ...module.toJSON(), lessons }); // Relacionar módulo con sus lecciones
+      modulesWithLessons.push({ ...module.toJSON(), lessons });
     }
 
     await transaction.commit();
@@ -49,53 +33,26 @@ const saveCourse = async (courseData: CourseDTO): Promise<CourseDTO | null> => {
     };
   } catch (error: any) {
     await transaction.rollback();
-    if (error.name === "SequelizeConnectionError") {
-      throw new Error(MESSAGES.CONNECTION_ERROR);
-    }
-    throw new Error(`${MESSAGES.CREATE_ERROR} | ${error.message}`);
+    throw new Error(MESSAGES.CREATE_ERROR);
   }
 };
 
-const findCourse = async (courseId: string) => {
+export const getCourse = async (courseId: string) => {
   try {
-    const course = await CourseModel.findOne({
-      where: { id: courseId },
-      include: [
-        {
-          model: CourseModuleModel,
-          include: [
-            {
-              model: LessonModel,
-            },
-          ],
-        },
-      ],
-    });
+    const course = await courseRepository.findCourseById(courseId);
     return course;
   } catch (error: any) {
-    if (error.name === "SequelizeConnectionError") {
-      throw new Error(MESSAGES.CONNECTION_ERROR);
-    }
-    throw new Error(`${MESSAGES.FETCH_ERROR} | ${error.message}`);
+    throw new Error(MESSAGES.FETCH_ERROR);
   }
 };
 
-export const getAllCourses = async (): Promise<CourseModel[] | null> => {
+export const getAllCourses = async (): Promise<any[]> => {
   try {
-    const allCourses = await CourseModel.findAll();
-
-    if (!allCourses) {
-      const error: any = new Error(MESSAGES.COURSES_EMPTY);
-      error.statusCode = 204;
-      throw error;
-    }
-
+    const allCourses = await courseRepository.findAllCourses();
+    if (!allCourses.length) throw new Error(MESSAGES.COURSES_EMPTY);
     return allCourses;
   } catch (error: any) {
-    if (error === "SequelizeConnectionError") {
-      throw new Error(MESSAGES.CONNECTION_ERROR);
-    }
-    throw error;
+    throw new Error(MESSAGES.FETCH_ERROR);
   }
 };
 
@@ -104,148 +61,59 @@ export const updateCourse = async (
   courseData: Partial<CourseDTO>
 ): Promise<CourseDTO | null> => {
   try {
-    const [rowsAffected] = await CourseModel.update(courseData, {
-      where: { id },
-    });
+    const rowsAffected = await courseRepository.updateCourse(id, courseData);
+    if (rowsAffected === 0) throw new Error(MESSAGES.UPDATE_ERROR);
 
-    if (rowsAffected === 0) {
-      const error: any = new Error(MESSAGES.UPDATE_ERROR);
-      error.status = 204;
-      throw error;
-    }
-
-    const updatedCourse = await CourseModel.findByPk(id);
+    const updatedCourse = await courseRepository.findCourseById(id);
     return updatedCourse ? (updatedCourse.toJSON() as CourseDTO) : null;
   } catch (error: any) {
-    if (error.name === "SequelizeConnectionError") {
-      throw new Error(MESSAGES.CONNECTION_ERROR);
-    }
-    throw error;
+    throw new Error(MESSAGES.UPDATE_ERROR);
   }
 };
 
-export const updateLesson = async (
-  id: string,
-  lessonData: Partial<LessonDataDTO>
-): Promise<CourseDTO | null> => {
-  try {
-    const [rowsAffected] = await CourseModel.update(lessonData, {
-      where: { id },
-    });
-
-    if (rowsAffected === 0) {
-      const error: any = new Error(MESSAGES.UPDATE_ERROR);
-      error.status = 204;
-      throw error;
-    }
-
-    const updatedCourse = await CourseModel.findByPk(id);
-    return updatedCourse ? (updatedCourse.toJSON() as CourseDTO) : null;
-  } catch (error: any) {
-    if (error.name === "SequelizeConnectionError") {
-      throw new Error(MESSAGES.CONNECTION_ERROR);
-    }
-    throw error;
-  }
-};
-
-export const buyCourse = async (
-  userId: string,
-  courseId: string
-): Promise<CourseModel | null> => {
+export const buyCourse = async (userId: string, courseId: string) => {
   const transaction: Transaction = await sequelize.transaction();
   try {
-    const course = await CourseModel.findByPk(courseId);
+    const course = await courseRepository.findCourseForUser(courseId);
+    if (!course) throw new Error(MESSAGES.COURSE_NOT_FOUND);
 
-    if (!course) {
-      const error: any = new Error(MESSAGES.COURSE_NOT_FOUND);
-      error.status = 404;
-      throw error;
-    }
-
-    const user = await UserModel.findOne({ where: { id: userId, isValid: true } }); // Ajuste en la búsqueda del usuario
-
-    if (!user) {
-      const error: any = new Error(MESSAGES.USER_NOT_FOUND);
-      error.status = 404;
-      throw error;
-    }
+    const user = await courseRepository.findUserById(userId);
+    if (!user) throw new Error(MESSAGES.USER_NOT_FOUND);
 
     const userProducts = user.products || [];
 
     if (userProducts.includes(courseId)) {
-      const error: any = new Error(MESSAGES.COURSE_ALREADY_BOUGHT);
-      error.status = 409;
-      throw error;
+      throw new Error(MESSAGES.COURSE_ALREADY_BOUGHT);
     }
 
-    user.products = [...userProducts, courseId];
-    await user.save({ transaction });
+    await courseRepository.addProductToUser(userId, courseId, transaction);
 
     await transaction.commit();
     return course;
   } catch (error: any) {
     await transaction.rollback();
-    if (error.name === "SequelizeConnectionError") {
-      throw new Error(MESSAGES.CONNECTION_ERROR);
-    }
-    throw error;
+    throw new Error(MESSAGES.BUY_ERROR);
   }
 };
 
-export const deleteCourse = async (courseId: string): Promise<string | null> => {
+export const deleteCourse = async (courseId: string) => {
   const transaction: Transaction = await sequelize.transaction();
-
   try {
-    const course = await CourseModel.findByPk(courseId);
-    if (!course) {
-      const error: any = new Error(MESSAGES.COURSE_NOT_FOUND);
-      error.status = 404;
-      throw error;
-    }
+    const course = await courseRepository.findCourseById(courseId);
+    if (!course) throw new Error(MESSAGES.COURSE_NOT_FOUND);
 
-    // Eliminar el curso de la tabla courses
-    const rowsAffected = await CourseModel.destroy({ where: { id: courseId }, transaction });
-    if (rowsAffected === 0) {
-      const error: any = new Error(MESSAGES.ELIMINATE_ERROR);
-      error.status = 500;
-      throw error;
-    }
+    await courseRepository.deleteCourse(courseId, transaction);
+    const users = await courseRepository.findUsersWithProduct(courseId);
 
-    // Recuperar usuarios que tengan este curso en su lista de productos
-    const users = await UserModel.findAll({
-      where: { products: { [Op.contains]: [courseId] } }, // Usuarios cuyo campo 'products' incluye el courseId
-      transaction,
-    });
+    await Promise.all(users.map(async (user) => {
+      user.products = user.products.filter((productId) => productId !== courseId);
+      await user.save({ transaction });
+    }));
 
-    // Eliminar el curso de la lista de productos de cada usuario
-    await Promise.all(
-      users.map(async (user) => {
-        user.products = user.products.filter((productId) => productId !== courseId);
-        await user.save({ transaction });
-      })
-    );
-
-    // Confirmar la transacción
     await transaction.commit();
     return courseId;
   } catch (error: any) {
     await transaction.rollback();
-    if (error.name === "SequelizeConnectionError") {
-      throw new Error(MESSAGES.CONNECTION_ERROR);
-    }
-    throw error;
+    throw new Error(MESSAGES.DELETE_ERROR);
   }
-};
-
-
-
-export default {
-  saveCourse,
-  findCourse,
-  updateCourse,
-  updateLesson,
-  getAllCourses,
-  buyCourse,
-  deleteCourse,
 };

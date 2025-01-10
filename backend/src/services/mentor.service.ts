@@ -1,12 +1,10 @@
+import * as mentorRepository from "../repositories/mentorRepository";
 import { MESSAGES } from "../utils/messages";
 import { MentorDTO } from "../dtos/user.dto";
-import MentorModel from "../models/Mentor.model";
 
-export const saveMentor = async (
-  mentor: MentorDTO
-): Promise<MentorDTO | undefined> => {
+export const saveMentor = async (mentor: MentorDTO): Promise<MentorDTO | undefined> => {
   try {
-    const existingMentor = await getMentor(mentor.userProId);
+    const existingMentor = await mentorRepository.findMentorById(mentor.userProId);
 
     if (existingMentor) {
       const error: any = new Error(MESSAGES.MENTOR_ALREADY);
@@ -14,15 +12,7 @@ export const saveMentor = async (
       throw error;
     }
 
-    const newMentor = await MentorModel.create({
-      userProId: mentor.userProId,
-      expertiseArea: mentor.expertiseArea,
-      expertiseLevel: mentor.expertiseLevel,
-      platform: mentor.platform,
-      mentoryCost: mentor.mentoryCost,
-      aboutMentories: mentor.aboutMentories,
-      language: mentor.language,
-    });
+    const newMentor = await mentorRepository.createMentor(mentor);
 
     if (!newMentor) {
       const error: any = new Error(MESSAGES.MENTOR_CREATE_ERROR);
@@ -39,17 +29,10 @@ export const saveMentor = async (
   }
 };
 
-export const getMentor = async (
-  userProId: string
-): Promise<MentorDTO | null> => {
+export const getMentor = async (userProId: string): Promise<MentorDTO | null> => {
   try {
-    const findedMentor = await MentorModel.findOne({ where: { userProId } });
-
-    if (!findedMentor) {
-      return null;
-    }
-
-    return findedMentor.toJSON() as MentorDTO;
+    const mentor = await mentorRepository.findMentorById(userProId);
+    return mentor ? mentor.toJSON() as MentorDTO : null;
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);
@@ -58,10 +41,9 @@ export const getMentor = async (
   }
 };
 
-export const updateMentor = async (userProId: string, mentor: MentorDTO
-): Promise<MentorDTO | undefined> => {
+export const updateMentor = async (userProId: string, mentor: MentorDTO): Promise<MentorDTO | undefined> => {
   try {
-    const existingMentor = await getMentor(userProId);
+    const existingMentor = await mentorRepository.findMentorById(userProId);
 
     if (!existingMentor) {
       const error: any = new Error(MESSAGES.MENTOR_NOT_FOUNDED);
@@ -69,11 +51,9 @@ export const updateMentor = async (userProId: string, mentor: MentorDTO
       throw error;
     }
 
-    const id = existingMentor.id
+    const id = existingMentor.id;
 
-    const [rowsAffected] = await MentorModel.update(mentor, {
-      where: { id },
-    });
+    const [rowsAffected] = await mentorRepository.updateMentorById(id, mentor);
 
     if (rowsAffected === 0) {
       const error: any = new Error(MESSAGES.UPDATE_ERROR);
@@ -81,9 +61,8 @@ export const updateMentor = async (userProId: string, mentor: MentorDTO
       throw error;
     }
 
-    const updatedMentor = await MentorModel.findByPk(id);
+    const updatedMentor = await mentorRepository.findMentorByPK(id);
     return updatedMentor ? (updatedMentor.toJSON() as MentorDTO) : undefined;
-
   } catch (error: any) {
     if (error.name === "SequelizeConnectionError") {
       throw new Error(MESSAGES.CONNECTION_ERROR);

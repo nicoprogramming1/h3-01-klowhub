@@ -1,31 +1,27 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import UserModel from "../models/User.model";
-import DeviceSession from "../models/DeviceSession.model";
 import { UserDTO } from "../dtos/user.dto";
 import { MESSAGES } from "../utils/messages";
+import * as userRepository from "../repositories/userRepository";
+import { registerUser, loginUser, logoutUser } from "./utils";
 
 export const registerUser = async (
   userData: UserDTO, imageProfile: string
 ): Promise<UserDTO | null> => {
   try {
     const email = userData.email;
-    const existingUser = await UserModel.findOne({ where: { email } });
+    const existingUser = await userRepository.findUserByEmail(email);
     if (existingUser) {
-      const error: any = new Error(MESSAGES.EMAIL_ALREADY);
-      error.statusCode = 400;
-      throw error;
+      throw new Error(MESSAGES.EMAIL_ALREADY);
     }
 
     if (!userData.password) {
-      const error: any = new Error(MESSAGES.EMAIL_ALREADY);
-      error.statusCode = 400;
-      throw error;
+      throw new Error(MESSAGES.PASSWORD_REQUIRED);
     }
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-    const newUser = await UserModel.create({
+    const newUser = await userRepository.createUser({
       longName: userData.longName,
       email: userData.email,
       password: hashedPassword,
@@ -33,9 +29,7 @@ export const registerUser = async (
     });
 
     if (!newUser) {
-      const error: any = new Error(MESSAGES.USER_CREATE_ERROR);
-      error.statusCode = 500;
-      throw error;
+      throw new Error(MESSAGES.USER_CREATE_ERROR);
     }
 
     return newUser ? (newUser.toJSON() as UserDTO) : null;
@@ -57,14 +51,9 @@ export const loginUser = async (
   ipAddress: string | undefined
 ) => {
   try {
-    const userData = await UserModel.findOne({ where: { email } });
-
-    // Verificar si el usuario existe y está activo
+    const userData = await userRepository.findUserByEmail(email);
     if (!userData) {
       throw new Error("Cuenta no encontrada");
-    }
-    if (!userData.isValid) {
-      throw new Error("Cuenta desactivada");
     }
 
     const isPasswordValid = await bcrypt.compare(password, userData.password);
@@ -76,21 +65,20 @@ export const loginUser = async (
       expiresIn: "1d",
     });
 
-    // Solo crea o actualiza la sesión si se proporcionan datos de dispositivo y aplicación
+    // Si hay dispositivo y app, maneja la sesión
     if (device && app && country) {
-      const [session, created] = await DeviceSession.findOrCreate({
-        where: { userId: userData.id, device, app },
-        defaults: { country, city, ipAddress, isActive: true },
-      });
-
-      if (!created) {
-        await session.update({ isActive: true, ipAddress });
-      }
+      await userRepository.createOrUpdateDeviceSession(
+        userData.id,
+        device,
+        app,
+        country,
+        city,
+        ipAddress
+      );
     }
 
-    // Devolver la información del usuario (sin la contraseña) y el token
+    // Devolver usuario sin la contraseña y el token
     const { password: _, ...userWithoutPassword } = userData.toJSON();
-
     return { user: userWithoutPassword, token };
   } catch (error: any) {
     throw new Error(error.message || "Error en el login");
@@ -104,21 +92,19 @@ export const logoutUser = async (
 ) => {
   try {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-
     if (!decoded.id) {
-      throw new Error("El token proveído es inválido");
+      throw new Error("El token es inválido");
     }
 
     if (device && app && decoded.id) {
-      // Buscar la sesión activa del usuario
-      const session = await DeviceSession.findOne({
-        where: { userId: decoded.id, device, app },
-      });
+      const session = await userRepository.updateSessionStatus(
+        device,
+        app,
+        decoded.id,
+        false
+      );
 
-      if (session) {
-        // Desactivar la sesión
-        await session.update({ isActive: false });
-      } else {
+      if (!session) {
         throw new Error("No se encuentra la sesión");
       }
     }
